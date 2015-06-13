@@ -1,4 +1,5 @@
-#include <class/window/Window.h>
+#include "class/window/Window.h"
+#include "class/tim/math/Math.h"
 #include <GL/glew.h>
 #include <GL/glfw3.h>
 Window::Window() {
@@ -24,7 +25,7 @@ void Window::glfwinit(){
 	glfwInit();
 }
 float Window::aspect()const{
-	return ((float)size.x/(float)size.y);
+	return Tim::Math::aspect(size);
 }
 glm::ivec2 Window::get_size()const{
 	return size;

@@ -11,6 +11,7 @@ public:
 	static int get_val_at(int val,int at);
 	static int get_len(int val);
 	static glm::mat4 BiasMat();
+	static float aspect(glm::ivec2 size);
 };
 
 } /* namespace Tim */

@@ -1,4 +1,4 @@
-#include <class/tim/math/Math.h>
+#include "class/tim/math/Math.h"
 
 namespace Tim {
 
@@ -16,6 +16,9 @@ glm::mat4 Math::BiasMat(){
 	0.0, 0.0, 0.5, 0.0,
 	0.5, 0.5, 0.5, 1.0);
 	return biasMat;
+}
+float Math::aspect(glm::ivec2 size){
+	return ((float)size.x/(float)size.y);
 }
 float Math::max(glm::vec3 v){
 	if(v.x>v.y){
