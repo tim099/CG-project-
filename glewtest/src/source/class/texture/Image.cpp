@@ -57,15 +57,15 @@ void Image::convert_to_sobel(Image* image,glm::vec2 dv){
 		image->data[3*i+2]=(unsigned char)col;
 	}
 	unsigned char arr[3][3];
-	for(int i=0;i<image->size.x;i++){
-		for(int j=0;j<image->size.y;j++){
+	for(int i=0;i<image->size.y;i++){
+		for(int j=0;j<image->size.x;j++){
 			for(int l=0;l<3;l++){
 				for(int m=0;m<3;m++){
 					int x=j+m-1,y=i+l-1;
 					if(x<0||y<0||x>=(int)image->size.x||y>=(int)image->size.y){
 						arr[l][m]=0;
 					}else{
-						arr[l][m]=image->data[(x+y*image->size.y)*3];
+						arr[l][m]=image->data[(x+y*image->size.x)*3];
 					}
 				}
 			}
@@ -73,7 +73,7 @@ void Image::convert_to_sobel(Image* image,glm::vec2 dv){
 			int GY=-dv.y*arr[0][0]+arr[2][0]-dv.x*arr[0][1]+dv.x*arr[2][1]-dv.y*arr[0][2]+dv.y*arr[2][2];
 			int value=sqrt(GX*GX+GY*GY);
 
-			image->data[3*(j+i*image->size.y)+2]=(unsigned char)(value<255?value:255);
+			image->data[3*(j+i*image->size.x)+2]=(unsigned char)(value<255?value:255);
 		}
 	}
 	for(unsigned i=0;i<image->imageSize/3;i++){//convert to BMP
