@@ -10,38 +10,36 @@ DrawObject::DrawObject(BufferObject* _obj,Texture* _texturebuffer) {
 	draw_shadow=true;
 }
 DrawObject::~DrawObject() {
+	clear_position();
+	clear_temp_position();
 	delete obj;
 }
-/*glm::mat4 DrawObject::model_matrix(Position* p){
-    glm::mat4 M=glm::mat4(1.0f);
-    M*=glm::translate(p->pos);
-
-    if(p->r.y!=0.0){
-        glm::mat4 rmat=glm::rotate(p->r.y,glm::vec3(0,1,0));
-        M*=rmat;
-    }
-    return M;
-	return p->PositionMat();
-}*/
 void DrawObject::view(GLuint programID,glm::mat4 M){
     glUniformMatrix4fv(glGetUniformLocation(programID,"M"),1,GL_FALSE,&(M[0][0]));
 }
 void DrawObject::clear_position(){
+	for(unsigned i=0;i<m_pos.size();i++){
+		delete m_pos.at(i);
+	}
 	m_pos.clear();
-	temp_pos.clear();
 }
 void DrawObject::clear_temp_position(){
+	for(unsigned i=0;i<temp_pos.size();i++){
+		delete temp_pos.at(i);
+	}
 	temp_pos.clear();
 }
-void DrawObject::push_position(Position p){
+Position* DrawObject::push_position(Position* p){
 	m_pos.push_back(p);
+	return p;
 }
-void DrawObject::push_temp_position(Position p){
+Position* DrawObject::push_temp_position(Position* p){
 	temp_pos.push_back(p);
+	return p;
 }
-void DrawObject::draw_vec(GLuint programID,std::vector<Position> &pos_v){
+void DrawObject::draw_vec(GLuint programID,std::vector<Position*> &pos_v){
 	for(unsigned i=0;i<pos_v.size();i++){
-		view(programID,pos_v.at(i).PosMat());
+		view(programID,pos_v.at(i)->PosMat());
 		obj->draw(programID);
 	}
 }
@@ -53,13 +51,12 @@ void DrawObject::draw_shadow_map(GLuint programID){
 	glDisableVertexAttribArray(0);//vertexbuffer
 }
 void DrawObject::draw_object(GLuint programID){
-
 	obj->bind_buffer(programID);
 	texturebuffer->sent_uniform(programID,0,"myTextureSampler");
 
 	draw_vec(programID,m_pos);
 	draw_vec(programID,temp_pos);
 
-	temp_pos.clear();
+	clear_temp_position();
 	Buffer::disable_all_buffer();
 }

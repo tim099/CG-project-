@@ -4,12 +4,12 @@
 #include <glm/glm.hpp>
 class Position {
 public:
-	Position();
-	Position(glm::vec3 pos,glm::vec3 r);
+	Position(const Position &p);
+	Position(glm::vec3 pos,glm::vec3 r,Position *parent_pos=0);
 	virtual ~Position();
 
 	glm::mat4 PosMat()const;
-	void initialize(glm::vec3 pos,glm::vec3 r);
+	void initialize(glm::vec3 pos,glm::vec3 r,Position *parent_pos);
 	Position *parent_pos;
 	glm::vec3 pos;
 	glm::vec3 r;

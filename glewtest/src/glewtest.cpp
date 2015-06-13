@@ -160,7 +160,7 @@ void input(Camera *camera){
 
 		}
     	if(keyboard->get('C')){
-    		look_at->push_position(Position(camera->look_at+glm::vec3(0,0.1,0),
+    		look_at->push_position(new Position(camera->look_at+glm::vec3(0,0.1,0),
     				glm::vec3(0,camera->look_ry(),0)));
     		lightControl.push_point_light(new PointLight(camera->look_at,camlight->color));
     	}
@@ -312,7 +312,7 @@ void draw_map(Camera *camera){
     if(max.x>=MX)max.x=MX-1;if(max.y>=MZ)max.y=MZ-1;
     for(int i=min.x/10;i<max.x/10;i++){
     	for(int j=min.y/10;j<max.y/10;j++){
-    		dmaps[i][j]->push_temp_position(Position(glm::vec3(0,0,0),glm::vec3()));
+    		dmaps[i][j]->push_temp_position(new Position(glm::vec3(0,0,0),glm::vec3()));
     	}
     }
 }
@@ -325,11 +325,13 @@ void set_obj_pos(Camera *camera){
     if(!stop_the_sun)sunlight->pos=glm::vec3(glm::rotate(0.02f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
     s_light->vec=-sunlight->pos;
     sunpos.pos=sunlight->pos;
-    sun->push_temp_position(sunpos);
-    tiger->push_temp_position(Position(glm::vec3(33.0,21.47,26.0),glm::vec3(0,tiger_ry,0)));
-    look_at->push_temp_position(Position(camera->look_at,glm::vec3(0,camera->look_ry(),0)));
-    stars->push_temp_position(starpos);
-    galaxy->push_temp_position(starpos);
+    sun->push_temp_position(new Position(sunpos));
+    tiger->push_temp_position(new Position(glm::vec3(33.0,21.47,26.0),glm::vec3(0,tiger_ry,0)));
+    //Position* look_at_pos=
+    look_at->push_temp_position(new Position(camera->look_at,glm::vec3(0,camera->look_ry(),0)));
+    //look_at->push_temp_position(new Position(glm::vec3(0,0,-1),glm::vec3(0,0,0),look_at_pos));
+    stars->push_temp_position(new Position(starpos));
+    galaxy->push_temp_position(new Position(starpos));
 }
 void update_map(Camera *camera){
     draw_map(camera);//push position
@@ -420,7 +422,7 @@ void prepare_draw_obj(){
     DrawObject* doge=new DrawObject(b_objs.at(5),texmap.get_tex(std::string("doge")));
     doge->draw_shadow=false;
     d_objs.push_back(doge);
-    doge->push_position(Position(glm::vec3(0,0,0),glm::vec3()));
+    doge->push_position(new Position(glm::vec3(0,0,0),glm::vec3()));
 }
 void creat_shader(){
 	shaderBasic=Shader::LoadShader("files/shader/basic/Basic.vert",
