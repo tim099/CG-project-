@@ -8,6 +8,10 @@ public:
 	virtual ~Texture2D();
 	static Texture2D* loadBMP(const char * imagepath,int Parameteri=P_MipMap);
 	static Texture2D* loadBMP_to_sobel(const char * imagepath,int Parameteri=P_MipMap);
+	static Texture2D* gen_texture2D(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format
+			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
+	static Texture2D* gen_texture2D(Image* image,GLint internalformat,
+			GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
 	virtual Texture2D* Tex2D();
 	virtual void sent_uniform(GLuint programID,int num,const char *name)const;
 	Image* convert_to_image(GLenum format=GL_RGB);

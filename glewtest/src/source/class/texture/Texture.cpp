@@ -20,39 +20,6 @@ Texture::~Texture() {
 Texture2D* Texture::Tex2D(){
 	return 0;
 }
-Texture2D* Texture::gen_texture2D(Image* image,GLint internalformat,GLenum type,int Parameteri){
-	return gen_texture2D(image->data,image->size,internalformat,image->format,type,Parameteri);
-}
-Texture2D* Texture::gen_texture2D(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format,GLenum type,int Parameteri){
-	GLuint textureID;
-	glGenTextures(1,&textureID);
-	glBindTexture(GL_TEXTURE_2D,textureID);
-	glTexImage2D(GL_TEXTURE_2D,0,internalformat,size.x,size.y,0,format,type,pixels);
-	switch(Parameteri){
-		case P_NONE:
-			break;
-		case P_MipMap:
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-			glGenerateMipmap(GL_TEXTURE_2D);
-			break;
-		case P_Linear:
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);//GL_NEAREST
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);//GL_NEAREST
-			break;
-		case P_Nearest:
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-			break;
-		default:
-			std::cout<<"err unknow texture Parameteri type:"<<Parameteri<<std::endl;
-
-	}
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);//GL_CLAMP
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	Texture2D *tex=new Texture2D(textureID,size,type,internalformat);
-	return tex;
-}
 void Texture::usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name){
 	int slen=strlen(name);
 	char temp[100];

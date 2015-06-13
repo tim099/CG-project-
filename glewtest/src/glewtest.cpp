@@ -491,7 +491,7 @@ int main(){
 	FrameBuffer* SFBO;
 	SFBO=new FrameBuffer(glm::ivec2(4000,4000));
 	for(int i=0;i<10;i++){
-		SFBO->push_depth_texture(Texture::gen_texture2D(0,SFBO->size
+		SFBO->push_depth_texture(Texture2D::gen_texture2D(0,SFBO->size
 				,GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear));
 		//SFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
 	}
@@ -565,7 +565,7 @@ int main(){
 			//Image *img=FBO->depth_buffer->Tex2D()->convert_to_image();
 			Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
 			if(tmp_tex)delete tmp_tex;
-			tmp_tex=Texture::gen_texture2D(img,GL_RGB);
+			tmp_tex=Texture2D::gen_texture2D(img,GL_RGB);
 			delete img;
 			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
 			Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);

@@ -1,8 +1,8 @@
 #ifndef FRAMEBUFFER_H_
 #define FRAMEBUFFER_H_
 #include <vector>
-#include <class/buffer/Buffer.h>
-#include <class/texture/texture.h>
+#include "class/buffer/Buffer.h"
+#include "class/texture/Texture.h"
 class FrameBuffer {
 public:
 	FrameBuffer(glm::ivec2 size);

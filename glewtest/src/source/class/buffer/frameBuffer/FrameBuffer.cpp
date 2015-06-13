@@ -39,7 +39,7 @@ Texture* FrameBuffer::push_color_texture(Texture* tex){
 }
 Texture* FrameBuffer::gen_color_texture(const void *pixels,GLint internalformat,GLenum format
 		,GLenum type,int Parameteri){
-	Texture* tex=Texture::gen_texture2D(pixels,size,internalformat,format,type,Parameteri);
+	Texture* tex=Texture2D::gen_texture2D(pixels,size,internalformat,format,type,Parameteri);
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0+color_textures.size(),tex->TexID,0);
 	color_textures.push_back(tex);
 	return tex;
@@ -52,7 +52,7 @@ Texture* FrameBuffer::push_depth_texture(Texture* tex){
 }
 Texture* FrameBuffer::gen_depth_texture(GLint internalformat,GLenum format
 		,GLenum type,int Parameteri){
-	Texture* tex=Texture::gen_texture2D(0,size,internalformat,format,type,Parameteri);
+	Texture* tex=Texture2D::gen_texture2D(0,size,internalformat,format,type,Parameteri);
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,tex->TexID,0);
 	depth_textures.push_back(tex);
 	depth_buffer=tex;
