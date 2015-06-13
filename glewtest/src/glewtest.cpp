@@ -238,12 +238,6 @@ void input(Camera *camera){
     		camera->dis_alter(0.05);
     	}
 }
-void waste_time(double t){
-    for(int i=0;i<t*400000000;i++){
-    	int j=0;
-    	j+=1;
-    }
-}
 void load_map(){
 	FILE * fop = fopen("files/maps/map011","r");
 	glm::i32vec3 ms;
@@ -464,7 +458,7 @@ void creat_light(){
 	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.2,-0.3,-0.9),glm::vec3(0.1,0.1,0.5)));
 }
 int main(){
-	Window *window=new Window(glm::i16vec2(1366,768),"hello tim",false);
+	Window *window=new Window(glm::ivec2(1366,768),"hello tim",false);
 	Camera *camera=new Camera(glm::vec3(36.0,24.0,24.0),glm::vec3(34.0,22.0,27.0),glm::vec3(0,1,0),60.0,0.1f,100000.0f);
 	keyboard=new KeyBoard();
 	mouse=new Mouse();
@@ -569,11 +563,11 @@ int main(){
 		if(to_sobel){
 			Image *img=FBO->color_textures.at(0)->Tex2D()->convert_to_image();
 			//Image *img=FBO->depth_buffer->Tex2D()->convert_to_image();
-			//Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
+			Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
 			if(tmp_tex)delete tmp_tex;
 			tmp_tex=Texture::gen_texture2D(img,GL_RGB);
 			delete img;
-			//Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
 			Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);
 		}else{
 			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
@@ -598,10 +592,6 @@ int main(){
 	    }
         glfwSwapBuffers(window->get_window());
         std::cout<<"swaptime="<<(glfwGetTime()-time)<<std::endl;
-        time=glfwGetTime();
-
-        waste_time(0.0015);
-        printf("waste_time=%lf\n",(glfwGetTime()-time));
         time=glfwGetTime();
     }
     delete cube;
