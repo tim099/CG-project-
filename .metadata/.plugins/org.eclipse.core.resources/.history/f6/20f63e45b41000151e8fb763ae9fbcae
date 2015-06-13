@@ -1,0 +1,10 @@
+#include "class/texture/texture2D/Texture2D.h"
+
+Texture2D::Texture2D(GLuint _TexID,int _width,int _height) : Texture(_TexID){
+	width=_width;
+	height=_height;
+}
+Texture2D::~Texture2D() {
+
+}
+

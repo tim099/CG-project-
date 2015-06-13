@@ -1,0 +1,18 @@
+/*
+ * String.cpp
+ *
+ *  Created on: 2015/6/9
+ *      Author: USER
+ */
+
+#include <class/tim/string/String.h>
+
+String::String() {
+	// TODO Auto-generated constructor stub
+
+}
+
+String::~String() {
+	// TODO Auto-generated destructor stub
+}
+

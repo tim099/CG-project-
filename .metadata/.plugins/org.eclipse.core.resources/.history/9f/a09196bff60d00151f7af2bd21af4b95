@@ -1,0 +1,16 @@
+#ifndef MATH_H_
+#define MATH_H_
+#include <glm/glm.hpp>
+namespace Tim {
+
+class Math {
+public:
+	Math();
+	virtual ~Math();
+	static float max(glm::vec3 v);
+	static glm::mat4 BiasMat();
+};
+
+} /* namespace Tim */
+
+#endif /* MATH_H_ */

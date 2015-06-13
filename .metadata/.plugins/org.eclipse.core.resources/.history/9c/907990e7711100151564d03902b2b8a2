@@ -1,0 +1,48 @@
+#include "class/texture/Image.h"
+#include <cstdio>
+#include <iostream>
+Image::Image() {
+	format=GL_RGB;
+	width=0,height=0;
+	imageSize=0;   // = width*height*3
+	data=0;// Actual RGB data
+}
+Image::Image(unsigned int _width,unsigned int _height,GLenum _format){
+	initialize(_width,_height,_format);
+}
+Image::~Image() {
+	if(data)delete[] data;
+}
+void Image::initialize(unsigned int _width,unsigned int _height,GLenum _format){
+	format=_format;
+	width=_width;
+	height=_height;
+	switch(format){
+		case GL_RGB:
+		case GL_BGR:
+			imageSize=((width)*(height)*3+(width%2)*(height));
+			break;
+		case GL_RGBA:
+			imageSize=((width)*(height)*4+(width%2)*(height));
+			break;
+		default:
+			std::cout<<"unknow image format:"<<format<<std::endl;
+	}
+
+	data=new unsigned char [imageSize];
+}
+void Image::loadBMP(const char * imagepath){
+	unsigned char header[54]; // Each BMP file begins by a 54-bytes header
+	FILE * file = fopen(imagepath,"rb");// Open the file
+	if (!file){printf("Image could not be opened:%s\n",imagepath);}
+	if (fread(header,1,54,file)!=54){ // If not 54 bytes read : problem
+	    printf("Not a correct BMP file:%s\n",imagepath);
+	}
+	if (header[0]!='B'||header[1]!='M'){
+	    printf("Not a correct BMP file:%s\n",imagepath);
+	}
+	initialize(*(int*)&(header[0x12]),*(int*)&(header[0x16]),GL_BGR);
+	fread(data,sizeof(char),imageSize,file);
+	format=GL_BGR;
+	fclose(file);
+}

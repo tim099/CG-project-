@@ -1,0 +1,12 @@
+#include <class/texture/Image.h>
+
+Image::Image() {
+	format=GL_RGB;
+	width=0, height=0;
+	imageSize=0;   // = width*height*3
+	data=0;// Actual RGB data
+}
+Image::~Image() {
+	if(data)delete[] data;
+}
+

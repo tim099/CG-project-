@@ -1,0 +1,9 @@
+20:51:59 **** Incremental Build of configuration Debug for project test ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:\cygwin64\bin;C:/Program Files/Java/jdk1.7.0_45/bin/../jre/bin/server;C:/Program Files/Java/jdk1.7.0_45/bin/../jre/bin;C:/Program Files/Java/jdk1.7.0_45/bin/../jre/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\MinGW\bin;C:\Program Files\Java\jdk1.7.0_45\bin;C:\Users\USER\AppData\Local\Smartbar\Application\;C:\Program Files\Common Files\Autodesk Shared\;C:\Program Files (x86)\Autodesk\Backburner\;C:\Program Files\MATLAB\R2014a\runtime\win64;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\MATLAB\R2013a\runtime\win64;C:\Program Files\MATLAB\R2013a\bin;C:\Program Files\MATLAB\R2014a\polyspace\bin;C:\Users\USER\Desktop\eclipse-standard-kepler-SR1-win32-x86_64\eclipse]
+
+20:52:00 Build Finished (took 178ms)
+

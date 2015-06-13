@@ -1,0 +1,17 @@
+/*
+ * Map.h
+ *
+ *  Created on: 2015/6/13
+ *      Author: USER
+ */
+
+#ifndef MAP_H_
+#define MAP_H_
+
+class Map {
+public:
+	Map();
+	virtual ~Map();
+};
+
+#endif /* MAP_H_ */

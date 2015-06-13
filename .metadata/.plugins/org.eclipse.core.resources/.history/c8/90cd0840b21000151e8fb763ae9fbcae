@@ -1,0 +1,17 @@
+/*
+ * texture2D.h
+ *
+ *  Created on: 2015/6/12
+ *      Author: USER
+ */
+
+#ifndef TEXTURE2D_H_
+#define TEXTURE2D_H_
+
+class texture2D {
+public:
+	texture2D();
+	virtual ~texture2D();
+};
+
+#endif /* TEXTURE2D_H_ */

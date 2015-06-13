@@ -1,0 +1,18 @@
+/*
+ * Image.cpp
+ *
+ *  Created on: 2015/6/8
+ *      Author: USER
+ */
+
+#include <class/texture/Image.h>
+
+Image::Image() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Image::~Image() {
+	// TODO Auto-generated destructor stub
+}
+

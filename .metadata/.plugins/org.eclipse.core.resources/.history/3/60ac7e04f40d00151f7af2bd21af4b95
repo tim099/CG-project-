@@ -1,0 +1,11 @@
+#ifndef STRING_H_
+#define STRING_H_
+
+class String {
+public:
+	String();
+	virtual ~String();
+	static void gen_arr_str(char *str,int num);
+};
+
+#endif /* STRING_H_ */

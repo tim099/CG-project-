@@ -1,0 +1,17 @@
+/*
+ * Image.h
+ *
+ *  Created on: 2015/6/8
+ *      Author: USER
+ */
+
+#ifndef IMAGE_H_
+#define IMAGE_H_
+
+class Image {
+public:
+	Image();
+	virtual ~Image();
+};
+
+#endif /* IMAGE_H_ */
