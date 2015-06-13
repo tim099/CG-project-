@@ -10,7 +10,7 @@ class DrawObject {
 public:
 	DrawObject(BufferObject* obj,Texture* texturebuffer);
 	virtual ~DrawObject();
-	static glm::mat4 model_matrix(Position* p);
+	//static glm::mat4 model_matrix(Position* p);
 	static void view(GLuint programID,glm::mat4 model_matrix);
 	void draw_object(GLuint programID);
 	void draw_shadow_map(GLuint programID);

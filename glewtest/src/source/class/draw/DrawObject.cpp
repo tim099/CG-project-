@@ -12,7 +12,7 @@ DrawObject::DrawObject(BufferObject* _obj,Texture* _texturebuffer) {
 DrawObject::~DrawObject() {
 	delete obj;
 }
-glm::mat4 DrawObject::model_matrix(Position* p){
+/*glm::mat4 DrawObject::model_matrix(Position* p){
     glm::mat4 M=glm::mat4(1.0f);
     M*=glm::translate(p->pos);
 
@@ -21,7 +21,8 @@ glm::mat4 DrawObject::model_matrix(Position* p){
         M*=rmat;
     }
     return M;
-}
+	return p->PositionMat();
+}*/
 void DrawObject::view(GLuint programID,glm::mat4 M){
     glUniformMatrix4fv(glGetUniformLocation(programID,"M"),1,GL_FALSE,&(M[0][0]));
 }
@@ -40,7 +41,7 @@ void DrawObject::push_temp_position(Position p){
 }
 void DrawObject::draw_vec(GLuint programID,std::vector<Position> &pos_v){
 	for(unsigned i=0;i<pos_v.size();i++){
-		view(programID,model_matrix(&pos_v.at(i)));
+		view(programID,pos_v.at(i).PosMat());
 		obj->draw(programID);
 	}
 }

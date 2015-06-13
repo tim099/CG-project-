@@ -7,6 +7,10 @@ public:
 	Position();
 	Position(glm::vec3 pos,glm::vec3 r);
 	virtual ~Position();
+
+	glm::mat4 PosMat()const;
+	void initialize(glm::vec3 pos,glm::vec3 r);
+	Position *parent_pos;
 	glm::vec3 pos;
 	glm::vec3 r;
 };
