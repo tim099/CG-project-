@@ -8,9 +8,10 @@
 #include <cmath>
 #include <cstring>
 #include <GL/glfw3.h>
-Texture::Texture(GLuint _TexID,GLenum _target,GLenum _format) {
+Texture::Texture(GLuint _TexID,GLenum _target,GLenum _type,GLenum _format) {
 	TexID=_TexID;
 	target=_target;
+	type=_type;
 	format=_format;
 }
 Texture::~Texture() {
@@ -20,13 +21,13 @@ Texture2D* Texture::Tex2D(){
 	return 0;
 }
 Texture2D* Texture::gen_texture2D(Image* image,GLint internalformat,GLenum type,int Parameteri){
-	return gen_texture2D(image->data,image->width,image->height,internalformat,image->format,type,Parameteri);
+	return gen_texture2D(image->data,image->size,internalformat,image->format,type,Parameteri);
 }
-Texture2D* Texture::gen_texture2D(const void *pixels,GLsizei width,GLsizei height,GLint internalformat,GLenum format,GLenum type,int Parameteri){
+Texture2D* Texture::gen_texture2D(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format,GLenum type,int Parameteri){
 	GLuint textureID;
 	glGenTextures(1,&textureID);
 	glBindTexture(GL_TEXTURE_2D,textureID);
-	glTexImage2D(GL_TEXTURE_2D,0,internalformat,width,height,0,format,type,pixels);
+	glTexImage2D(GL_TEXTURE_2D,0,internalformat,size.x,size.y,0,format,type,pixels);
 	switch(Parameteri){
 		case P_NONE:
 			break;
@@ -49,7 +50,7 @@ Texture2D* Texture::gen_texture2D(const void *pixels,GLsizei width,GLsizei heigh
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);//GL_CLAMP
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	Texture2D *tex=new Texture2D(textureID,width,height,internalformat);
+	Texture2D *tex=new Texture2D(textureID,size,type,internalformat);
 	return tex;
 }
 void Texture::usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name){

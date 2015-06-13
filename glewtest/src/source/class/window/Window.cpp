@@ -3,11 +3,11 @@
 #include <GL/glfw3.h>
 Window::Window() {
 	window=0;
-	height=0,width=0;
+
 }
-Window::Window(int _width,int _height,const char* name,bool full_screen) {
-	creat_window(_width,_height,name,full_screen);
-	height=_height,width=_width;
+Window::Window(glm::ivec2 _size,const char* name,bool full_screen) {
+	creat_window(_size,name,full_screen);
+	size=_size;
 }
 Window::~Window() {
 
@@ -24,22 +24,19 @@ void Window::glfwinit(){
 	glfwInit();
 }
 float Window::aspect()const{
-	return ((float)width/(float)height);
+	return ((float)size.x/(float)size.y);
 }
-int Window::get_width()const{
-	return width;
+glm::ivec2 Window::get_size()const{
+	return size;
 }
-int Window::get_height()const{
-	return height;
-}
-void Window::creat_window(int width,int height,const char* name,bool full_screen){
+void Window::creat_window(glm::i16vec2 size,const char* name,bool full_screen){
 	glfwinit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-    if(full_screen)window=glfwCreateWindow(width,height,name,glfwGetPrimaryMonitor(),NULL);//full screen
-    else window=glfwCreateWindow(width,height,name,NULL,NULL);
+    if(full_screen)window=glfwCreateWindow(size.x,size.y,name,glfwGetPrimaryMonitor(),NULL);//full screen
+    else window=glfwCreateWindow(size.x,size.y,name,NULL,NULL);
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glewinit();

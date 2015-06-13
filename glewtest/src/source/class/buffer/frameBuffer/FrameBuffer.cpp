@@ -1,8 +1,8 @@
 #include <class/buffer/frameBuffer/FrameBuffer.h>
 #include "class/texture/texture2D/Texture2D.h"
-FrameBuffer::FrameBuffer(int _width,int _height) {
-	width=_width;height=_height;
-	FBOID=GenFramebuffer(width,height);
+FrameBuffer::FrameBuffer(glm::ivec2 _size) {
+	size=_size;
+	FBOID=GenFramebuffer(size);
 }
 FrameBuffer::~FrameBuffer() {
 	glDeleteFramebuffers(1,&FBOID);
@@ -14,11 +14,11 @@ FrameBuffer::~FrameBuffer() {
 	}
 }
 float FrameBuffer::aspect()const{
-	return ((float)width/(float)height);
+	return ((float)size.x/(float)size.y);
 }
 void FrameBuffer::bind_buffer(){
 	glBindFramebuffer(GL_FRAMEBUFFER,FBOID);//bind the SFBO
-	glViewport(0,0,width,height);
+	glViewport(0,0,size.x,size.y);
 	if(!color_textures.empty()){
 		GLuint*DBcolor=new GLuint(color_textures.size());
 		for(unsigned i=0;i<color_textures.size();i++)DBcolor[i]=(GL_COLOR_ATTACHMENT0+i);
@@ -28,9 +28,9 @@ void FrameBuffer::bind_buffer(){
 		glDrawBuffer(GL_NONE);
 	}
 }
-void FrameBuffer::unbind_buffer(int _width,int _height){
+void FrameBuffer::unbind_buffer(glm::ivec2 size){
 	glBindFramebuffer(GL_FRAMEBUFFER,0);//unbind the FBO
-	glViewport(0,0,_width,_height);
+	glViewport(0,0,size.x,size.y);
 }
 Texture* FrameBuffer::push_color_texture(Texture* tex){
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0+color_textures.size(),tex->TexID,0);
@@ -39,7 +39,7 @@ Texture* FrameBuffer::push_color_texture(Texture* tex){
 }
 Texture* FrameBuffer::gen_color_texture(const void *pixels,GLint internalformat,GLenum format
 		,GLenum type,int Parameteri){
-	Texture* tex=Texture::gen_texture2D(pixels,width,height,internalformat,format,type,Parameteri);
+	Texture* tex=Texture::gen_texture2D(pixels,size,internalformat,format,type,Parameteri);
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0+color_textures.size(),tex->TexID,0);
 	color_textures.push_back(tex);
 	return tex;
@@ -52,7 +52,7 @@ Texture* FrameBuffer::push_depth_texture(Texture* tex){
 }
 Texture* FrameBuffer::gen_depth_texture(GLint internalformat,GLenum format
 		,GLenum type,int Parameteri){
-	Texture* tex=Texture::gen_texture2D(0,width,height,internalformat,format,type,Parameteri);
+	Texture* tex=Texture::gen_texture2D(0,size,internalformat,format,type,Parameteri);
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,tex->TexID,0);
 	depth_textures.push_back(tex);
 	depth_buffer=tex;
@@ -64,7 +64,7 @@ void FrameBuffer::bind_depth_texture(int i){
 	depth_buffer=tex;
 	glFramebufferTexture(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,tex->TexID,0);
 }
-GLuint FrameBuffer::GenFramebuffer(int width,int height){
+GLuint FrameBuffer::GenFramebuffer(glm::ivec2 size){
 	GLuint FBO;
 	glGenFramebuffers(1,&FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER,FBO);//GL_FRAMEBUFFER

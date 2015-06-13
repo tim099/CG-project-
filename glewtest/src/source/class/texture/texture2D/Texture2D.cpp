@@ -1,10 +1,9 @@
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/texture/Image.h"
 #include <iostream>
-Texture2D::Texture2D(GLuint _TexID,int _width,int _height,GLenum _format)
-: Texture(_TexID,GL_TEXTURE_2D,_format){
-	width=_width;
-	height=_height;
+Texture2D::Texture2D(GLuint _TexID,glm::ivec2 _size,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D,_type,_format){
+	size=_size;
 }
 Texture2D::~Texture2D() {
 
@@ -33,7 +32,7 @@ void Texture2D::sent_uniform(GLuint programID,int num,const char *name)const{
 }
 Image* Texture2D::convert_to_image(GLenum _format){
 	glBindTexture(GL_TEXTURE_2D,TexID);
-	Image *img=new Image(width,height,_format);
-	glGetTexImage(GL_TEXTURE_2D,0,_format,GL_UNSIGNED_BYTE,img->data);
+	Image *img=new Image(size,_format);
+	glGetTexImage(GL_TEXTURE_2D,0,_format,type,img->data);
 	return img;
 }

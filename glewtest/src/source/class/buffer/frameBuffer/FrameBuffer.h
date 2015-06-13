@@ -5,15 +5,15 @@
 #include <class/texture/texture.h>
 class FrameBuffer {
 public:
-	FrameBuffer(int width,int height);
+	FrameBuffer(glm::ivec2 size);
 	virtual ~FrameBuffer();
 
-	static void unbind_buffer(int width,int height);
+	static void unbind_buffer(glm::ivec2 size);
 	void bind_buffer();
 	void bind_depth_texture(int i);
 	float aspect()const;
 
-	GLuint GenFramebuffer(int width,int height);
+	GLuint GenFramebuffer(glm::ivec2 size);
 	Texture* gen_color_texture(const void *pixels,GLint internalformat,GLenum format
 			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
 
@@ -21,7 +21,7 @@ public:
 			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
 	Texture* push_depth_texture(Texture* tex);
 	Texture* push_color_texture(Texture* tex);
-	int width, height;
+	glm::ivec2 size;
 	Texture* depth_buffer;
 	GLuint FBOID;
 	std::vector<Texture*>color_textures;

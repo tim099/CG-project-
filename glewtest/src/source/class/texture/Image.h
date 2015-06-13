@@ -5,19 +5,19 @@
 class Image {
 public:
 	Image();
-	Image(unsigned int width,unsigned int height,GLenum format=GL_RGB);
+	Image(glm::ivec2 size,GLenum format=GL_RGB);
 	virtual ~Image();
 	static void convert_to_sobel(Image* image,glm::vec2 dv=glm::vec2(2,1));
 
 
-	void initialize(unsigned int width,unsigned int height,GLenum format);
+	void initialize(glm::ivec2 size,GLenum format);
 	void loadBMP(const char * imagepath);
 	GLenum format;
-	unsigned int width,height;
+	glm::ivec2 size;
 	unsigned int imageSize;   // = width*height*3
 	unsigned char * data;// Actual RGB data
 protected:
-
+	int data_size;
 };
 
 #endif /* IMAGE_H_ */

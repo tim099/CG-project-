@@ -13,13 +13,13 @@ const int P_Nearest=3;
 class Texture2D;
 class Texture {
 public:
-	Texture(GLuint TexID,GLenum target,GLenum format);
+	Texture(GLuint TexID,GLenum target,GLenum type,GLenum format);
 	virtual ~Texture();
 	virtual Texture2D* Tex2D();
 
 
 	static void usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name);
-	static Texture2D* gen_texture2D(const void *pixels,GLsizei width,GLsizei height,GLint internalformat,GLenum format
+	static Texture2D* gen_texture2D(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format
 			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
 	static Texture2D* gen_texture2D(Image* image,GLint internalformat,
 			GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
@@ -30,6 +30,7 @@ public:
 	GLuint TexID;
 	GLenum target;
 	GLenum format;
+	GLenum type;
 protected:
 	static GLuint gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos=glm::vec3(0,0,0));
 };

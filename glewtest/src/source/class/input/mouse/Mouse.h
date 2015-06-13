@@ -12,10 +12,10 @@ public:
 	void scroll_callback(GLFWwindow* window,double xoffset,double yoffset);
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	void tic();
-	glm::i16vec2 pos_delta()const;
+	glm::ivec2 pos_delta()const;
 
-	glm::i16vec2 pos;
-	glm::i16vec2 prev_pos;
+	glm::ivec2 pos;
+	glm::ivec2 prev_pos;
 	double scroll;
 	bool left,right,mid;
 protected:

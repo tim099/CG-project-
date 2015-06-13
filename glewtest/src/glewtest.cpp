@@ -464,7 +464,7 @@ void creat_light(){
 	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.2,-0.3,-0.9),glm::vec3(0.1,0.1,0.5)));
 }
 int main(){
-	Window *window=new Window(1366,768,"hello tim",false);
+	Window *window=new Window(glm::i16vec2(1366,768),"hello tim",false);
 	Camera *camera=new Camera(glm::vec3(36.0,24.0,24.0),glm::vec3(34.0,22.0,27.0),glm::vec3(0,1,0),60.0,0.1f,100000.0f);
 	keyboard=new KeyBoard();
 	mouse=new Mouse();
@@ -486,23 +486,24 @@ int main(){
     glDepthFunc(GL_LESS);//,
 
     FrameBuffer* FBO;
-    FBO=new FrameBuffer(window->get_width(),window->get_height());
+    FBO=new FrameBuffer(window->get_size());
     FBO->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
     FBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
 	FrameBuffer* PSFBO;
-	PSFBO=new FrameBuffer(500,500);
+	PSFBO=new FrameBuffer(glm::ivec2(500,500));
 	for(int n=0;n<6;n++){
 		PSFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
 	}
 	FrameBuffer* SFBO;
-	SFBO=new FrameBuffer(4000,4000);
+	SFBO=new FrameBuffer(glm::ivec2(4000,4000));
 	for(int i=0;i<10;i++){
-		SFBO->push_depth_texture(Texture::gen_texture2D(0,SFBO->width,SFBO->height
+		SFBO->push_depth_texture(Texture::gen_texture2D(0,SFBO->size
 				,GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear));
 		//SFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
 	}
 	Texture* tmp_tex=0;
     double time=0;
+    //glm::mat4 mat44=glm::inverse(glm::mat4(1));
     while(!glfwWindowShouldClose(window->get_window())){
         printf("ftime=%lf\n",(glfwGetTime()-time));
         time=glfwGetTime();
@@ -517,7 +518,7 @@ int main(){
         printf("prepare time=%lf\n",(glfwGetTime()-time));
         time=glfwGetTime();
 
-        glViewport(0,0,window->get_width(),window->get_height());
+        glViewport(0,0,window->get_size().x,window->get_size().y);
     	if(cur_shader==shaderBasic){
     		Shader::active_shader(shaderBasic);
     		draw_all_objects(FBO,camera,window,time);
@@ -563,16 +564,16 @@ int main(){
 
 
     	}
-    	FrameBuffer::unbind_buffer(window->get_width(),window->get_height());
+    	FrameBuffer::unbind_buffer(window->get_size());
 		Shader::active_shader(shader2D);
 		if(to_sobel){
 			Image *img=FBO->color_textures.at(0)->Tex2D()->convert_to_image();
 			//Image *img=FBO->depth_buffer->Tex2D()->convert_to_image();
-			Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
+			//Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
 			if(tmp_tex)delete tmp_tex;
 			tmp_tex=Texture::gen_texture2D(img,GL_RGB);
 			delete img;
-			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+			//Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
 			Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);
 		}else{
 			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
