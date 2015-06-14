@@ -1,0 +1,612 @@
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <GL/glew.h>
+#include <GL/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <fstream>
+#include <vector>
+#include <cstdlib>
+
+#include "headers/callback/callBackFunc.h"
+#include "class/shader/Shader.h"
+#include "class/window/Window.h"
+#include "class/texture/Texture.h"
+#include "class/texture/texture2D/Texture2D.h"
+#include "class/texture/TextureMap.h"
+#include "class/camera/Camera.h"
+#include "class/model/Model.h"
+#include "class/model/obj/Obj.h"
+#include "class/model/cube/CubeModel.h"
+#include "class/buffer/Buffer.h"
+#include "class/buffer/BufferObject.h"
+#include "class/buffer/frameBuffer/FrameBuffer.h"
+#include "class/input/keyboard/Keyboard.h"
+#include "class/input/mouse/Mouse.h"
+#include "class/draw/DrawObject.h"
+#include "class/draw/DrawObjectCreater.h"
+#include "class/tim/math/Math.h"
+#include "class/tim/string/String.h"
+#include "class/light/Light.h"
+#include "class/light/PointLight.h"
+#include "class/light/LightControl.h"
+
+const double CUBE_SIZE=1.0;
+
+std::vector<Model*>models;
+std::vector<BufferObject*>b_objs;
+std::vector<DrawObject*>d_objs;
+LightControl lightControl(5000);
+PointLight *camlight;
+PointLight *sunlight;
+ParallelLight *s_light;
+KeyBoard *keyboard;
+Mouse *mouse;
+DrawObjectCreater *DOC;
+
+DrawObject* look_at;
+DrawObject* base;
+DrawObject* sun;
+DrawObject* tiger;
+DrawObject* stars;
+DrawObject* galaxy;
+DrawObject* dmaps[50][50];
+
+CubeModel *cube;
+
+std::vector<GLuint>shaders;
+TextureMap texmap;
+GLuint cur_shader;
+GLuint shaderBasic,shaderNormalMapping,shader2D,shaderShadowMapping;
+GLuint shadercubeShadowMapping,shaderTest;
+double tiger_ry=0;
+double shadow_dis=1.0;
+int range=70;
+const int MX=300,MY=50,MZ=300;
+bool map[MX][MY][MZ];
+bool stop_the_sun=false;
+bool to_sobel=false;
+int shader_at=0;
+void creat_map_object(int px,int pz,int size);
+void creat_tex(){
+	texmap.push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
+	texmap.push_tex(std::string("NormalTexture"),Texture2D::loadBMP("files/texture/normal.bmp"));
+	texmap.push_tex(std::string("test"),Texture2D::loadBMP_to_sobel("files/texture/test.bmp"));
+	texmap.push_tex(std::string("test2"),Texture2D::loadBMP("files/texture/test2.bmp"));
+	texmap.push_tex(std::string("test3"),Texture2D::loadBMP("files/texture/test3.bmp"));
+	texmap.push_tex(std::string("galaxy"),Texture2D::loadBMP("files/texture/galaxy.bmp"));
+	texmap.push_tex(std::string("doge"),Texture2D::loadBMP("files/texture/doge.bmp"));
+}
+void input(Camera *camera){
+		if(mouse->mid){
+			//std::cout<<"move"<<(int)(mouse->pos.x)<<","<<(int)mouse->prev_pos.x<<std::endl;
+			camera->rotate(glm::vec3(0,1,0),-0.15*mouse->pos_delta().x);
+			camera->rotate(camera->yaw_vec(),0.15*mouse->pos_delta().y);
+		}
+		if(mouse->right){
+			camera->vel+=(float)(0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*camera->look_vec_xz();
+			camera->vel+=(float)(-0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().x)*
+					glm::cross(camera->look_vec_xz(),glm::vec3(0,1,0));
+		}
+		if(mouse->left){
+			camera->vel+=(float)(-0.0005f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*glm::vec3(0,1,0);
+			camera->vel+=(float)(-0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().x)*
+					glm::cross(camera->look_vec_xz(),glm::vec3(0,1,0));
+		}
+		if(mouse->scroll){
+			camera->dis_alter_v+=sqrt(camera->look_dis()+0.1)*(0.05*mouse->scroll);
+		}
+		if(keyboard->pressed('M')){
+			sunlight->pos=glm::vec3(glm::rotate(0.5f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+		}
+		if(keyboard->pressed('J')){
+			sunlight->pos=glm::vec3(glm::rotate(-0.5f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+		}
+		if(keyboard->get('N')){
+			stop_the_sun^=1;
+		}
+		if(keyboard->get('U')){
+			to_sobel^=1;
+		}
+		if(keyboard->pressed('B')){
+			int x=(int)fabs(camera->look_at.x),y=(int)fabs(camera->look_at.y),z=(int)fabs(camera->look_at.z);
+			if(!map[x][y][z]){
+				map[x][y][z]=true;
+				creat_map_object(x/10,z/10,10);//update
+				if(x%10==9)creat_map_object((x/10)+1,z/10,10);//update
+				if(x%10==0)creat_map_object((x/10)-1,z/10,10);//update
+				if(z%10==9)creat_map_object(x/10,(z/10)+1,10);//update
+				if(z%10==0)creat_map_object(x/10,(z/10)-1,10);//update
+			}
+		}
+		if(keyboard->pressed('V')){
+			int x=(int)fabs(camera->look_at.x),y=(int)fabs(camera->look_at.y),z=(int)fabs(camera->look_at.z);
+			if(map[x][y][z]){
+				map[x][y][z]=false;
+				creat_map_object(x/10,z/10,10);//update
+				if(x%10==9)creat_map_object((x/10)+1,z/10,10);//update
+				if(x%10==0)creat_map_object((x/10)-1,z/10,10);//update
+				if(z%10==9)creat_map_object(x/10,(z/10)+1,10);//update
+				if(z%10==0)creat_map_object(x/10,(z/10)-1,10);//update
+			}
+		}
+		if(keyboard->get('O')){
+			cur_shader=shaderBasic;
+			//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		}
+		if(keyboard->get('P')){
+			cur_shader=shaderNormalMapping;
+			//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		if(keyboard->get('L')){
+			cur_shader=shaderShadowMapping;
+		}
+		if(keyboard->get(GLFW_KEY_LEFT)){
+			if(shader_at>0)shader_at--;
+			else shader_at=shaders.size()-1;
+			cur_shader=shaders.at(shader_at);
+		}
+		if(keyboard->get(GLFW_KEY_RIGHT)){
+			if(shader_at<(int)shaders.size()-1)shader_at++;
+			else shader_at=0;
+			cur_shader=shaders.at(shader_at);
+		}
+		if(keyboard->pressed(GLFW_KEY_UP)){
+			if(shadow_dis>0.01)shadow_dis*=0.98;
+		}
+		if(keyboard->pressed(GLFW_KEY_DOWN)){
+			if(shadow_dis<30.0)shadow_dis*=1.01;
+
+		}
+    	if(keyboard->get('C')){
+    		look_at->push_position(new Position(camera->look_at+glm::vec3(0,0.1,0),
+    				glm::vec3(0,camera->look_ry(),0)));
+    		lightControl.push_point_light(new PointLight(camera->look_at,camlight->color));
+    	}
+    	if(keyboard->get('1')){
+    		camlight->color+=glm::vec3(0.3,0.0,0.0);
+    	}
+    	if(keyboard->get('2')){
+    		camlight->color+=glm::vec3(-0.3,0.0,0.0);
+    	}
+    	if(keyboard->get('3')){
+    		camlight->color+=glm::vec3(0.0,0.3,0.0);
+    	}
+    	if(keyboard->get('4')){
+    		camlight->color+=glm::vec3(0.0,-0.3,0.0);
+    	}
+    	if(keyboard->get('5')){
+    		camlight->color+=glm::vec3(0.0,0.0,0.3);
+    	}
+    	if(keyboard->get('6')){
+    		camlight->color+=glm::vec3(0.0,0.0,-0.3);
+    	}
+    	if(keyboard->pressed('7')){
+    		camlight->color+=glm::vec3(0.05,0.05,0.05);
+    	}
+    	if(keyboard->get('8')){
+    		camlight->color+=glm::vec3(-0.05,-0.05,-0.05);
+    	}
+    	if(keyboard->get('9')){
+    		camlight->color=glm::vec3(0.05,0.05,0.05);
+    	}
+    	if(keyboard->get('0')){
+    		camlight->color=glm::vec3(((rand()%10000)/4000.0),((rand()%10000)/4000.0),((rand()%10000)/4000.0));
+    	}
+    	if(keyboard->get('I')){
+    		range+=10;
+    	}
+    	if(keyboard->get('K')){
+    		if(range>10)range-=10;
+    		else range=0;
+    	}
+    	if(keyboard->pressed('Q')){
+    		camera->rotate(glm::vec3(0,1,0),3);
+    	}
+    	if(keyboard->pressed('E')){
+    		camera->rotate(glm::vec3(0,1,0),-3);
+    	}
+    	if(keyboard->pressed('T')){
+    		camera->rotate(camera->yaw_vec(),1);
+    	}
+    	if(keyboard->pressed('G')){
+    		camera->rotate(camera->yaw_vec(),-1);
+    	}
+    	if(keyboard->pressed('Z')){
+    		camera->move(glm::vec3(0,0.03,0));
+    	}
+    	if(keyboard->pressed('X')){
+    		camera->move(glm::vec3(0,-0.03,0));
+    	}
+    	if(keyboard->pressed('W')){
+    		camera->move_foward(0.04);
+    	}
+    	if(keyboard->pressed('S')){
+    		camera->move_foward(-0.04);
+    	}
+    	if(keyboard->pressed('A')){
+    		camera->move_side(0.04f);
+    	}
+    	if(keyboard->pressed('D')){
+    		camera->move_side(-0.04f);
+    	}
+    	if(keyboard->pressed('R')){
+    		camera->dis_alter(-0.05);
+    	}
+    	if(keyboard->pressed('F')){
+    		camera->dis_alter(0.05);
+    	}
+}
+void load_map(){
+	FILE * fop = fopen("files/maps/map011","r");
+	glm::i32vec3 ms;
+	unsigned seed;
+	fscanf(fop,"%d %d %d\n",&ms.x,&ms.y,&ms.z);
+	fscanf(fop,"%u\n",&seed);
+	for(int i=0;i<ms.x;i++){
+		for(int j=0;j<ms.y;j++){
+			for(int k=0;k<ms.z;k++){
+				int type=0;
+				fscanf(fop,"%d",&type);
+				if(type)map[i][j][k]=true;
+				else map[i][j][k]=false;
+			}
+		}
+	}
+}
+void creat_map_object(int px,int pz,int size){
+	if(px<0||pz<0||px*size>=MX||pz*size>=MZ)return;
+	Model *mapmodel;
+	mapmodel=new Model(6*size*size*4);
+	if(dmaps[px][pz]){//already exist
+		for(unsigned i=0;i<d_objs.size();i++){
+			if(d_objs.at(i)==dmaps[px][pz]){
+				d_objs.at(i)=d_objs.back();
+				d_objs.pop_back();
+				delete dmaps[px][pz];
+			}
+		}
+	}
+    for(int i=px*size;i<(px+1)*size;i++){
+    	for(int j=0;j<MY;j++){
+    		for(int k=pz*size;k<(pz+1)*size;k++){
+    			if(map[i][j][k]){
+    				glm::vec3 pos=glm::vec3((i+0.5)*CUBE_SIZE,(j+0.5)*CUBE_SIZE,(k+0.5)*CUBE_SIZE);
+        			if(j+1>=MY||!map[i][j+1][k])mapmodel->merge(cube->cube[0],pos);//DOC->m_objs.at(0)
+        			if(j-1<0||!map[i][j-1][k])mapmodel->merge(cube->cube[1],pos);
+        			if(i+1>=MX||!map[i+1][j][k])mapmodel->merge(cube->cube[2],pos);
+        			if(i-1<0||!map[i-1][j][k])mapmodel->merge(cube->cube[3],pos);
+        			if(k+1>=MZ||!map[i][j][k+1])mapmodel->merge(cube->cube[4],pos);
+        			if(k-1<0||!map[i][j][k-1])mapmodel->merge(cube->cube[5],pos);
+    			}
+    		}
+    	}
+    }
+    DrawObject *d_map=new DrawObject(new BufferObject(mapmodel),texmap.get_tex(std::string("test3")));
+    d_objs.push_back(d_map);
+    dmaps[px][pz]=d_map;
+    delete mapmodel;
+
+}
+void creat_cube_obj(){
+	cube=new CubeModel(0.5*CUBE_SIZE);
+    for(int i=0;i<50;i++){
+    	for(int j=0;j<50;j++){
+    		dmaps[i][j]=0;
+    	}
+    }
+    for(int i=0;i<50;i++){
+    	for(int j=0;j<50;j++){
+    		creat_map_object(i,j,10);
+    	}
+    }
+}
+void draw_map(Camera *camera){
+    glm::i16vec2 min,max,dp_pos(camera->look_at.x,camera->look_at.z);
+    if(dp_pos.x<0)dp_pos.x=0;if(dp_pos.y<0)dp_pos.y=0;
+    if(dp_pos.x>=MX)dp_pos.x=MX-1;if(dp_pos.y>=MZ)dp_pos.y=MZ-1;
+    min=dp_pos-glm::i16vec2(range,range);
+    max=dp_pos+glm::i16vec2(range,range);
+    if(min.x<0)min.x=0;if(min.y<0)min.y=0;
+    if(max.x>=MX)max.x=MX-1;if(max.y>=MZ)max.y=MZ-1;
+    for(int i=min.x/10;i<max.x/10;i++){
+    	for(int j=min.y/10;j<max.y/10;j++){
+    		dmaps[i][j]->push_temp_position(new Position(glm::vec3(0,0,0),glm::vec3()));
+    	}
+    }
+}
+void set_obj_pos(Camera *camera){
+	static Position starpos(glm::vec3(0,0,0),glm::vec3());
+	static Position sunpos(glm::vec3(5.1,80.6,0.1),glm::vec3());
+    //obj move
+    tiger_ry+=0.02;
+    starpos.r.y+=0.02;
+    if(!stop_the_sun)sunlight->pos=glm::vec3(glm::rotate(0.02f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+    s_light->vec=-sunlight->pos;
+    sunpos.pos=sunlight->pos;
+    sun->push_temp_position(new Position(sunpos));
+    tiger->push_temp_position(new Position(glm::vec3(33.0,21.47,26.0),glm::vec3(0,tiger_ry,0)));
+    //Position* look_at_pos=
+    look_at->push_temp_position(new Position(camera->look_at,glm::vec3(0,camera->look_ry(),0)));
+    //look_at->push_temp_position(new Position(glm::vec3(0,0,-1),glm::vec3(0,0,0),look_at_pos));
+    stars->push_temp_position(new Position(starpos));
+    galaxy->push_temp_position(new Position(starpos));
+}
+void update_map(Camera *camera){
+    draw_map(camera);//push position
+    camlight->pos=camera->look_at;
+    set_obj_pos(camera);
+}
+
+void draw_all_objects(FrameBuffer *FBO,Camera *camera,Window *window,double &time){
+	FBO->bind_buffer();
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+    //sent uniform
+    camera->sent_uniform(cur_shader,window->aspect());
+    lightControl.sent_uniform(cur_shader,camera->pos);
+    //start draw
+    for(unsigned i=0;i<d_objs.size();i++){
+    	d_objs.at(i)->draw_object(cur_shader);//draw all obj
+    }
+    std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
+    time=glfwGetTime();
+}
+void ParallelLights_shadow_map(GLuint programID,FrameBuffer* SFBO,std::vector<ParallelLight*>&lights
+,Camera *camera,glm::mat4 *LVP,double &time){
+	for(unsigned n=0;n<lights.size();n++){
+		SFBO->bind_depth_texture(n);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+		double shadow_size=(shadow_dis/sqrt(camera->look_dis()+1.0));
+
+		LVP[n]=lights.at(n)->sent_uniform(programID,SFBO->aspect(),shadow_size,camera->look_at);
+
+	    for(unsigned i=0;i<d_objs.size();i++){
+	    	d_objs.at(i)->draw_shadow_map(programID);//draw all obj
+	    }
+	}
+	std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
+    time=glfwGetTime();
+}
+void PointLight_shadow_maps(GLuint programID,FrameBuffer* SFBO,PointLight *light,glm::mat4 PLVP[6]){
+	for(int n=0;n<6;n++){
+		SFBO->bind_depth_texture(n);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+		PLVP[n]=light->sent_uniform(programID,SFBO->aspect(),n);
+		for(unsigned i=0;i<d_objs.size();i++){
+		    d_objs.at(i)->draw_shadow_map(programID);//draw all obj
+		}
+	}
+}
+void prepare_draw_obj(){
+	Model* m=Model::load_obj("files/obj/tiger.obj",2.0);
+	Model* m2=Model::load_obj("files/obj/cube.obj",40.0);
+	Model* m3=Model::load_obj("files/obj/ico.obj",0.1);
+	Model* m4=Model::load_obj("files/obj/stars.obj",10000.0);
+	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",20000.0);
+	Model* m6=Model::load_obj("files/obj/cube.obj",60000.0);
+	Model* m7=Model::load_obj("files/obj/base.obj",5.0);
+	m->mat=glm::vec4(0.1,1.0,0.1,100);
+	m2->mat=glm::vec4(0.1,0.1,1.0,50);
+	m3->mat=glm::vec4(0.1,0.05,0.1,3);
+	m4->mat=glm::vec4(0.4,0.05,1.8,3);
+	m5->mat=glm::vec4(0.0,0.0,0.1,3);
+	m6->mat=glm::vec4(0.0,0.0,0.5,3);
+	m7->mat=glm::vec4(0.1,0.05,0.1,3);
+	models.push_back(m);
+	models.push_back(m2);
+	models.push_back(m3);
+	models.push_back(m4);
+	models.push_back(m5);
+	models.push_back(m6);
+	models.push_back(m7);
+    b_objs.push_back(new BufferObject(m));
+    b_objs.push_back(new BufferObject(m2));
+    b_objs.push_back(new BufferObject(m3));
+    b_objs.push_back(new BufferObject(m4));
+    b_objs.push_back(new BufferObject(m5));
+    b_objs.push_back(new BufferObject(m6));
+    b_objs.push_back(new BufferObject(m7));
+
+    creat_cube_obj();
+    tiger=new DrawObject(b_objs.at(0),texmap.get_tex(std::string("test")));
+
+    d_objs.push_back(tiger);
+    sun=new DrawObject(b_objs.at(1),texmap.get_tex(std::string("test2")));
+    sun->draw_shadow=false;
+    d_objs.push_back(sun);
+    look_at=new DrawObject(b_objs.at(2),texmap.get_tex(std::string("test3")));
+    look_at->draw_shadow=false;
+    d_objs.push_back(look_at);
+    stars=new DrawObject(b_objs.at(3),texmap.get_tex(std::string("test3")));
+    stars->draw_shadow=false;
+    d_objs.push_back(stars);
+    galaxy=new DrawObject(b_objs.at(4),texmap.get_tex(std::string("galaxy")));
+    d_objs.push_back(galaxy);
+    DrawObject* doge=new DrawObject(b_objs.at(5),texmap.get_tex(std::string("doge")));
+    doge->draw_shadow=false;
+    d_objs.push_back(doge);
+    doge->push_position(new Position(glm::vec3(0,0,0),glm::vec3()));
+    base=new DrawObject(b_objs.at(6),texmap.get_tex(std::string("test3")));
+    d_objs.push_back(base);
+    base->push_position(new Position(glm::vec3(50.0,24.47,26.0),glm::vec3(0,0,0)));
+
+}
+void creat_shader(){
+	shaderBasic=Shader::LoadShader("files/shader/basic/Basic.vert",
+			"files/shader/basic/Basic.geo",
+			"files/shader/basic/Basic.frag");
+	shaderNormalMapping=Shader::LoadShader("files/shader/normalMapping/normalMapping.vert"
+			,"files/shader/normalMapping/normalMapping.frag");
+	shader2D=Shader::LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
+	shaderShadowMapping=Shader::LoadShader("files/shader/shadow/ShadowMapping.vert"
+			,"files/shader/Shadow/ShadowMapping.frag");
+	shadercubeShadowMapping=Shader::LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
+			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.geo"
+			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.frag");
+	shaderTest=Shader::LoadShader("files/shader/test/test.vert",
+			"files/shader/test/test.geo",
+			"files/shader/test/test.frag");
+	shaders.push_back(shaderBasic);
+	shaders.push_back(shaderNormalMapping);
+	shaders.push_back(shaderShadowMapping);
+	//shaders.push_back(shader2D);
+	//shaders.push_back(shadercubeShadowMapping);
+	//shaders.push_back(shaderTest);
+	cur_shader=shaderNormalMapping;
+}
+void creat_light(){
+	camlight=new PointLight(glm::vec3(5.1,2.6,0.1),glm::vec3(3.2,3.2,3.2));
+	lightControl.push_point_light(camlight);
+
+	sunlight=new PointLight(glm::vec3(300,0,500),glm::vec3(20000,20000,20000));
+	s_light=new ParallelLight(-sunlight->pos,glm::vec3(2.2,2.2,2.2));
+
+	lightControl.push_point_light(sunlight);
+	lightControl.push_parallel_light(s_light);
+	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.5,-1,0.7),glm::vec3(0.1,0.5,0.1)));
+	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.2,-0.3,-0.9),glm::vec3(0.1,0.1,0.5)));
+}
+int main(){
+	Window *window=new Window(glm::ivec2(1366,768),"hello tim",false);
+	Camera *camera=new Camera(glm::vec3(36.0,24.0,24.0),glm::vec3(34.0,22.0,27.0),glm::vec3(0,1,0),60.0,0.1f,100000.0f);
+	keyboard=new KeyBoard();
+	mouse=new Mouse();
+	DOC=new DrawObjectCreater();
+
+	callback_rigister(window->get_window(),keyboard,mouse);
+	creat_shader();
+    load_map();
+    creat_tex();
+    creat_light();
+    prepare_draw_obj();
+
+    GLuint VertexArrayID=Buffer::GenVertexArray();
+    printf("in main func:VertexArrayID=%d\n",VertexArrayID);
+
+    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_TEXTURE_3D);
+    //glEnable(GL_TEXTURE_CUBE_MAP);
+    glDepthFunc(GL_LESS);//,
+
+    FrameBuffer* FBO;
+    FBO=new FrameBuffer(window->get_size());
+    FBO->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
+    FBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
+	FrameBuffer* PSFBO;
+	PSFBO=new FrameBuffer(glm::ivec2(500,500));
+	for(int n=0;n<6;n++){
+		PSFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
+	}
+	FrameBuffer* SFBO;
+	SFBO=new FrameBuffer(glm::ivec2(4000,4000));
+	for(int i=0;i<10;i++){
+		SFBO->push_depth_texture(Texture2D::gen_texture2D(0,SFBO->size
+				,GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear));
+		//SFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
+	}
+	Texture* tmp_tex=0;
+    double time=0;
+    //glm::mat4 mat44=glm::inverse(glm::mat4(1));
+    while(!glfwWindowShouldClose(window->get_window())){
+        printf("ftime=%lf\n",(glfwGetTime()-time));
+        time=glfwGetTime();
+
+        mouse->tic(); //clear mouse delta pos before update
+        glfwPollEvents();//get all input
+
+        input(camera);
+
+        camera->tic();
+        update_map(camera);
+        printf("prepare time=%lf\n",(glfwGetTime()-time));
+        time=glfwGetTime();
+
+        glViewport(0,0,window->get_size().x,window->get_size().y);
+    	if(cur_shader==shaderBasic){
+    		Shader::active_shader(shaderBasic);
+    		draw_all_objects(FBO,camera,window,time);
+    	}else if(cur_shader==shaderNormalMapping){
+    		Shader::active_shader(shaderShadowMapping);
+    		glm::mat4 LVP[lightControl.parallel_lights.size()];
+        	ParallelLights_shadow_map(shaderShadowMapping,SFBO,lightControl.parallel_lights,camera,LVP,time);
+    		glm::mat4 PLVP[6];
+    		PointLight_shadow_maps(shaderShadowMapping,PSFBO,lightControl.get_point_light(0),PLVP);
+
+    		Shader::active_shader(shaderNormalMapping);
+    		GLuint parallelLVP_UNI=glGetUniformLocation(shaderNormalMapping,"parallelLVP[0]");
+    		for(unsigned i=0;i<lightControl.parallel_light_size();i++){
+    			glUniformMatrix4fv(parallelLVP_UNI+i,1,GL_FALSE,&((LVP[i])[0][0]));
+    		}
+    		GLuint pointLVP_UNI=glGetUniformLocation(shaderNormalMapping,"pointLVP[0]");
+    		for(unsigned i=0;i<6;i++){
+    			glUniformMatrix4fv(pointLVP_UNI+i,1,GL_FALSE,&((PLVP[i])[0][0]));
+    		}
+    		glm::mat4 biasMat=Tim::Math::BiasMat();
+    		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping,"biasMat"),1,GL_FALSE,&(biasMat[0][0]));
+    		texmap.get_tex(std::string("NormalTexture"))->sent_uniform(shaderNormalMapping,1,"NormalTexture");
+    		Texture::usetextureVec(shaderNormalMapping,SFBO->depth_textures,3,"depthMap");
+    		Texture::usetextureVec(shaderNormalMapping,PSFBO->depth_textures,
+    				3+lightControl.parallel_light_size(),"pointdepthMap");
+    		draw_all_objects(FBO,camera,window,time);
+    	}else if(cur_shader==shaderShadowMapping){
+        	Shader::active_shader(shaderShadowMapping);
+        	glm::mat4 LVP[lightControl.parallel_lights.size()];
+        	ParallelLights_shadow_map(shaderShadowMapping,SFBO,lightControl.parallel_lights,camera,LVP,time);
+        	FBO->bind_buffer();
+        	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+        	Shader::active_shader(shader2D);
+        	Texture::draw_texture(SFBO->depth_buffer,shader2D,window->aspect(),window->aspect(),1.0);
+    	}else if(cur_shader==shadercubeShadowMapping){
+
+    	}else if(cur_shader==shader2D){
+    		FBO->bind_buffer();
+        	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+    		Shader::active_shader(shader2D);
+    		Texture::draw_texture(texmap.get_tex(std::string("mypic")),shader2D,window->aspect(),window->aspect(),1.0);
+    	}else if(cur_shader==shaderTest){
+
+
+    	}
+    	FrameBuffer::unbind_buffer(window->get_size());
+		Shader::active_shader(shader2D);
+		if(to_sobel){
+			Image *img=FBO->color_textures.at(0)->Tex2D()->convert_to_image();
+			//Image *img=FBO->depth_buffer->Tex2D()->convert_to_image();
+			Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
+			if(tmp_tex)delete tmp_tex;
+			tmp_tex=Texture2D::gen_texture2D(img,GL_RGB);
+			delete img;
+			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+			Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);
+		}else{
+			Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+		}
+
+	    glEnable(GL_BLEND);
+	    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	    if(cur_shader==shaderNormalMapping){
+	    	for(unsigned i=0;i<lightControl.parallel_light_size();i++){
+	    		Texture::draw_texture(SFBO->depth_textures.at(i),shader2D,window->aspect()
+	    				,window->aspect(),1.0,glm::vec3(0.9,0.8-0.2*i,0),0.1);
+	    	}
+	    	for(unsigned i=0;i<6;i++){
+	    		Texture::draw_texture(PSFBO->depth_textures.at(i),shader2D,window->aspect(),1.0,1.0
+	    				,glm::vec3(0.9,0.7-0.2*(i+1),0),0.1);
+	    	}
+	    }
+		glDisable(GL_BLEND);
+
+	    for(unsigned i=0;i<d_objs.size();i++){
+	    	d_objs.at(i)->clear_temp_position();
+	    }
+        glfwSwapBuffers(window->get_window());
+        std::cout<<"swaptime="<<(glfwGetTime()-time)<<std::endl;
+        time=glfwGetTime();
+    }
+    delete cube;
+
+    glfwTerminate();
+    return 0;
+}

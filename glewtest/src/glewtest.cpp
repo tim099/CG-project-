@@ -47,6 +47,7 @@ Mouse *mouse;
 DrawObjectCreater *DOC;
 
 DrawObject* look_at;
+DrawObject* base;
 DrawObject* sun;
 DrawObject* tiger;
 DrawObject* stars;
@@ -385,7 +386,7 @@ void prepare_draw_obj(){
 	Model* m4=Model::load_obj("files/obj/stars.obj",10000.0);
 	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",20000.0);
 	Model* m6=Model::load_obj("files/obj/cube.obj",60000.0);
-
+	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
 	m->mat=glm::vec4(0.1,1.0,0.1,100);
 	m2->mat=glm::vec4(0.1,0.1,1.0,50);
 	m3->mat=glm::vec4(0.1,0.05,0.1,3);
@@ -398,12 +399,15 @@ void prepare_draw_obj(){
 	models.push_back(m4);
 	models.push_back(m5);
 	models.push_back(m6);
+	models.push_back(m7);
     b_objs.push_back(new BufferObject(m));
     b_objs.push_back(new BufferObject(m2));
     b_objs.push_back(new BufferObject(m3));
     b_objs.push_back(new BufferObject(m4));
     b_objs.push_back(new BufferObject(m5));
     b_objs.push_back(new BufferObject(m6));
+    b_objs.push_back(new BufferObject(m7));
+
     creat_cube_obj();
     tiger=new DrawObject(b_objs.at(0),texmap.get_tex(std::string("test")));
 
@@ -423,6 +427,10 @@ void prepare_draw_obj(){
     doge->draw_shadow=false;
     d_objs.push_back(doge);
     doge->push_position(new Position(glm::vec3(0,0,0),glm::vec3()));
+    base=new DrawObject(b_objs.at(6),texmap.get_tex(std::string("test3")));
+    d_objs.push_back(base);
+    base->push_position(new Position(glm::vec3(54.0,21.75,26.0),glm::vec3(0,0,0)));
+
 }
 void creat_shader(){
 	shaderBasic=Shader::LoadShader("files/shader/basic/Basic.vert",

@@ -44,6 +44,14 @@ vec3 PD[9] = vec3[](
   	vec3(-0.0006,0.0006,0.05),
   	vec3(-0.0006,-0.0006,0.05)
 );
+vec4 toon(vec4 col,float val){
+	vec4 tooncol;
+	tooncol.r=(1.0/val)*(floor(val*col.r+0.5));
+	tooncol.g=(1.0/val)*(floor(val*col.g+0.5));
+	tooncol.b=(1.0/val)*(floor(val*col.b+0.5));
+	tooncol.a=col.a;
+	return tooncol;
+}
 int check_vec(vec3 v){
 	if(abs(v.x)>=abs(v.z)){
 		if(abs(v.x)>=abs(v.y)){//x=max
@@ -89,15 +97,15 @@ vec3 point_light(vec3 N,vec4 pos){
 			w=LVP_pos.w;
 			LVP_pos/=w;		
 			visibility=0.0;
-			for(int j=0;j<9;j++){
-   	 			z_val=(texture2D(pointdepthMap[n],LVP_pos.xy+2.0f*PD[j].xy).x);//shadowMapDepth/LVP_pos.w
-				del=z_val-LVP_pos.z;	
-				bias=0.0002*tan(acos(dot(N,light_v)))/w;
-				bias=-clamp(bias,0.0,0.0002/w);
-				if((del>bias)){
-					visibility+=PD[j].z; 	
-				}
+
+   	 		z_val=(texture2D(pointdepthMap[n],LVP_pos.xy).x);//shadowMapDepth/LVP_pos.w
+			del=z_val-LVP_pos.z;	
+			bias=0.0002*tan(acos(dot(N,light_v)))/w;
+			bias=-clamp(bias,0.0,0.0002/w);
+			if((del>bias)){
+				visibility=1.0; 	
 			}
+
 			total_light+=visibility*light_val*pointlight_color[i];	     		
 		}else{
 			total_light+=light_val*pointlight_color[i];	
@@ -165,9 +173,14 @@ void main(){
 	
     vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
     	+point_light(normalize(TBN*tex_normal),position);
+    //vec3 total_light=parallel_light(Normal,position)
+    	//+point_light(Normal,position); 	
+    	
     vec4 o_pos=gl_FragCoord;//vec4(position,1);//inverse(VP)*MVP_pos;
     
     color = vec4((total_light+mat.z)*tex_color,1.0);
+    //color = toon(vec4((total_light+mat.z)*tex_color,1.0),6.0);
+    
     
     //vec3 del=position.xyz-pointlight_pos[0];
     //vec4 dep=texture(cubemap,normalize(del)); 
