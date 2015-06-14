@@ -1,0 +1,9 @@
+#include "class/uniform/Uniform.h"
+
+Uniform::Uniform() {
+
+}
+Uniform::~Uniform() {
+
+}
+

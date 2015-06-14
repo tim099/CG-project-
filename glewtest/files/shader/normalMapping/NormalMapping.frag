@@ -46,7 +46,7 @@ vec3 PD[9] = vec3[](
 );
 vec3 toon(vec3 col,float val){	
 	float toncolval=(1.0/val)*floor(val*length(col.xyz)+0.5);
-	return toncolval*col;
+	return toncolval*normalize(col);
 }
 int check_vec(vec3 v){
 	if(abs(v.x)>=abs(v.z)){
@@ -168,13 +168,12 @@ void main(){
 	vec3 tex_normal=(2*(texture(NormalTexture,UV).rgb))-1;
 	
     vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
-    	+point_light(normalize(TBN*tex_normal),position);
+    +point_light(normalize(TBN*tex_normal),position);
     //vec3 total_light=parallel_light(Normal,position)
     	//+point_light(Normal,position); 	
     	
-    vec4 o_pos=gl_FragCoord;//vec4(position,1);//inverse(VP)*MVP_pos;
     
     color = vec4((total_light+mat.z)*tex_color,1.0);
-    //color = vec4(toon((total_light+mat.z),5.0)*tex_color,1.0);//
+    //color = vec4(toon((total_light+mat.z),5.0),1.0);//*tex_color
 
 }

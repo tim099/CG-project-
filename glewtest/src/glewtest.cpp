@@ -32,6 +32,8 @@
 #include "class/light/Light.h"
 #include "class/light/PointLight.h"
 #include "class/light/LightControl.h"
+#include "class/uniform/Uniform.h"
+
 
 const double CUBE_SIZE=1.0;
 
@@ -534,14 +536,10 @@ int main(){
     		PointLight_shadow_maps(shaderShadowMapping,PSFBO,lightControl.get_point_light(0),PLVP);
 
     		Shader::active_shader(shaderNormalMapping);
-    		GLuint parallelLVP_UNI=glGetUniformLocation(shaderNormalMapping,"parallelLVP[0]");
-    		for(unsigned i=0;i<lightControl.parallel_light_size();i++){
-    			glUniformMatrix4fv(parallelLVP_UNI+i,1,GL_FALSE,&((LVP[i])[0][0]));
-    		}
-    		GLuint pointLVP_UNI=glGetUniformLocation(shaderNormalMapping,"pointLVP[0]");
-    		for(unsigned i=0;i<6;i++){
-    			glUniformMatrix4fv(pointLVP_UNI+i,1,GL_FALSE,&((PLVP[i])[0][0]));
-    		}
+    		Uniform::sentMat4Arr(shaderNormalMapping,LVP,
+    				lightControl.parallel_light_size(),std::string("parallelLVP[0]"));
+    		Uniform::sentMat4Arr(shaderNormalMapping,PLVP,6,std::string("pointLVP[0]"));
+
     		glm::mat4 biasMat=Tim::Math::BiasMat();
     		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping,"biasMat"),1,GL_FALSE,&(biasMat[0][0]));
     		texmap.get_tex(std::string("NormalTexture"))->sent_uniform(shaderNormalMapping,1,"NormalTexture");
