@@ -427,7 +427,7 @@ void prepare_draw_obj(){
     doge->draw_shadow=false;
     d_objs.push_back(doge);
     doge->push_position(new Position(glm::vec3(0,0,0),glm::vec3()));
-    base=new DrawObject(b_objs.at(6),texmap.get_tex(std::string("test2")));
+    base=new DrawObject(b_objs.at(6),texmap.get_tex(std::string("test3")));
     d_objs.push_back(base);
     base->push_position(new Position(glm::vec3(54.0,21.75,26.0),glm::vec3(0,0,0)));
 

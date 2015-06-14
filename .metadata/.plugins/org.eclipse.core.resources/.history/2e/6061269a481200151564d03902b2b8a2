@@ -176,15 +176,15 @@ void main(){
 	vec3 tex_color=(texture(myTextureSampler,UV).rgb);	
 	vec3 tex_normal=(2*(texture(NormalTexture,UV).rgb))-1;
 	
-    vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
-    	+point_light(normalize(TBN*tex_normal),position);
-    //vec3 total_light=parallel_light(Normal,position)
-    	//+point_light(Normal,position); 	
+    //vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
+    	//+point_light(normalize(TBN*tex_normal),position);
+    vec3 total_light=parallel_light(Normal,position)
+    	+point_light(Normal,position); 	
     	
     vec4 o_pos=gl_FragCoord;//vec4(position,1);//inverse(VP)*MVP_pos;
     
-    color = vec4((total_light+mat.z)*tex_color,1.0);
-    //color = toon(vec4((total_light+mat.z),1.0),5.0);//*tex_color
+    //color = vec4((total_light+mat.z)*tex_color,1.0);
+    color = toon(vec4((total_light+mat.z),1.0),5.0);//*tex_color
     
     
     //vec3 del=position.xyz-pointlight_pos[0];
