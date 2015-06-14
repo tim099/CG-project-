@@ -44,9 +44,18 @@ vec3 PD[9] = vec3[](
   	vec3(-0.0006,0.0006,0.05),
   	vec3(-0.0006,-0.0006,0.05)
 );
-vec3 toon(vec3 col,float val){	
+vec3 toon(vec3 col,float val){
+	
 	float toncolval=(1.0/val)*floor(val*length(col.xyz)+0.5);
 	return toncolval*col;
+	/*
+	vec4 tooncol;
+	tooncol.r=(1.0/val)*(floor(val*col.r+0.5));
+	tooncol.g=(1.0/val)*(floor(val*col.g+0.5));
+	tooncol.b=(1.0/val)*(floor(val*col.b+0.5));
+	tooncol.a=col.a;	
+	return tooncol;
+	*/
 }
 int check_vec(vec3 v){
 	if(abs(v.x)>=abs(v.z)){
@@ -167,14 +176,22 @@ void main(){
 	vec3 tex_color=(texture(myTextureSampler,UV).rgb);	
 	vec3 tex_normal=(2*(texture(NormalTexture,UV).rgb))-1;
 	
-    vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
-    	+point_light(normalize(TBN*tex_normal),position);
-    //vec3 total_light=parallel_light(Normal,position)
-    	//+point_light(Normal,position); 	
+    //vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
+    	//+point_light(normalize(TBN*tex_normal),position);
+    vec3 total_light=parallel_light(Normal,position)
+    	+point_light(Normal,position); 	
     	
     vec4 o_pos=gl_FragCoord;//vec4(position,1);//inverse(VP)*MVP_pos;
     
-    color = vec4((total_light+mat.z)*tex_color,1.0);
-    //color = vec4(toon((total_light+mat.z),5.0)*tex_color,1.0);//
+    //color = vec4((total_light+mat.z)*tex_color,1.0);
+    color = vec4(toon((total_light+mat.z),5.0)*tex_color,1.0);//
+    
+    
+    //vec3 del=position.xyz-pointlight_pos[0];
+    //vec4 dep=texture(cubemap,normalize(del)); 
+    //color = dep;//;+vec4(0.1*del.x,0.1*del.y,0.1*del.z,1.0)
+
+    //color=1.0f*dep+vec4(0.1,0.1,0.1,1.0);
+    //color = vec4((MVP_pos.z/MVP_pos.w),(MVP_pos.z/MVP_pos.w),(MVP_pos.z/MVP_pos.w),1.0);
 
 }
