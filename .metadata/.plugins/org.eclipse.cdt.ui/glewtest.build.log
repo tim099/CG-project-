@@ -1,4 +1,4 @@
-14:29:38 **** Incremental Build of configuration Debug for project glewtest ****
+14:40:13 **** Incremental Build of configuration Debug for project glewtest ****
 Info: Internal Builder is used for build
 g++ "-IC:\\Users\\USER\\Desktop\\c++\\glewtest\\glewtest\\src\\source" -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\glewtest.o" "..\\src\\glewtest.cpp" 
 In file included from c:\mingw\include\glm\gtc\matrix_transform.hpp:292:0,
@@ -28,7 +28,11 @@ c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4
 c:\mingw\include\glm\gtc\matrix_transform.inl:339:185: note: #pragma message: GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
  #  pragma message("GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
                                                                                                                                                                                          ^
+..\src\glewtest.cpp: In function 'int main()':
+..\src\glewtest.cpp:552:17: warning: variable 'invmat' set but not used [-Wunused-but-set-variable]
+       glm::mat4 invmat=glm::inverse(camera->view_matrix(FBO->aspect()));
+                 ^
 g++ -o glewtest.exe "src\\source\\class\\window\\Window.o" "src\\source\\class\\uniform\\Uniform.o" "src\\source\\class\\tim\\string\\String.o" "src\\source\\class\\tim\\math\\Position.o" "src\\source\\class\\tim\\math\\Math.o" "src\\source\\class\\texture\\texture2D\\Texture2D.o" "src\\source\\class\\texture\\TextureMap.o" "src\\source\\class\\texture\\Texture.o" "src\\source\\class\\texture\\Image.o" "src\\source\\class\\shader\\Shader.o" "src\\source\\class\\model\\obj\\Obj.o" "src\\source\\class\\model\\obj\\Face.o" "src\\source\\class\\model\\cube\\CubeModel.o" "src\\source\\class\\model\\Vertex.o" "src\\source\\class\\model\\Model.o" "src\\source\\class\\light\\PointLight.o" "src\\source\\class\\light\\ParallelLight.o" "src\\source\\class\\light\\LightControl.o" "src\\source\\class\\light\\Light.o" "src\\source\\class\\input\\mouse\\Mouse.o" "src\\source\\class\\input\\keyboard\\KeyBoard.o" "src\\source\\class\\draw\\DrawObjectCreater.o" "src\\source\\class\\draw\\DrawObject.o" "src\\source\\class\\camera\\Camera.o" "src\\source\\class\\buffer\\frameBuffer\\FrameBuffer.o" "src\\source\\class\\buffer\\BufferObject.o" "src\\source\\class\\buffer\\Buffer.o" "src\\glewtest.o" -lglfw3 -lopengl32 -lglew32 -lgdi32 -lglu32 
 
-14:29:41 Build Finished (took 2s.848ms)
+14:40:16 Build Finished (took 2s.565ms)
 

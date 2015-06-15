@@ -342,11 +342,11 @@ void update_map(Camera *camera){
     set_obj_pos(camera);
 }
 
-void draw_all_objects(FrameBuffer *FBO,Camera *camera,Window *window,double &time){
+void draw_all_objects(FrameBuffer *FBO,Camera *camera,double &time){
 	FBO->bind_buffer();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
     //sent uniform
-    camera->sent_uniform(cur_shader,window->aspect());
+    camera->sent_uniform(cur_shader,FBO->aspect());
     lightControl.sent_uniform(cur_shader,camera->pos);
     //start draw
     for(unsigned i=0;i<d_objs.size();i++){
@@ -509,7 +509,7 @@ int main(){
 	}
 	Texture* tmp_tex=0;
     double time=0;
-    //glm::mat4 mat44=glm::inverse(glm::mat4(1));
+
     while(!glfwWindowShouldClose(window->get_window())){
         printf("ftime=%lf\n",(glfwGetTime()-time));
         time=glfwGetTime();
@@ -527,7 +527,7 @@ int main(){
         glViewport(0,0,window->get_size().x,window->get_size().y);
     	if(cur_shader==shaderBasic){
     		Shader::active_shader(shaderBasic);
-    		draw_all_objects(FBO,camera,window,time);
+    		draw_all_objects(FBO,camera,time);
     	}else if(cur_shader==shaderNormalMapping){
     		Shader::active_shader(shaderShadowMapping);
     		glm::mat4 LVP[lightControl.parallel_lights.size()];
@@ -546,10 +546,11 @@ int main(){
     		Texture::usetextureVec(shaderNormalMapping,SFBO->depth_textures,3,"depthMap");
     		Texture::usetextureVec(shaderNormalMapping,PSFBO->depth_textures,
     				3+lightControl.parallel_light_size(),"pointdepthMap");
-    		draw_all_objects(FBO,camera,window,time);
-    		glm::vec3 mpos;
+    		draw_all_objects(FBO,camera,time);
+    		glm::vec3 mpos(mouse->pos_screen_space(window->get_size()),0);
     		FBO->ReadPixels(mouse->pos,glm::ivec2(1,1),GL_DEPTH_COMPONENT,GL_FLOAT,&(mpos.z));
-    		std::cout<<"mousepos="<<mouse->pos.x<<","<<mouse->pos.y<<"depth="<<mpos.z<<std::endl;
+    		glm::mat4 invmat=glm::inverse(camera->view_matrix(FBO->aspect()));
+    		std::cout<<"mousepos="<<mpos.x<<","<<mpos.y<<"depth="<<mpos.z<<std::endl;
     	}else if(cur_shader==shaderShadowMapping){
         	Shader::active_shader(shaderShadowMapping);
         	glm::mat4 LVP[lightControl.parallel_lights.size()];
