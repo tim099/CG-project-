@@ -11,12 +11,12 @@ public:
 	static void unbind_buffer(glm::ivec2 size);
 	void bind_buffer();
 	void bind_depth_texture(int i);
+	void ReadPixels(glm::ivec2 pos,glm::ivec2 size,GLenum format,GLenum type,GLvoid * data);
 	float aspect()const;
 
 	GLuint GenFramebuffer(glm::ivec2 size);
 	Texture* gen_color_texture(const void *pixels,GLint internalformat,GLenum format
 			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
-
 	Texture* gen_depth_texture(GLint internalformat,GLenum format
 			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
 	Texture* push_depth_texture(Texture* tex);

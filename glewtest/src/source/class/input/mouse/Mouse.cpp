@@ -8,6 +8,12 @@ Mouse::Mouse() {
 Mouse::~Mouse() {
 
 }
+glm::vec2 Mouse::pos_screen_space(glm::ivec2 screen_size){
+	glm::vec2 p;
+	p.x=(((float)(2*pos.x)/(float)screen_size.x)-1.0f);
+	p.y=(((float)(-2*pos.y)/(float)screen_size.y)+1.0f);
+	return p;
+}
 glm::ivec2 Mouse::pos_delta()const{
 	if(prev_pos==glm::ivec2(-1,-1))return glm::ivec2(0,0);
 	else return pos-prev_pos;

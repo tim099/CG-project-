@@ -28,6 +28,10 @@ void FrameBuffer::bind_buffer(){
 		glDrawBuffer(GL_NONE);
 	}
 }
+void FrameBuffer::ReadPixels(glm::ivec2 pos,glm::ivec2 size,GLenum format,GLenum type,GLvoid * data){
+	bind_buffer();
+	glReadPixels(pos.x,pos.y,size.x,size.y,format,type,data);
+}
 void FrameBuffer::unbind_buffer(glm::ivec2 size){
 	glBindFramebuffer(GL_FRAMEBUFFER,0);//unbind the FBO
 	glViewport(0,0,size.x,size.y);

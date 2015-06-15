@@ -306,11 +306,11 @@ void creat_cube_obj(){
     }
 }
 void draw_map(Camera *camera){
-    glm::i16vec2 min,max,dp_pos(camera->look_at.x,camera->look_at.z);
+    glm::ivec2 min,max,dp_pos(camera->look_at.x,camera->look_at.z);
     if(dp_pos.x<0)dp_pos.x=0;if(dp_pos.y<0)dp_pos.y=0;
     if(dp_pos.x>=MX)dp_pos.x=MX-1;if(dp_pos.y>=MZ)dp_pos.y=MZ-1;
-    min=dp_pos-glm::i16vec2(range,range);
-    max=dp_pos+glm::i16vec2(range,range);
+    min=dp_pos-glm::ivec2(range,range);
+    max=dp_pos+glm::ivec2(range,range);
     if(min.x<0)min.x=0;if(min.y<0)min.y=0;
     if(max.x>=MX)max.x=MX-1;if(max.y>=MZ)max.y=MZ-1;
     for(int i=min.x/10;i<max.x/10;i++){
@@ -490,7 +490,7 @@ int main(){
     //glEnable(GL_TEXTURE_3D);
     //glEnable(GL_TEXTURE_CUBE_MAP);
     glDepthFunc(GL_LESS);//,
-
+    //glDepthRange(0.0f,1.0f);
     FrameBuffer* FBO;
     FBO=new FrameBuffer(window->get_size());
     FBO->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
@@ -547,6 +547,9 @@ int main(){
     		Texture::usetextureVec(shaderNormalMapping,PSFBO->depth_textures,
     				3+lightControl.parallel_light_size(),"pointdepthMap");
     		draw_all_objects(FBO,camera,window,time);
+    		glm::vec3 mpos;
+    		FBO->ReadPixels(mouse->pos,glm::ivec2(1,1),GL_DEPTH_COMPONENT,GL_FLOAT,&(mpos.z));
+    		std::cout<<"mousepos="<<mouse->pos.x<<","<<mouse->pos.y<<"depth="<<mpos.z<<std::endl;
     	}else if(cur_shader==shaderShadowMapping){
         	Shader::active_shader(shaderShadowMapping);
         	glm::mat4 LVP[lightControl.parallel_lights.size()];

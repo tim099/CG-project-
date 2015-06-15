@@ -12,6 +12,7 @@ public:
 	void scroll_callback(GLFWwindow* window,double xoffset,double yoffset);
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	void tic();
+	glm::vec2 pos_screen_space(glm::ivec2 screen_size);
 	glm::ivec2 pos_delta()const;
 
 	glm::ivec2 pos;
