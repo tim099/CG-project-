@@ -79,6 +79,7 @@ private:
 	DrawObject* tiger;
 	DrawObject* stars;
 	DrawObject* galaxy;
+	DrawObject* ico;
 	DrawObject* dmaps[50][50];
 
 	CubeModel *cube;

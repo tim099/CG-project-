@@ -548,6 +548,7 @@ void Test::timer_tic(double &time){
     time=glfwGetTime();
 }
 void Test::Mainloop(){
+
     double time=0;
     while(!glfwWindowShouldClose(window->get_window())){
     	timer_tic(time);

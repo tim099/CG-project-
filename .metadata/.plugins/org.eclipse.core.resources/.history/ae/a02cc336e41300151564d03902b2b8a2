@@ -58,9 +58,7 @@ public:
 	void prepare_draw_obj();
 	void creat_shader();
 	void creat_light();
-	void creat_frame_buffer();
 	void Mainloop();
-	void timer_tic(double &time);
 private:
 	std::vector<Model*>models;
 	std::vector<BufferObject*>b_objs;
@@ -88,14 +86,8 @@ private:
 	GLuint cur_shader;
 	GLuint shaderBasic,shaderNormalMapping,shader2D,shaderShadowMapping;
 	GLuint shadercubeShadowMapping,shaderTest;
-	GLuint VertexArrayID;
 	Window *window;
 	Camera *camera;
-
-	FrameBuffer* FBO;
-	FrameBuffer* PSFBO;
-	FrameBuffer* SFBO;
-
 	double tiger_ry;
 	double shadow_dis;
 	int range;
