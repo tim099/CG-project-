@@ -1,0 +1,13 @@
+#include "class/test/Test.h"
+
+//const double CUBE_SIZE=1.0;
+
+
+
+
+
+int main(){
+	Test *test=new Test();
+	test->Mainloop();
+    return 0;
+}

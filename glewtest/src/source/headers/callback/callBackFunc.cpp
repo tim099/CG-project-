@@ -2,8 +2,8 @@
 #define CALLBACKFUNC_CPP_
 #include "headers/callback/callBackFunc.h"
 #include <iostream>
-extern KeyBoard *keyboard;
-extern Mouse *mouse;
+static KeyBoard *keyboard;
+static Mouse *mouse;
 
 void keyboard_callback(GLFWwindow *window,int key,int scancode,int action,int mods){
 	keyboard->inputkey(window,key,scancode,action,mods);

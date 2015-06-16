@@ -1,0 +1,14 @@
+#include "class/test/Test.h"
+
+//const double CUBE_SIZE=1.0;
+
+
+KeyBoard *keyboard;
+Mouse *mouse;
+
+
+int main(){
+	Test *test=new Test();
+	test->Mainloop();
+    return 0;
+}

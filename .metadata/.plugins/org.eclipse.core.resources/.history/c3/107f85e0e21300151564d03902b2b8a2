@@ -1,0 +1,194 @@
+#include "class/test/Test.h"
+
+Test::Test() {
+	tiger_ry=0;
+	shadow_dis=1.0;
+	range=70;
+	stop_the_sun=false;
+	to_sobel=false;
+	shader_at=0;
+
+	lightControl=new LightControl(5000);
+	texmap=new TextureMap();
+	keyboard=new KeyBoard();
+	mouse=new Mouse();
+	DOC=new DrawObjectCreater();
+}
+Test::~Test() {
+	delete lightControl;
+	delete texmap;
+	delete keyboard;
+	delete mouse;
+	delete DOC;
+}
+void Test::creat_tex(TextureMap* texmap){
+	texmap->push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
+	texmap->push_tex(std::string("NormalTexture"),Texture2D::loadBMP("files/texture/normal.bmp"));
+	texmap->push_tex(std::string("test"),Texture2D::loadBMP_to_sobel("files/texture/test.bmp"));
+	texmap->push_tex(std::string("test2"),Texture2D::loadBMP("files/texture/test2.bmp"));
+	texmap->push_tex(std::string("test3"),Texture2D::loadBMP("files/texture/test3.bmp"));
+	texmap->push_tex(std::string("galaxy"),Texture2D::loadBMP("files/texture/galaxy.bmp"));
+	texmap->push_tex(std::string("doge"),Texture2D::loadBMP("files/texture/doge.bmp"));
+}
+void Test::input(Camera *camera){
+	if(mouse->mid){
+		//std::cout<<"move"<<(int)(mouse->pos.x)<<","<<(int)mouse->prev_pos.x<<std::endl;
+		camera->rotate(glm::vec3(0,1,0),-0.15*mouse->pos_delta().x);
+		camera->rotate(camera->yaw_vec(),0.15*mouse->pos_delta().y);
+	}
+	if(mouse->right){
+		camera->vel+=(float)(0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*camera->look_vec_xz();
+		camera->vel+=(float)(-0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().x)*
+				glm::cross(camera->look_vec_xz(),glm::vec3(0,1,0));
+	}
+	if(mouse->left){
+		camera->vel+=(float)(-0.0005f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*glm::vec3(0,1,0);
+		camera->vel+=(float)(-0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().x)*
+				glm::cross(camera->look_vec_xz(),glm::vec3(0,1,0));
+	}
+	if(mouse->scroll){
+		camera->dis_alter_v+=sqrt(camera->look_dis()+0.1)*(0.05*mouse->scroll);
+	}
+	if(keyboard->pressed('M')){
+		sunlight->pos=glm::vec3(glm::rotate(0.5f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+	}
+	if(keyboard->pressed('J')){
+		sunlight->pos=glm::vec3(glm::rotate(-0.5f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+	}
+	if(keyboard->get('N')){
+		stop_the_sun^=1;
+	}
+	if(keyboard->get('U')){
+		to_sobel^=1;
+	}
+	if(keyboard->pressed('B')){
+		int x=(int)fabs(camera->look_at.x),y=(int)fabs(camera->look_at.y),z=(int)fabs(camera->look_at.z);
+		if(!map[x][y][z]){
+			map[x][y][z]=true;
+			creat_map_object(x/10,z/10,10);//update
+			if(x%10==9)creat_map_object((x/10)+1,z/10,10);//update
+			if(x%10==0)creat_map_object((x/10)-1,z/10,10);//update
+			if(z%10==9)creat_map_object(x/10,(z/10)+1,10);//update
+			if(z%10==0)creat_map_object(x/10,(z/10)-1,10);//update
+		}
+	}
+	if(keyboard->pressed('V')){
+		int x=(int)fabs(camera->look_at.x),y=(int)fabs(camera->look_at.y),z=(int)fabs(camera->look_at.z);
+		if(map[x][y][z]){
+			map[x][y][z]=false;
+			creat_map_object(x/10,z/10,10);//update
+			if(x%10==9)creat_map_object((x/10)+1,z/10,10);//update
+			if(x%10==0)creat_map_object((x/10)-1,z/10,10);//update
+			if(z%10==9)creat_map_object(x/10,(z/10)+1,10);//update
+			if(z%10==0)creat_map_object(x/10,(z/10)-1,10);//update
+		}
+	}
+	if(keyboard->get('O')){
+		cur_shader=shaderBasic;
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	}
+	if(keyboard->get('P')){
+		cur_shader=shaderNormalMapping;
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	if(keyboard->get('L')){
+		cur_shader=shaderShadowMapping;
+	}
+	if(keyboard->get(GLFW_KEY_LEFT)){
+		if(shader_at>0)shader_at--;
+		else shader_at=shaders.size()-1;
+		cur_shader=shaders.at(shader_at);
+	}
+	if(keyboard->get(GLFW_KEY_RIGHT)){
+		if(shader_at<(int)shaders.size()-1)shader_at++;
+		else shader_at=0;
+		cur_shader=shaders.at(shader_at);
+	}
+	if(keyboard->pressed(GLFW_KEY_UP)){
+		if(shadow_dis>0.01)shadow_dis*=0.98;
+	}
+	if(keyboard->pressed(GLFW_KEY_DOWN)){
+		if(shadow_dis<30.0)shadow_dis*=1.01;
+	}
+	if(keyboard->get('C')){
+		look_at->push_position(new Position(camera->look_at+glm::vec3(0,0.1,0),
+				glm::vec3(0,camera->look_ry(),0)));
+		lightControl->push_point_light(new PointLight(camera->look_at,camlight->color));
+	}
+	if(keyboard->get('1')){
+		camlight->color+=glm::vec3(0.3,0.0,0.0);
+	}
+	if(keyboard->get('2')){
+		camlight->color+=glm::vec3(-0.3,0.0,0.0);
+	}
+	if(keyboard->get('3')){
+		camlight->color+=glm::vec3(0.0,0.3,0.0);
+	}
+	if(keyboard->get('4')){
+		camlight->color+=glm::vec3(0.0,-0.3,0.0);
+	}
+	if(keyboard->get('5')){
+		camlight->color+=glm::vec3(0.0,0.0,0.3);
+	}
+	if(keyboard->get('6')){
+		camlight->color+=glm::vec3(0.0,0.0,-0.3);
+	}
+	if(keyboard->pressed('7')){
+		camlight->color+=glm::vec3(0.05,0.05,0.05);
+	}
+	if(keyboard->get('8')){
+		camlight->color+=glm::vec3(-0.05,-0.05,-0.05);
+	}
+	if(keyboard->get('9')){
+		camlight->color=glm::vec3(0.05,0.05,0.05);
+	}
+	if(keyboard->get('0')){
+		camlight->color=glm::vec3(((rand()%10000)/4000.0),((rand()%10000)/4000.0),((rand()%10000)/4000.0));
+	}
+	if(keyboard->get('I')){
+		range+=10;
+	}
+	if(keyboard->get('K')){
+		if(range>10)range-=10;
+		else range=0;
+	}
+	if(keyboard->pressed('Q')){
+		camera->rotate(glm::vec3(0,1,0),3);
+	}
+	if(keyboard->pressed('E')){
+		camera->rotate(glm::vec3(0,1,0),-3);
+	}
+	if(keyboard->pressed('T')){
+		camera->rotate(camera->yaw_vec(),1);
+	}
+	if(keyboard->pressed('G')){
+		camera->rotate(camera->yaw_vec(),-1);
+	}
+	if(keyboard->pressed('Z')){
+		camera->move(glm::vec3(0,0.03,0));
+	}
+	if(keyboard->pressed('X')){
+		camera->move(glm::vec3(0,-0.03,0));
+	}
+	if(keyboard->pressed('W')){
+		camera->move_foward(0.04);
+	}
+	if(keyboard->pressed('S')){
+		camera->move_foward(-0.04);
+	}
+	if(keyboard->pressed('A')){
+		camera->move_side(0.04f);
+	}
+	if(keyboard->pressed('D')){
+		camera->move_side(-0.04f);
+	}
+	if(keyboard->pressed('R')){
+		camera->dis_alter(-0.05);
+	}
+	if(keyboard->pressed('F')){
+		camera->dis_alter(0.05);
+	}
+}
+void Test::Mainloop(){
+
+}
