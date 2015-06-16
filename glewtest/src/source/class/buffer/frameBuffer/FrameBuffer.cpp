@@ -1,4 +1,4 @@
-#include <class/buffer/frameBuffer/FrameBuffer.h>
+#include "class/buffer/frameBuffer/FrameBuffer.h"
 #include "class/texture/texture2D/Texture2D.h"
 FrameBuffer::FrameBuffer(glm::ivec2 _size) {
 	size=_size;
@@ -31,6 +31,17 @@ void FrameBuffer::bind_buffer(){
 void FrameBuffer::ReadPixels(glm::ivec2 pos,glm::ivec2 size,GLenum format,GLenum type,GLvoid * data){
 	bind_buffer();
 	glReadPixels(pos.x,pos.y,size.x,size.y,format,type,data);
+}
+glm::vec4 FrameBuffer::get_world_space_pos(glm::vec2 screen_space_pos,glm::mat4 inverseMat){
+	glm::vec4 w_pos=glm::vec4(screen_space_pos.x,screen_space_pos.y,0,1.0);
+	glm::ivec2 b_pos=glm::ivec2((0.5*screen_space_pos.x+0.5)*(size.x-1),(0.5*screen_space_pos.y+0.5)*(size.y-1));
+	b_pos.x=glm::clamp(b_pos.x,0,(size.x-1));
+	b_pos.y=glm::clamp(b_pos.y,0,(size.y-1));
+	ReadPixels(b_pos,glm::ivec2(1,1),GL_DEPTH_COMPONENT,GL_FLOAT,&(w_pos.z));
+	w_pos.z=2*w_pos.z-1.0;
+	w_pos=inverseMat*w_pos;
+	w_pos/=w_pos.w;
+	return w_pos;
 }
 void FrameBuffer::unbind_buffer(glm::ivec2 size){
 	glBindFramebuffer(GL_FRAMEBUFFER,0);//unbind the FBO

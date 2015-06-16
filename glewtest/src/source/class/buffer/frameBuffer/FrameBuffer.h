@@ -12,6 +12,7 @@ public:
 	void bind_buffer();
 	void bind_depth_texture(int i);
 	void ReadPixels(glm::ivec2 pos,glm::ivec2 size,GLenum format,GLenum type,GLvoid * data);
+	glm::vec4 get_world_space_pos(glm::vec2 screen_space_pos,glm::mat4 inverseMat);
 	float aspect()const;
 
 	GLuint GenFramebuffer(glm::ivec2 size);

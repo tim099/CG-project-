@@ -1,4 +1,5 @@
-#include <class/input/mouse/Mouse.h>
+#include "class/input/mouse/Mouse.h"
+#include "class/buffer/frameBuffer/FrameBuffer.h"
 #include <iostream>
 Mouse::Mouse() {
 	prev_pos=glm::ivec2(-1,-1);
@@ -8,11 +9,15 @@ Mouse::Mouse() {
 Mouse::~Mouse() {
 
 }
-glm::vec2 Mouse::pos_screen_space(glm::ivec2 screen_size){
+glm::vec2 Mouse::get_screen_space_pos(glm::ivec2 screen_size){
 	glm::vec2 p;
-	p.x=(((float)(2*pos.x)/(float)screen_size.x)-1.0f);
-	p.y=(((float)(-2*pos.y)/(float)screen_size.y)+1.0f);
+	p.x=(((double)2*(pos.x)/(double)screen_size.x)-1.0f);
+	p.y=(((double)2*(screen_size.y-pos.y)/(double)screen_size.y)-1.0f);
 	return p;
+}
+glm::vec3 Mouse::get_world_space_pos(FrameBuffer* FBO,glm::ivec2 screen_size,glm::mat4 inverseMat){
+	glm::vec4 mwpos=FBO->get_world_space_pos(get_screen_space_pos(screen_size),inverseMat);
+	return glm::vec3(mwpos.x,mwpos.y,mwpos.z);
 }
 glm::ivec2 Mouse::pos_delta()const{
 	if(prev_pos==glm::ivec2(-1,-1))return glm::ivec2(0,0);
@@ -21,7 +26,7 @@ glm::ivec2 Mouse::pos_delta()const{
 void Mouse::cursor_pos_callback(GLFWwindow* window,double x,double y){
 	prev_pos=pos;
 	pos.x=x;
-	pos.y=y;
+	pos.y=y;//+27
 	//std::cout<<"mouse pos"<<pos.x<<","<<pos.y<<std::endl;
 }
 void Mouse::scroll_callback(GLFWwindow* window,double xoffset,double yoffset){
