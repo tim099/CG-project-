@@ -469,12 +469,10 @@ void Test::timer_tic(double &time){
     printf("prepare time=%lf\n",(glfwGetTime()-time));
     time=glfwGetTime();
 
-    glViewport(0,0,window->get_size().x,window->get_size().y);
 	if(cur_shader==shaderBasic){
 		Shader::active_shader(shaderBasic);
 		Camera cam2=*camera;
-
-		cam2.move(-1.8f*cam2.yaw_vec());
+		cam2.move(-1.0f*cam2.yaw_vec());
 		draw_all_objects(FBO1,camera,time);
 		draw_all_objects(FBO2,&cam2,time);
 		FBO->bind_buffer();
@@ -517,7 +515,6 @@ void Test::timer_tic(double &time){
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
 		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shaderTest){
-
 
 	}
 	FrameBuffer::unbind_buffer(window->get_size());
