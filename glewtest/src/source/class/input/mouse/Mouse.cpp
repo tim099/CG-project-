@@ -17,6 +17,7 @@ glm::vec2 Mouse::get_screen_space_pos(glm::ivec2 screen_size){
 }
 glm::vec3 Mouse::get_world_space_pos(FrameBuffer* FBO,glm::ivec2 screen_size,glm::mat4 inverseMat){
 	glm::vec4 mwpos=FBO->get_world_space_pos(get_screen_space_pos(screen_size),inverseMat);
+	world_pos=glm::vec3(mwpos.x,mwpos.y,mwpos.z);
 	return glm::vec3(mwpos.x,mwpos.y,mwpos.z);
 }
 glm::ivec2 Mouse::pos_delta()const{

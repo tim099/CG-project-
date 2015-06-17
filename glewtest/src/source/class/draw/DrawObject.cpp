@@ -57,6 +57,6 @@ void DrawObject::draw_object(GLuint programID){
 	draw_vec(programID,m_pos);
 	draw_vec(programID,temp_pos);
 
-	clear_temp_position();
+	//clear_temp_position();
 	Buffer::disable_all_buffer();
 }

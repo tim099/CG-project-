@@ -41,7 +41,7 @@ float Camera::look_dis()const{
 	return glm::length(pos-look_at);
 }
 glm::vec3 Camera::yaw_vec()const{
-	return glm::cross(look_vec(),glm::vec3(0,1,0));
+	return glm::normalize(glm::cross(look_vec(),glm::vec3(0,1,0)));
 }
 void Camera::dis_alter(float dis){
 	glm::vec3 vec(pos-look_at);

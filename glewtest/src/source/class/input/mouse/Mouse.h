@@ -19,6 +19,7 @@ public:
 
 	glm::ivec2 pos;
 	glm::ivec2 prev_pos;
+	glm::vec3 world_pos;
 	double scroll;
 	bool left,right,mid;
 protected:

@@ -54,6 +54,9 @@ void Test::input(Camera *camera){
 		camera->rotate(glm::vec3(0,1,0),-0.15*mouse->pos_delta().x);
 		camera->rotate(camera->yaw_vec(),0.15*mouse->pos_delta().y);
 	}
+	if(keyboard->pressed('Q')){
+		ico->push_position(new Position(mouse->world_pos,glm::vec3()));
+	}
 	if(mouse->right){
 		camera->vel+=(float)(0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*camera->look_vec_xz();
 		camera->vel+=(float)(-0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().x)*
@@ -170,12 +173,7 @@ void Test::input(Camera *camera){
 		if(range>10)range-=10;
 		else range=0;
 	}
-	if(keyboard->pressed('Q')){
-		camera->rotate(glm::vec3(0,1,0),3);
-	}
-	if(keyboard->pressed('E')){
-		camera->rotate(glm::vec3(0,1,0),-3);
-	}
+
 	if(keyboard->pressed('T')){
 		camera->rotate(camera->yaw_vec(),1);
 	}
@@ -356,7 +354,7 @@ void Test::prepare_draw_obj(){
 	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
 	m->mat=glm::vec4(0.1,1.0,0.1,100);
 	m2->mat=glm::vec4(0.1,0.1,1.0,50);
-	m3->mat=glm::vec4(0.1,0.05,0.1,3);
+	m3->mat=glm::vec4(0.1,0.05,0.05,3);
 	m4->mat=glm::vec4(0.4,0.05,1.8,3);
 	m5->mat=glm::vec4(0.0,0.0,0.1,3);
 	m6->mat=glm::vec4(0.0,0.0,0.5,3);
@@ -397,7 +395,8 @@ void Test::prepare_draw_obj(){
     base=new DrawObject(b_objs.at(6),texmap->get_tex(std::string("test2")));
     d_objs.push_back(base);
     base->push_position(new Position(glm::vec3(54.0,21.75,26.0),glm::vec3(0,0,0)));
-
+    ico=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")));
+    d_objs.push_back(ico);
 }
 void Test::creat_shader(){
 	shaderBasic=Shader::LoadShader("files/shader/basic/Basic.vert",
@@ -438,7 +437,12 @@ void Test::creat_frame_buffer(){
     FBO=new FrameBuffer(window->get_size());
     FBO->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
     FBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
-
+    FBO1=new FrameBuffer(window->get_size());
+    FBO1->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
+    FBO1->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
+    FBO2=new FrameBuffer(window->get_size());
+    FBO2->gen_color_texture(0,GL_RGBA,GL_RGBA,GL_UNSIGNED_BYTE,P_Linear);
+    FBO2->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
 	PSFBO=new FrameBuffer(glm::ivec2(500,500));
 	for(int n=0;n<6;n++){
 		PSFBO->gen_depth_texture(GL_DEPTH_COMPONENT32F,GL_DEPTH_COMPONENT,GL_FLOAT,P_Linear);
@@ -454,10 +458,10 @@ void Test::creat_frame_buffer(){
 void Test::timer_tic(double &time){
     printf("ftime=%lf\n",(glfwGetTime()-time));
     time=glfwGetTime();
-
     mouse->tic(); //clear mouse delta pos before update
+    keyboard->tic();
     glfwPollEvents();//get all input
-
+    mouse->get_world_space_pos(FBO,window->get_size(),glm::inverse(camera->view_matrix(window->aspect())));
     input(camera);
 
     camera->tic();
@@ -468,7 +472,17 @@ void Test::timer_tic(double &time){
     glViewport(0,0,window->get_size().x,window->get_size().y);
 	if(cur_shader==shaderBasic){
 		Shader::active_shader(shaderBasic);
-		draw_all_objects(FBO,camera,time);
+		Camera cam2=*camera;
+
+		cam2.move(-1.8f*cam2.yaw_vec());
+		draw_all_objects(FBO1,camera,time);
+		draw_all_objects(FBO2,&cam2,time);
+		FBO->bind_buffer();
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+		Texture::draw_texture(FBO1->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0,
+				glm::vec3(-0.3,0,0),0.3);
+		Texture::draw_texture(FBO2->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0,
+				glm::vec3(0.3,0,0),0.3);
 	}else if(cur_shader==shaderNormalMapping){
 		Shader::active_shader(shaderShadowMapping);
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
@@ -489,30 +503,24 @@ void Test::timer_tic(double &time){
 				3+lightControl->parallel_light_size(),"pointdepthMap");
 		draw_all_objects(FBO,camera,time);
 
-		glm::vec3 mwpos=mouse->get_world_space_pos(FBO,window->get_size(),
-				glm::inverse(camera->view_matrix(window->aspect())));
-		look_at->push_position(new Position(mwpos,glm::vec3()));
 	}else if(cur_shader==shaderShadowMapping){
     	Shader::active_shader(shaderShadowMapping);
     	glm::mat4 LVP[lightControl->parallel_lights.size()];
     	ParallelLights_shadow_map(shaderShadowMapping,SFBO,lightControl->parallel_lights,camera,LVP,time);
     	FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-    	Shader::active_shader(shader2D);
     	Texture::draw_texture(SFBO->depth_buffer,shader2D,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shadercubeShadowMapping){
 
 	}else if(cur_shader==shader2D){
 		FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-		Shader::active_shader(shader2D);
 		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shaderTest){
 
 
 	}
 	FrameBuffer::unbind_buffer(window->get_size());
-	Shader::active_shader(shader2D);
 	if(to_sobel){
 		Image *img=FBO->color_textures.at(0)->Tex2D()->convert_to_image();
 		//Image *img=FBO->depth_buffer->Tex2D()->convert_to_image();
@@ -543,6 +551,7 @@ void Test::timer_tic(double &time){
     for(unsigned i=0;i<d_objs.size();i++){
     	d_objs.at(i)->clear_temp_position();
     }
+    std::cout<<"d_objs size="<<d_objs.size()<<std::endl;
     glfwSwapBuffers(window->get_window());
     std::cout<<"swaptime="<<(glfwGetTime()-time)<<std::endl;
     time=glfwGetTime();

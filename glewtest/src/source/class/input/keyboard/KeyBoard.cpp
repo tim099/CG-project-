@@ -1,4 +1,4 @@
-#include <class/input/keyboard/KeyBoard.h>
+#include "class/input/keyboard/KeyBoard.h"
 #include <iostream>
 #include <cstdio>
 KeyBoard::KeyBoard() {
@@ -21,6 +21,9 @@ void KeyBoard::inputkey(GLFWwindow *window,int key, int scancode,int action,int 
 		default:
 			std::cout<<"unknow keyboard action"<<action<<std::endl;
 	}
+}
+void KeyBoard::tic(){
+
 }
 bool KeyBoard::get(int key){
 	if(keys.find(key)==keys.end())return false;

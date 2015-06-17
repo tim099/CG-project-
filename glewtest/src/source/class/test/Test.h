@@ -79,6 +79,7 @@ private:
 	DrawObject* tiger;
 	DrawObject* stars;
 	DrawObject* galaxy;
+	DrawObject* ico;
 	DrawObject* dmaps[50][50];
 
 	CubeModel *cube;
@@ -93,6 +94,7 @@ private:
 	Camera *camera;
 
 	FrameBuffer* FBO;
+	FrameBuffer *FBO1,*FBO2;
 	FrameBuffer* PSFBO;
 	FrameBuffer* SFBO;
 

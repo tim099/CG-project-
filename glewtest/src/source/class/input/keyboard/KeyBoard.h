@@ -10,6 +10,7 @@ public:
 	void inputkey(GLFWwindow *window,int key,int scancode,int action,int mods);
 	bool pressed(int key);
 	bool get(int key);
+	void tic();
 protected:
 	void key_press(int key,int scancode,int mods);
 	void key_release(int key,int scancode,int mods);

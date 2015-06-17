@@ -3,6 +3,7 @@
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/buffer/Buffer.h"
 #include "class/model/Vertex.h"
+#include "class/shader/Shader.h"
 #include <cstdio>
 #include <iostream>
 #include <cmath>
@@ -38,6 +39,7 @@ GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){
 }
 void Texture::draw_texture(Texture* tex,GLuint shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
 		,double size){
+	Shader::active_shader(shader2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
