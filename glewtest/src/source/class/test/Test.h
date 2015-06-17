@@ -1,17 +1,14 @@
 #ifndef TEST_H_
 #define TEST_H_
 
-#include <iostream>
-#include <cstdio>
-#include <cmath>
+
 #include <GL/glew.h>
 #include <GL/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <fstream>
 #include <vector>
-#include <cstdlib>
+
 
 #include "headers/callback/callBackFunc.h"
 #include "class/shader/Shader.h"
@@ -28,6 +25,7 @@
 #include "class/buffer/frameBuffer/FrameBuffer.h"
 #include "class/input/keyboard/Keyboard.h"
 #include "class/input/mouse/Mouse.h"
+#include "class/input/Input.h"
 #include "class/draw/DrawObject.h"
 #include "class/draw/DrawObjectCreater.h"
 #include "class/tim/math/Math.h"

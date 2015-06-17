@@ -2,6 +2,8 @@
 #include "class/tim/math/Math.h"
 #include <GL/glew.h>
 #include <GL/glfw3.h>
+bool Window::glewinitial=false;
+bool Window::glfwinitial=false;
 Window::Window() {
 	window=0;
 
@@ -14,14 +16,14 @@ Window::~Window() {
 
 }
 void Window::glewinit(){
-	//if(glewinitial)return;
-	//glewinitial=true;
+	if(glewinitial)return;
+	glewinitial=true;
     glewExperimental=true;
     glewInit();
 }
 void Window::glfwinit(){
-	//if(glfwinitial)return;
-	//glfwinitial=true;
+	if(glfwinitial)return;
+	glfwinitial=true;
 	glfwInit();
 }
 float Window::aspect()const{

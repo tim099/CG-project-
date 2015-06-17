@@ -1,4 +1,8 @@
 #include "class/test/Test.h"
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
 
 Test::Test() {
 	tiger_ry=0;

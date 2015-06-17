@@ -3,8 +3,8 @@
 class GLFWwindow;
 #include <glm/glm.hpp>
 class Window {
-	//static bool glewinitial;
-	//static bool glfwinitial;
+	static bool glewinitial;
+	static bool glfwinitial;
 public:
 	Window();
 	Window(glm::ivec2 size,const char* name,bool full_screen);
@@ -22,7 +22,6 @@ protected:
 	glm::ivec2 size;
 
 };
-//bool Window::glewinitial=false;
-//bool Window::glfwinitial=false;
+
 
 #endif /* WINDOW_H_ */
