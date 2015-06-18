@@ -120,8 +120,12 @@ vec3 light_scattering(vec4 pos){
 	for(int i=0;i<parallellight_num;i++){ 
 		scatter_value=0.0;
 		vec3 interpolated_sample;	
+		vec3 delvec=pos.xyz-camera_pos;
+		float len=length(delvec);
+		if(len>200)len=200;
+		delvec=normalize(delvec);
 		for(int j=0; j<50; j++){
-			interpolated_sample=camera_pos+(pos.xyz-camera_pos)/100*(50+j);
+			interpolated_sample=camera_pos+(len*delvec)/100*(50+j);
 			LVP_pos=biasMat *parallelLVP[i]*vec4(interpolated_sample,1.0);
 			LVP_pos/=LVP_pos.w;
 			
