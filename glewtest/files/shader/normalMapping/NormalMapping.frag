@@ -110,6 +110,35 @@ vec3 point_light(vec3 N,vec4 pos){
     }
 	return total_light;
 }
+vec3 light_scattering(vec4 pos){
+	vec3 total_scatter=vec3(0,0,0);
+	vec4 LVP_pos;
+    vec2 t;	
+    float z_val;
+	float del;
+	for(int i=0;i<parallellight_num;i++){ 
+	
+		float scatter_value=0.0;
+		vec3 interpolated_sample;	
+		for(int j=0; j<50; j++){
+			interpolated_sample=camera_pos+(pos.xyz-camera_pos)/100*(50+j);
+			LVP_pos=biasMat *parallelLVP[i]*vec4(interpolated_sample,1.0);
+			LVP_pos/=LVP_pos.w;
+			
+			t=LVP_pos.xy;	
+   	 		z_val=(texture2D(depthMap[i],t).x);//shadowMapDepth/LVP_pos.w
+			del=z_val-LVP_pos.z;	
+		
+			if((t.x<=1.0&&t.y<=1.0&&t.x>=0.0&&t.y>=0.0)){//in depth map
+				if((del>0.0002)){				
+				 	  scatter_value+=0.001; 	   	
+    			}
+			}		
+		}
+		total_scatter+=scatter_value*parallellight_color[i];
+	}
+	return total_scatter;
+}
 vec3 parallel_light(vec3 N,vec4 pos){
 	vec3 total_light=vec3(0,0,0);
     vec3 light_v;
@@ -152,6 +181,7 @@ vec3 parallel_light(vec3 N,vec4 pos){
     			}
 			}		
 		}
+
 		total_light+=visibility*light_val*parallellight_color[i];
     }
     return total_light;
@@ -171,8 +201,8 @@ void main(){
     +point_light(normalize(TBN*tex_normal),position);
     //vec3 total_light=parallel_light(Normal,position)
     	//+point_light(Normal,position); 	
-    	
     
+    //color = vec4((total_light+mat.z)*tex_color+light_scattering(position),1.0);
     color = vec4((total_light+mat.z)*tex_color,1.0);
     //color = vec4(toon((total_light+mat.z),5.0),1.0);//*tex_color
 

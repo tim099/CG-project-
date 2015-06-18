@@ -475,7 +475,8 @@ void Test::timer_tic(double &time){
 
 	if(cur_shader==shaderBasic){
 		Shader::active_shader(shaderBasic);
-		Camera cam2=*camera;
+		draw_all_objects(FBO,camera,time);
+		/*Camera cam2=*camera;
 		cam2.move(-1.0f*cam2.yaw_vec());
 		draw_all_objects(FBO1,camera,time);
 		draw_all_objects(FBO2,&cam2,time);
@@ -485,6 +486,7 @@ void Test::timer_tic(double &time){
 				glm::vec3(-0.3,0,0),0.3);
 		Texture::draw_texture(FBO2->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0,
 				glm::vec3(0.3,0,0),0.3);
+				*/
 	}else if(cur_shader==shaderNormalMapping){
 		Shader::active_shader(shaderShadowMapping);
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
