@@ -20,9 +20,9 @@ public:
 
 
 	static void usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name);
+	static GLuint gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos=glm::vec3(0,0,0));
 	virtual void draw_texture(Shader2D* shader2D,double winaspect=1.0,double texaspect=1.0,GLfloat alpha=1.0,
 			glm::vec3 pos=glm::vec3(0,0,0),double size=1.0);
-	static GLuint gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos=glm::vec3(0,0,0));
 	virtual void sent_uniform(GLuint programID,int num,const char *name)const=0;
 	GLuint TexID;
 	GLenum target;

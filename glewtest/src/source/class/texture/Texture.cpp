@@ -39,29 +39,5 @@ GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){
 }
 void Texture::draw_texture(Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
 		,double size){
-	shader2D->active_shader();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
-
-    GLuint tex_vertex=0;
-	if(winaspect==texaspect){
-		tex_vertex=gen_texture_vertex(1.0,1.0);
-	}else{
-		float height=1.0;
-		double aspect=winaspect/texaspect;
-		if(aspect>1.0)height=1.0/aspect;
-		tex_vertex=gen_texture_vertex(height,height*aspect);
-	}
-	Buffer::bind_vtbuffer(tex_vertex);
-	sent_uniform(shader2D->programID,0,"myTextureSampler");
-
-	glUniform3f(glGetUniformLocation(shader2D->programID,"position"),pos.x,pos.y,pos.z);
-	glUniform1f(glGetUniformLocation(shader2D->programID,"size"),size);
-	glUniform1f(glGetUniformLocation(shader2D->programID,"alpha"),alpha);
-	glDrawArrays(GL_TRIANGLES,0,2*3);
-    glDeleteBuffers(1,&tex_vertex);
-    glDisableVertexAttribArray(0);//vertexbuffer
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
+	std::cerr<<"error not implement draw texture in this class"<<std::endl;
 }

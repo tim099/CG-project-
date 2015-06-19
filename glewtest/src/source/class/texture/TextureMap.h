@@ -1,6 +1,6 @@
 #ifndef TEXTUREMAP_H_
 #define TEXTUREMAP_H_
-#include <class/texture/texture.h>
+#include "class/texture/texture.h"
 #include <string>
 #include <map>
 class TextureMap {

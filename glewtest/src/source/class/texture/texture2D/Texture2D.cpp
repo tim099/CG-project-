@@ -1,5 +1,7 @@
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/texture/Image.h"
+#include "class/shader/shader2D/Shader2D.h"
+#include "class/buffer/Buffer.h"
 #include <iostream>
 Texture2D::Texture2D(GLuint _TexID,glm::ivec2 _size,GLenum _type,GLenum _format)
 : Texture(_TexID,GL_TEXTURE_2D,_type,_format){
@@ -43,6 +45,34 @@ Texture2D* Texture2D::gen_texture2D(const void *pixels,glm::ivec2 size,GLint int
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	Texture2D *tex=new Texture2D(textureID,size,type,internalformat);
 	return tex;
+}
+void Texture2D::draw_texture(Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
+		,double size){
+	shader2D->active_shader();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+    GLuint tex_vertex=0;
+	if(winaspect==texaspect){
+		tex_vertex=gen_texture_vertex(1.0,1.0);
+	}else{
+		float height=1.0;
+		double aspect=winaspect/texaspect;
+		if(aspect>1.0)height=1.0/aspect;
+		tex_vertex=gen_texture_vertex(height,height*aspect);
+	}
+	Buffer::bind_vtbuffer(tex_vertex);
+	sent_uniform(shader2D->programID,0,"myTextureSampler");
+
+	glUniform3f(glGetUniformLocation(shader2D->programID,"position"),pos.x,pos.y,pos.z);
+	glUniform1f(glGetUniformLocation(shader2D->programID,"size"),size);
+	glUniform1f(glGetUniformLocation(shader2D->programID,"alpha"),alpha);
+	glDrawArrays(GL_TRIANGLES,0,2*3);
+    glDeleteBuffers(1,&tex_vertex);
+    glDisableVertexAttribArray(0);//vertexbuffer
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
 }
 Texture2D* Texture2D::loadBMP_to_sobel(const char * imagepath,int Parameteri){
 	Image* bmp=new Image();

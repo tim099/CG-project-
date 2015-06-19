@@ -411,8 +411,9 @@ void Test::creat_shader(){
 			"files/shader/basic/Basic.geo",
 			"files/shader/basic/Basic.frag");
 	shaderNormalMapping=new Shader();
-	shaderNormalMapping->LoadShader("files/shader/normalMapping/normalMapping.vert"
-			,"files/shader/normalMapping/normalMapping.frag");
+	shaderNormalMapping->LoadShader("files/shader/normalMapping/NormalMapping.vert",
+			"files/shader/normalMapping/NormalMapping.geo",
+			"files/shader/normalMapping/NormalMapping.frag");
 	shader2D=new Shader2D();
 	shader2D->LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
 	shaderShadowMapping=new Shader();

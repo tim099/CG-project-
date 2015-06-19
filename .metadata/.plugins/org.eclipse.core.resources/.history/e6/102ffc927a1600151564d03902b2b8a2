@@ -1,0 +1,30 @@
+#version 400 core
+
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexNormal;
+
+uniform mat4 VP;
+uniform mat4 M; 
+
+out VertexData {
+	vec2 UV;
+	vec3 Normal;
+	vec4 position;
+	vec4 MVP_pos;
+	vec3 T;
+	vec3 B;
+}vertout;
+
+void main(){ 	
+	position=M*vec4(vertexPosition,1);//real world pos
+	MVP_pos=VP*position; 
+    gl_Position=MVP_pos;   
+ 	Normal=(M*vec4(vertexNormal,0)).xyz;
+    UV = vertexUV;
+    
+    if(Normal!=vec3(0.3,0.3,0.3))T=normalize(cross(Normal,vec3(0.3,0.3,0.3)));
+	else T=normalize(cross(Normal,vec3(0.31,0.29,0.31)));
+	B=normalize(cross(Normal,T));
+
+}
