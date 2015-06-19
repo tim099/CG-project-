@@ -193,9 +193,6 @@ vec3 parallel_light(vec3 N,vec4 pos){
     return total_light;
 }
 void main(){ 
-	//vec3 T,B;
-
-	
 	mat3 TBN=mat3(vert.T,vert.B,vert.Normal);
 	
 	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);	
@@ -204,7 +201,7 @@ void main(){
     vec3 total_light=parallel_light(normalize(TBN*tex_normal),vert.position)
     	+point_light(normalize(TBN*tex_normal),vert.position);
     
-    color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
- 	//color = vec4((total_light+mat.z)*tex_color,1.0);
+    //color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
+ 	color = vec4((total_light+mat.z)*tex_color,1.0);
 
 }
