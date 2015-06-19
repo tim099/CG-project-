@@ -10,11 +10,13 @@ uniform mat4 M;
 out VertexDataOut {
 	vec2 UV;
 	vec3 Normal;
+	vec3 vertexPosition;
 	vec4 position;
 	vec4 MVP_pos;
 }vertout;
 
 void main(){ 	
+	vertout.vertexPosition=vertexPosition;
 	vertout.position=M*vec4(vertexPosition,1);//real world pos
 	vertout.MVP_pos=VP*vertout.position; 
     gl_Position=vertout.MVP_pos;   
