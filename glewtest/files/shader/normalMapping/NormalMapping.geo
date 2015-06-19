@@ -6,7 +6,6 @@ layout(triangle_strip,max_vertices=3)out;
 in VertexDataOut {
 	vec2 UV;
 	vec3 Normal;
-	vec3 vertexPosition;
 	vec4 position;
 	vec4 MVP_pos;
 }vertout[3];
@@ -20,8 +19,8 @@ out VertexData{
 	vec3 B;
 }vert;
 void main(){
-    vec3 dPos1=vertout[1].vertexPosition-vertout[0].vertexPosition;
-    vec3 dPos2=vertout[2].vertexPosition-vertout[0].vertexPosition;
+    vec3 dPos1=vertout[1].position.xyz-vertout[0].position.xyz;
+    vec3 dPos2=vertout[2].position.xyz-vertout[0].position.xyz;
  	vec2 dUV1=vertout[1].UV-vertout[0].UV;
     vec2 dUV2=vertout[2].UV-vertout[0].UV;
 	float r =1.0f/(dUV1.x*dUV2.y-dUV1.y*dUV2.x);

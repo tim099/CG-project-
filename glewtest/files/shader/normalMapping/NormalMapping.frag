@@ -201,7 +201,7 @@ void main(){
     vec3 total_light=parallel_light(normalize(TBN*tex_normal),vert.position)
     	+point_light(normalize(TBN*tex_normal),vert.position);
     
-    //color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
- 	color = vec4((total_light+mat.z)*tex_color,1.0);
+    color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
+ 	//color = vec4((total_light+mat.z)*tex_color,1.0);
 
 }
