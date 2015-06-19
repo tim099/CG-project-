@@ -520,14 +520,13 @@ void Test::timer_tic(double &time){
     	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);
     	FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-    	Texture::draw_texture(SFBO->depth_buffer,shader2D->programID,window->aspect(),window->aspect(),1.0);
+    	Texture::draw_texture(SFBO->depth_buffer,shader2D,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shadercubeShadowMapping){
 
 	}else if(cur_shader==shader2D){
 		FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D->programID,
-				window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shaderTest){
 
 	}
@@ -538,23 +537,23 @@ void Test::timer_tic(double &time){
 		Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
 		Texture* tmp_tex=Texture2D::gen_texture2D(img,GL_RGB);
 
-		Texture::draw_texture(FBO->color_textures.at(0),shader2D->programID,window->aspect(),window->aspect(),1.0);
-		Texture::draw_texture(tmp_tex,shader2D->programID,window->aspect(),window->aspect(),0.6);
+		Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);
 		delete img;
 		delete tmp_tex;
 	}else{
-		Texture::draw_texture(FBO->color_textures.at(0),shader2D->programID,window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
 	}
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     if(cur_shader==shaderNormalMapping){
     	for(unsigned i=0;i<lightControl->parallel_light_size();i++){
-    		Texture::draw_texture(SFBO->depth_textures.at(i),shader2D->programID,window->aspect()
+    		Texture::draw_texture(SFBO->depth_textures.at(i),shader2D,window->aspect()
     				,window->aspect(),1.0,glm::vec3(0.9,0.8-0.2*i,0),0.1);
     	}
     	for(unsigned i=0;i<6;i++){
-    		Texture::draw_texture(PSFBO->depth_textures.at(i),shader2D->programID,window->aspect(),1.0,1.0
+    		Texture::draw_texture(PSFBO->depth_textures.at(i),shader2D,window->aspect(),1.0,1.0
     				,glm::vec3(0.9,0.7-0.2*(i+1),0),0.1);
     	}
     }

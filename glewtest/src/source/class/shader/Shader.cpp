@@ -11,9 +11,6 @@ Shader::Shader() {
 Shader::~Shader() {
 	if(programID)glDeleteProgram(programID);
 }
-void Shader::active_shader(GLuint _programID){
-	glUseProgram(_programID);
-}
 void Shader::active_shader(){
 	glUseProgram(programID);
 }
