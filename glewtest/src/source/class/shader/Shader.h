@@ -6,9 +6,10 @@ class Shader {
 public:
 	Shader();
 	virtual ~Shader();
-	static GLuint LoadShader(const char* vertex_path,const char* fragment_path);
-	static GLuint LoadShader(const char* vertex,const char* geometry,const char* fragment);
+	static Shader* LoadShader(const char* vertex_path,const char* fragment_path);
+	static Shader* LoadShader(const char* vertex,const char* geometry,const char* fragment);
 	static void active_shader(GLuint programID);
+	void active_shader();
 	GLuint programID;
 protected:
 	static GLuint creat_shader(const char* src,GLenum type);

@@ -82,11 +82,12 @@ private:
 
 	CubeModel *cube;
 
-	std::vector<GLuint>shaders;
+	std::vector<Shader*>shaders;
 	TextureMap* texmap;
-	GLuint cur_shader;
-	GLuint shaderBasic,shaderNormalMapping,shader2D,shaderShadowMapping;
-	GLuint shadercubeShadowMapping,shaderTest;
+	Shader* cur_shader;
+	Shader* shaderBasic,*shaderNormalMapping,*shader2D,*shaderShadowMapping;
+	Shader* shadercubeShadowMapping,*shaderTest;
+
 	GLuint VertexArrayID;
 	Window *window;
 	Camera *camera;

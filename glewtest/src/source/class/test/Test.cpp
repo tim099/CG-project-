@@ -42,6 +42,9 @@ Test::~Test() {
 	delete DOC;
 	delete window;
 	delete camera;
+	for(unsigned i=0;i<shaders.size();i++){
+		delete shaders.at(i);
+	}
 }
 void Test::creat_tex(TextureMap* texmap){
 	texmap->push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
@@ -313,11 +316,11 @@ void Test::draw_all_objects(FrameBuffer *FBO,Camera *camera,double &time){
 	FBO->bind_buffer();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
     //sent uniform
-    camera->sent_uniform(cur_shader,FBO->aspect());
-    lightControl->sent_uniform(cur_shader,camera->pos);
+    camera->sent_uniform(cur_shader->programID,FBO->aspect());
+    lightControl->sent_uniform(cur_shader->programID,camera->pos);
     //start draw
     for(unsigned i=0;i<d_objs.size();i++){
-    	d_objs.at(i)->draw_object(cur_shader);//draw all obj
+    	d_objs.at(i)->draw_object(cur_shader->programID);//draw all obj
     }
     std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
     time=glfwGetTime();
@@ -434,8 +437,8 @@ void Test::creat_light(){
 
 	lightControl->push_point_light(sunlight);
 	lightControl->push_parallel_light(s_light);
-	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.5,-1,0.7),glm::vec3(0.1,0.5,0.1)));
-	//lightControl.push_parallel_light(new ParallelLight(glm::vec3(0.2,-0.3,-0.9),glm::vec3(0.1,0.1,0.5)));
+	//lightControl->push_parallel_light(new ParallelLight(glm::vec3(0.5,-1,0.7),glm::vec3(0.1,0.5,0.1)));
+	//lightControl->push_parallel_light(new ParallelLight(glm::vec3(0.2,-0.3,-0.9),glm::vec3(0.5,0.5,1.9)));
 }
 void Test::creat_frame_buffer(){
     FBO=new FrameBuffer(window->get_size());
@@ -474,7 +477,8 @@ void Test::timer_tic(double &time){
     time=glfwGetTime();
 
 	if(cur_shader==shaderBasic){
-		Shader::active_shader(shaderBasic);
+		shaderBasic->active_shader();
+		//Shader::active_shader(shaderBasic);
 		draw_all_objects(FBO,camera,time);
 		/*Camera cam2=*camera;
 		cam2.move(-1.0f*cam2.yaw_vec());
@@ -488,38 +492,42 @@ void Test::timer_tic(double &time){
 				glm::vec3(0.3,0,0),0.3);
 				*/
 	}else if(cur_shader==shaderNormalMapping){
-		Shader::active_shader(shaderShadowMapping);
+		//Shader::active_shader(shaderShadowMapping);
+		shaderShadowMapping->active_shader();
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
-    	ParallelLights_shadow_map(shaderShadowMapping,SFBO,lightControl->parallel_lights,camera,LVP,time);
+    	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);
 		glm::mat4 PLVP[6];
-		PointLight_shadow_maps(shaderShadowMapping,PSFBO,lightControl->get_point_light(0),PLVP);
-
-		Shader::active_shader(shaderNormalMapping);
-		Uniform::sentMat4Arr(shaderNormalMapping,LVP,
+		PointLight_shadow_maps(shaderShadowMapping->programID,PSFBO,lightControl->get_point_light(0),PLVP);
+		shaderNormalMapping->active_shader();
+		//Shader::active_shader(shaderNormalMapping.);
+		Uniform::sentMat4Arr(shaderNormalMapping->programID,LVP,
 				lightControl->parallel_light_size(),std::string("parallelLVP[0]"));
-		Uniform::sentMat4Arr(shaderNormalMapping,PLVP,6,std::string("pointLVP[0]"));
+		Uniform::sentMat4Arr(shaderNormalMapping->programID,PLVP,6,std::string("pointLVP[0]"));
 
 		glm::mat4 biasMat=Tim::Math::BiasMat();
-		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping,"biasMat"),1,GL_FALSE,&(biasMat[0][0]));
-		texmap->get_tex(std::string("NormalTexture"))->sent_uniform(shaderNormalMapping,1,"NormalTexture");
-		Texture::usetextureVec(shaderNormalMapping,SFBO->depth_textures,3,"depthMap");
-		Texture::usetextureVec(shaderNormalMapping,PSFBO->depth_textures,
+		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping->programID,"biasMat"),1
+				,GL_FALSE,&(biasMat[0][0]));
+		texmap->get_tex(std::string("NormalTexture"))->sent_uniform(shaderNormalMapping->programID,1,"NormalTexture");
+		Texture::usetextureVec(shaderNormalMapping->programID,SFBO->depth_textures,3,"depthMap");
+		Texture::usetextureVec(shaderNormalMapping->programID,PSFBO->depth_textures,
 				3+lightControl->parallel_light_size(),"pointdepthMap");
 		draw_all_objects(FBO,camera,time);
 
 	}else if(cur_shader==shaderShadowMapping){
-    	Shader::active_shader(shaderShadowMapping);
+    	//Shader::active_shader(shaderShadowMapping);
+    	shaderShadowMapping->active_shader();
     	glm::mat4 LVP[lightControl->parallel_lights.size()];
-    	ParallelLights_shadow_map(shaderShadowMapping,SFBO,lightControl->parallel_lights,camera,LVP,time);
+    	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);
     	FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-    	Texture::draw_texture(SFBO->depth_buffer,shader2D,window->aspect(),window->aspect(),1.0);
+    	Texture::draw_texture(SFBO->depth_buffer,shader2D->programID,window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shadercubeShadowMapping){
 
 	}else if(cur_shader==shader2D){
 		FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D,window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(texmap->get_tex(std::string("mypic")),shader2D->programID,
+				window->aspect(),window->aspect(),1.0);
 	}else if(cur_shader==shaderTest){
 
 	}
@@ -530,23 +538,23 @@ void Test::timer_tic(double &time){
 		Image::convert_to_sobel(img,glm::vec2(2.0,1.0));
 		Texture* tmp_tex=Texture2D::gen_texture2D(img,GL_RGB);
 
-		Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
-		Texture::draw_texture(tmp_tex,shader2D,window->aspect(),window->aspect(),0.6);
+		Texture::draw_texture(FBO->color_textures.at(0),shader2D->programID,window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(tmp_tex,shader2D->programID,window->aspect(),window->aspect(),0.6);
 		delete img;
 		delete tmp_tex;
 	}else{
-		Texture::draw_texture(FBO->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0);
+		Texture::draw_texture(FBO->color_textures.at(0),shader2D->programID,window->aspect(),window->aspect(),1.0);
 	}
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     if(cur_shader==shaderNormalMapping){
     	for(unsigned i=0;i<lightControl->parallel_light_size();i++){
-    		Texture::draw_texture(SFBO->depth_textures.at(i),shader2D,window->aspect()
+    		Texture::draw_texture(SFBO->depth_textures.at(i),shader2D->programID,window->aspect()
     				,window->aspect(),1.0,glm::vec3(0.9,0.8-0.2*i,0),0.1);
     	}
     	for(unsigned i=0;i<6;i++){
-    		Texture::draw_texture(PSFBO->depth_textures.at(i),shader2D,window->aspect(),1.0,1.0
+    		Texture::draw_texture(PSFBO->depth_textures.at(i),shader2D->programID,window->aspect(),1.0,1.0
     				,glm::vec3(0.9,0.7-0.2*(i+1),0),0.1);
     	}
     }
