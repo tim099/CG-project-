@@ -19,14 +19,14 @@ out VertexData{
 	vec3 B;
 }vert;
 void main(){
-    vec3 dPos1=vertout[1].position.xyz-vertout[0].position.xyz;
-    vec3 dPos2=vertout[2].position.xyz-vertout[0].position.xyz;
+    vec3 dPos1=(vertout[1].position.xyz/vertout[1].position.w)-(vertout[0].position.xyz/vertout[0].position.w);
+    vec3 dPos2=(vertout[2].position.xyz/vertout[2].position.w)-(vertout[0].position.xyz/vertout[0].position.w);
  	vec2 dUV1=vertout[1].UV-vertout[0].UV;
     vec2 dUV2=vertout[2].UV-vertout[0].UV;
-	float r =1.0f/(dUV1.x*dUV2.y-dUV1.y*dUV2.x);
-	vec3 T=(dPos1*dUV2.y-dPos2*dUV1.y)*r;
-	vec3 B=(dPos2*dUV1.x-dPos1*dUV2.x)*r;
-
+	//float r=1.0f/(dUV1.x*dUV2.y-dUV1.y*dUV2.x);
+	vec3 T=(dPos1*dUV2.y-dPos2*dUV1.y);//*r
+	vec3 B=(dPos2*dUV1.x-dPos1*dUV2.x);//*r
+	
 	for(int i=0;i<3;i++){
 		gl_Position=gl_in[i].gl_Position;
 		vert.UV=vertout[i].UV;
