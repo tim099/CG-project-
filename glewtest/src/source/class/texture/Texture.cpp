@@ -1,4 +1,4 @@
-#include "class/texture/texture.h"
+#include "class/texture/Texture.h"
 #include "class/tim/string/String.h"
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/buffer/Buffer.h"

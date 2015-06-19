@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <class/model/obj/face.h>
+#include <class/model/obj/Face.h>
 class Model;
 
 class Obj{

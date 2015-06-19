@@ -1,6 +1,6 @@
 #ifndef TEXTURE2D_H_
 #define TEXTURE2D_H_
-#include "class/texture/texture.h"
+#include "class/texture/Texture.h"
 class Image;
 class Texture2D : public Texture {
 public:
