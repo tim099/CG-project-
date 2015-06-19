@@ -1,0 +1,37 @@
+#include "class/shader/shader2D/Shader2D.h"
+#include "class/texture/texture.h"
+#include "class/buffer/Buffer.h"
+Shader2D::Shader2D() {
+
+}
+Shader2D::~Shader2D() {
+
+}
+void Shader2D::draw_texture(Texture* tex,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
+		,double size){
+	active_shader();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+    GLuint tex_vertex=0;
+	if(winaspect==texaspect){
+		tex_vertex=Texture::gen_texture_vertex(1.0,1.0);
+	}else{
+		float height=1.0;
+		double aspect=winaspect/texaspect;
+		if(aspect>1.0)height=1.0/aspect;
+		tex_vertex=Texture::gen_texture_vertex(height,height*aspect);
+	}
+	Buffer::bind_vtbuffer(tex_vertex);
+	tex->sent_uniform(programID,0,"myTextureSampler");
+
+	glUniform3f(glGetUniformLocation(programID,"position"),pos.x,pos.y,pos.z);
+	glUniform1f(glGetUniformLocation(programID,"size"),size);
+	glUniform1f(glGetUniformLocation(programID,"alpha"),alpha);
+	glDrawArrays(GL_TRIANGLES,0,2*3);
+    glDeleteBuffers(1,&tex_vertex);
+    glDisableVertexAttribArray(0);//vertexbuffer
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+}

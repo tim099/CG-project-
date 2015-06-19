@@ -1,5 +1,5 @@
-#include "class/tim/string/String.h"
 #include "class/texture/texture.h"
+#include "class/tim/string/String.h"
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/buffer/Buffer.h"
 #include "class/model/Vertex.h"
@@ -37,7 +37,7 @@ GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){
 	Vertex::gen_quad_vt(vertex_buffer_data,pos,glm::vec3(width,height,0));
 	return Buffer::gen_buffer(vertex_buffer_data,sizeof(vertex_buffer_data));
 }
-void Texture::draw_texture(Texture* tex,Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
+void Texture::draw_texture(Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
 		,double size){
 	shader2D->active_shader();
 	glEnable(GL_BLEND);
@@ -54,7 +54,7 @@ void Texture::draw_texture(Texture* tex,Shader2D* shader2D,double winaspect,doub
 		tex_vertex=gen_texture_vertex(height,height*aspect);
 	}
 	Buffer::bind_vtbuffer(tex_vertex);
-	tex->sent_uniform(shader2D->programID,0,"myTextureSampler");
+	sent_uniform(shader2D->programID,0,"myTextureSampler");
 
 	glUniform3f(glGetUniformLocation(shader2D->programID,"position"),pos.x,pos.y,pos.z);
 	glUniform1f(glGetUniformLocation(shader2D->programID,"size"),size);
