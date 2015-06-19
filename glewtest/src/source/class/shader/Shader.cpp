@@ -49,7 +49,7 @@ GLuint Shader::creat_shader(const char* src,GLenum type){
     compile_shader(ShaderID,ShaderCode);
     return ShaderID;
 }
-Shader* Shader::LoadShader(const char* vertex_file_path,const char* fragment_file_path){
+void Shader::LoadShader(const char* vertex_file_path,const char* fragment_file_path){
     GLuint VertexShaderID=glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID=glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -81,11 +81,10 @@ Shader* Shader::LoadShader(const char* vertex_file_path,const char* fragment_fil
 
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
-    Shader *shader=new Shader();
-    shader->programID=ProgramID;
-    return shader;
+
+    programID=ProgramID;
 }
-Shader* Shader::LoadShader(const char* vertex,const char* geometry,const char* fragment){
+void Shader::LoadShader(const char* vertex,const char* geometry,const char* fragment){
     GLuint VertexShaderID=glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID=glCreateShader(GL_FRAGMENT_SHADER);
     GLuint GeometryShaderID=glCreateShader(GL_GEOMETRY_SHADER);
@@ -124,7 +123,6 @@ Shader* Shader::LoadShader(const char* vertex,const char* geometry,const char* f
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
     glDeleteShader(GeometryShaderID);
-    Shader *shader=new Shader();
-    shader->programID=ProgramID;
-    return shader;
+
+    programID=ProgramID;
 }

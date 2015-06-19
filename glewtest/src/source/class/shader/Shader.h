@@ -6,8 +6,8 @@ class Shader {
 public:
 	Shader();
 	virtual ~Shader();
-	static Shader* LoadShader(const char* vertex_path,const char* fragment_path);
-	static Shader* LoadShader(const char* vertex,const char* geometry,const char* fragment);
+	void LoadShader(const char* vertex_path,const char* fragment_path);
+	void LoadShader(const char* vertex,const char* geometry,const char* fragment);
 	void active_shader();
 	GLuint programID;
 protected:

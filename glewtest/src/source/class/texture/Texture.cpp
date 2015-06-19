@@ -3,7 +3,7 @@
 #include "class/texture/texture2D/Texture2D.h"
 #include "class/buffer/Buffer.h"
 #include "class/model/Vertex.h"
-#include "class/shader/Shader.h"
+#include "class/shader/shader2D/Shader2D.h"
 #include <cstdio>
 #include <iostream>
 #include <cmath>
@@ -37,7 +37,7 @@ GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){
 	Vertex::gen_quad_vt(vertex_buffer_data,pos,glm::vec3(width,height,0));
 	return Buffer::gen_buffer(vertex_buffer_data,sizeof(vertex_buffer_data));
 }
-void Texture::draw_texture(Texture* tex,Shader* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
+void Texture::draw_texture(Texture* tex,Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
 		,double size){
 	shader2D->active_shader();
 	glEnable(GL_BLEND);

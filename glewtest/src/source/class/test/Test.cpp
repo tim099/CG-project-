@@ -406,20 +406,27 @@ void Test::prepare_draw_obj(){
     d_objs.push_back(ico);
 }
 void Test::creat_shader(){
-	shaderBasic=Shader::LoadShader("files/shader/basic/Basic.vert",
+	shaderBasic=new Shader();
+	shaderBasic->LoadShader("files/shader/basic/Basic.vert",
 			"files/shader/basic/Basic.geo",
 			"files/shader/basic/Basic.frag");
-	shaderNormalMapping=Shader::LoadShader("files/shader/normalMapping/normalMapping.vert"
+	shaderNormalMapping=new Shader();
+	shaderNormalMapping->LoadShader("files/shader/normalMapping/normalMapping.vert"
 			,"files/shader/normalMapping/normalMapping.frag");
-	shader2D=Shader::LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
-	shaderShadowMapping=Shader::LoadShader("files/shader/shadow/ShadowMapping.vert"
+	shader2D=new Shader2D();
+	shader2D->LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
+	shaderShadowMapping=new Shader();
+	shaderShadowMapping->LoadShader("files/shader/shadow/ShadowMapping.vert"
 			,"files/shader/Shadow/ShadowMapping.frag");
-	shadercubeShadowMapping=Shader::LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
+	shadercubeShadowMapping=new Shader();
+	shadercubeShadowMapping->LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
 			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.geo"
 			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.frag");
-	shaderTest=Shader::LoadShader("files/shader/test/test.vert",
+	shaderTest=new Shader();
+	shaderTest->LoadShader("files/shader/test/test.vert",
 			"files/shader/test/test.geo",
 			"files/shader/test/test.frag");
+
 	shaders.push_back(shaderBasic);
 	shaders.push_back(shaderNormalMapping);
 	shaders.push_back(shaderShadowMapping);

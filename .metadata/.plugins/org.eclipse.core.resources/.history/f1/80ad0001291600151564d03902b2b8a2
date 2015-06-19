@@ -1,0 +1,10 @@
+#ifndef SHADER2D_H_
+#define SHADER2D_H_
+
+class Shader2D {
+public:
+	Shader2D();
+	virtual ~Shader2D();
+};
+
+#endif /* SHADER2D_H_ */

@@ -11,7 +11,7 @@ const int P_MipMap=1;
 const int P_Linear=2;
 const int P_Nearest=3;
 class Texture2D;
-class Shader;
+class Shader2D;
 class Texture {
 public:
 	Texture(GLuint TexID,GLenum target,GLenum type,GLenum format);
@@ -20,7 +20,7 @@ public:
 
 
 	static void usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name);
-	static void draw_texture(Texture* tex,Shader* shader2D,double winaspect=1.0,double texaspect=1.0,GLfloat alpha=1.0,
+	static void draw_texture(Texture* tex,Shader2D* shader2D,double winaspect=1.0,double texaspect=1.0,GLfloat alpha=1.0,
 			glm::vec3 pos=glm::vec3(0,0,0),double size=1.0);
 
 	virtual void sent_uniform(GLuint programID,int num,const char *name)const=0;

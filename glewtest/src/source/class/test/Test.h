@@ -12,6 +12,7 @@
 
 #include "headers/callback/callBackFunc.h"
 #include "class/shader/Shader.h"
+#include "class/shader/shader2D/Shader2D.h"
 #include "class/window/Window.h"
 #include "class/texture/Texture.h"
 #include "class/texture/texture2D/Texture2D.h"
@@ -85,7 +86,8 @@ private:
 	std::vector<Shader*>shaders;
 	TextureMap* texmap;
 	Shader* cur_shader;
-	Shader* shaderBasic,*shaderNormalMapping,*shader2D,*shaderShadowMapping;
+	Shader2D *shader2D;
+	Shader* shaderBasic,*shaderNormalMapping,*shaderShadowMapping;
 	Shader* shadercubeShadowMapping,*shaderTest;
 
 	GLuint VertexArrayID;
