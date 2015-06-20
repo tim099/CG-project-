@@ -362,12 +362,12 @@ void Test::prepare_draw_obj(){
 	Model* m6=Model::load_obj("files/obj/cube.obj",60000.0);
 	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
 
-	m->mat=glm::vec4(0.1,1.0,0.02,0.05);
-	m2->mat=glm::vec4(0.1,0.1,0.02,1.0);
-	m3->mat=glm::vec4(0.1,0.05,0.02,0.05);
-	m4->mat=glm::vec4(0.4,0.05,0.02,1.7);
-	m5->mat=glm::vec4(0.0,0.0,0.02,0.1);
-	m6->mat=glm::vec4(0.0,0.0,0.02,0.8);
+	m->mat=glm::vec4(0.1,1.0,0.1,100);
+	m2->mat=glm::vec4(0.1,0.1,1.0,50);
+	m3->mat=glm::vec4(0.1,0.05,0.05,3);
+	m4->mat=glm::vec4(0.4,0.05,1.8,3);
+	m5->mat=glm::vec4(0.0,0.0,0.1,3);
+	m6->mat=glm::vec4(0.0,0.0,0.5,3);
 	models.push_back(m);
 	models.push_back(m2);
 	models.push_back(m3);

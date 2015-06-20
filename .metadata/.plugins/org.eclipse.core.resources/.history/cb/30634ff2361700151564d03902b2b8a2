@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
-#include "class/model/obj/Obj.h"
-#include "class/model/obj/Face.h"
-#include "class/tim/math/Math.h"
-#include "class/model/Vertex.h"
+#include <class/model/obj/Obj.h>
+#include <class/model/obj/Face.h>
+#include <class/tim/math/Math.h>
+#include <class/model/Vertex.h>
 const GLfloat F_MAX=999999999999999999.0;
 const GLfloat F_MIN=-999999999999999999.0;
 Model::Model(int _max_len) {
@@ -43,7 +43,7 @@ void Model::initial(int _len,int _max_len){
 	uvBuffer=new GLfloat[2*_max_len];
 	vnBuffer=new GLfloat[3*_max_len];
 
-	mat=glm::vec4(0.3,0.4,0.01,0.05);
+	mat=glm::vec4(0.3,0.4,0.04,30);
 }
 void Model::len_alter(int _len){
 	if(_len>max_len){

@@ -23,7 +23,7 @@ uniform vec3 pointlight_color[MAX_LIGHT];
 uniform vec4 mat;
 
 float specular_value(float specular_val){
-	return mat.y*pow(specular_val,100*mat.y);//mat.w
+	return mat.y*pow(specular_val,100*mat.y*mat.y);//mat.w
 }
 vec3 light(vec3 N){
 	vec3 total_light=vec3(0,0,0);
@@ -65,7 +65,7 @@ vec3 light(vec3 N){
 }
 void main(){ 
 	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);
-    vec3 total_light=light(vert.Normal)+mat.w;
+    vec3 total_light=light(vert.Normal);
 
-    color = vec4((total_light)*tex_color,1.0);
+    color = vec4((total_light+mat.z)*tex_color,1.0);
 }

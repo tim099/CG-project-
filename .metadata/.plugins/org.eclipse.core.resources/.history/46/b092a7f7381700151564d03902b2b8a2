@@ -365,8 +365,8 @@ void Test::prepare_draw_obj(){
 	m->mat=glm::vec4(0.1,1.0,0.02,0.05);
 	m2->mat=glm::vec4(0.1,0.1,0.02,1.0);
 	m3->mat=glm::vec4(0.1,0.05,0.02,0.05);
-	m4->mat=glm::vec4(0.4,0.05,0.02,1.7);
-	m5->mat=glm::vec4(0.0,0.0,0.02,0.1);
+	m4->mat=glm::vec4(0.4,0.05,0.02,0.7);
+	m5->mat=glm::vec4(0.0,0.0,0.02,0.3);
 	m6->mat=glm::vec4(0.0,0.0,0.02,0.8);
 	models.push_back(m);
 	models.push_back(m2);
