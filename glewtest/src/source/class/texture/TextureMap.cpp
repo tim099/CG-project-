@@ -22,7 +22,6 @@ void TextureMap::Load_texture(std::fstream &file,const std::string &folder_path)
 	if(!strcmp(line,"Texture Name:")){
 		Tim::File::getline(file,line,sizeof(line),true,true);
 		name=std::string(line);
-		std::cout<<"name:"<<name<<std::endl;
 	}else{
 		std::cerr<<"Load_texture no Texture Name!!"<<line<<std::endl;
 		return;
@@ -31,7 +30,6 @@ void TextureMap::Load_texture(std::fstream &file,const std::string &folder_path)
 	if(!strcmp(line,"TexturePath:")){
 		Tim::File::getline(file,line,sizeof(line),true,true);
 		path=folder_path+std::string(line);
-		std::cout<<"path:"<<path<<std::endl;
 	}else{
 		std::cerr<<"Load_texture no TexturePath!!"<<line<<std::endl;
 		return;
@@ -39,10 +37,10 @@ void TextureMap::Load_texture(std::fstream &file,const std::string &folder_path)
 	push_tex(name,Texture2D::loadBMP(path.c_str()));
 }
 void TextureMap::Load_texture_script(std::string script_path){
-	char line[500];//std::istream t;
+	char line[500];
 	std::fstream file;
 	file.open(script_path.c_str(),std::ios::in);
-	//file.getline(line,sizeof(line));
+
 	Tim::File::getline(file,line,sizeof(line),true,true);
 	if(strcmp(line,"#LOADTEXTURE_SCRIPT")){
 		std::cerr<<"Load_texture Fail:"<<script_path<<std::endl;
@@ -64,7 +62,6 @@ void TextureMap::Load_texture_script(std::string script_path){
 	while(!file.eof()){
 		Tim::File::getline(file,line,sizeof(line),true,true);
 		if(!strcmp(line,"#END")){
-			std::cout<<"END"<<std::endl;
 			break;
 		}
 		if(!strcmp(line,"Texture:")){
