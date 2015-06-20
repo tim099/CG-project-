@@ -4,9 +4,10 @@
 #include <class/buffer/Buffer.h>
 #include "class/texture/texture.h"
 #include <iostream>
-DrawObject::DrawObject(BufferObject* _obj,Texture* _texturebuffer) {
+DrawObject::DrawObject(BufferObject* _obj,Texture* _texture,Texture* _NormalMap) {
 	obj=_obj;
-	texturebuffer=_texturebuffer;
+	texture=_texture;
+	NormalMap=_NormalMap;
 	draw_shadow=true;
 }
 DrawObject::~DrawObject() {
@@ -52,8 +53,8 @@ void DrawObject::draw_shadow_map(GLuint programID){
 }
 void DrawObject::draw_object(GLuint programID){
 	obj->bind_buffer(programID);
-	texturebuffer->sent_uniform(programID,0,"myTextureSampler");
-
+	texture->sent_uniform(programID,0,"myTextureSampler");
+	if(NormalMap)NormalMap->sent_uniform(programID,1,"NormalTexture");
 	draw_vec(programID,m_pos);
 	draw_vec(programID,temp_pos);
 

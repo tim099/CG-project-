@@ -22,7 +22,7 @@ DrawObject *DrawObjectCreater::creat_draw_obj(const char* obj_path,const char* t
 	Model *m=Model::load_obj(obj_path,size,to_o);
 	BufferObject *b_obj=new BufferObject(m);
 	Texture* texture=Texture2D::loadBMP(tex_path);
-	DrawObject * d_obj=new DrawObject(b_obj,texture);
+	DrawObject *d_obj=new DrawObject(b_obj,texture);
 	b_objs.push_back(b_obj);
 	m_objs.push_back(m);
 	texturebuffers.push_back(texture);

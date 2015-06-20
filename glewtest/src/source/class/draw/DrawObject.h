@@ -8,7 +8,7 @@
 class Texture;
 class DrawObject {
 public:
-	DrawObject(BufferObject* obj,Texture* texturebuffer);
+	DrawObject(BufferObject* obj,Texture* texture,Texture* NormalMap=0);
 	virtual ~DrawObject();
 	//static glm::mat4 model_matrix(Position* p);
 	static void view(GLuint programID,glm::mat4 model_matrix);
@@ -21,7 +21,8 @@ public:
 	BufferObject *obj;
 	bool draw_shadow;
 protected:
-	Texture* texturebuffer;
+	Texture* texture;
+	Texture* NormalMap;
 	void draw_vec(GLuint programID,std::vector<Position*> &pos_v);
 	std::vector<Position*>m_pos;
 	std::vector<Position*>temp_pos;

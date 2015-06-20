@@ -49,6 +49,7 @@ Test::~Test() {
 void Test::creat_tex(TextureMap* texmap){
 	texmap->push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
 	texmap->push_tex(std::string("NormalTexture"),Texture2D::loadBMP("files/texture/normal.bmp"));
+	texmap->push_tex(std::string("NormalTexture6"),Texture2D::loadBMP("files/texture/normal6.bmp"));
 	texmap->push_tex(std::string("test"),Texture2D::loadBMP("files/texture/test.bmp"));
 	texmap->push_tex(std::string("test2"),Texture2D::loadBMP("files/texture/test2.bmp"));
 	texmap->push_tex(std::string("test3"),Texture2D::loadBMP("files/texture/test3.bmp"));
@@ -257,7 +258,8 @@ void Test::creat_map_object(int px,int pz,int size){
     		}
     	}
     }
-    DrawObject *d_map=new DrawObject(new BufferObject(mapmodel),texmap->get_tex(std::string("test3")));
+    DrawObject *d_map=new DrawObject(new BufferObject(mapmodel),texmap->get_tex(std::string("test3")),
+    		texmap->get_tex(std::string("NormalTexture")));
     d_objs.push_back(d_map);
     dmaps[px][pz]=d_map;
     delete mapmodel;
@@ -382,28 +384,36 @@ void Test::prepare_draw_obj(){
     b_objs.push_back(new BufferObject(m7));
 
     creat_cube_obj();
-    tiger=new DrawObject(b_objs.at(0),texmap->get_tex(std::string("test")));
+    tiger=new DrawObject(b_objs.at(0),texmap->get_tex(std::string("test")),
+    		texmap->get_tex(std::string("NormalTexture")));
 
     d_objs.push_back(tiger);
-    sun=new DrawObject(b_objs.at(1),texmap->get_tex(std::string("test2")));
+    sun=new DrawObject(b_objs.at(1),texmap->get_tex(std::string("test2")),
+    		texmap->get_tex(std::string("NormalTexture")));
     sun->draw_shadow=false;
     d_objs.push_back(sun);
-    look_at=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")));
+    look_at=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")),
+    		texmap->get_tex(std::string("NormalTexture6")));
     look_at->draw_shadow=false;
     d_objs.push_back(look_at);
-    stars=new DrawObject(b_objs.at(3),texmap->get_tex(std::string("test3")));
+    stars=new DrawObject(b_objs.at(3),texmap->get_tex(std::string("test3")),
+    		texmap->get_tex(std::string("NormalTexture")));
     stars->draw_shadow=false;
     d_objs.push_back(stars);
-    galaxy=new DrawObject(b_objs.at(4),texmap->get_tex(std::string("galaxy")));
+    galaxy=new DrawObject(b_objs.at(4),texmap->get_tex(std::string("galaxy")),
+    		texmap->get_tex(std::string("NormalTexture")));
     d_objs.push_back(galaxy);
-    DrawObject* doge=new DrawObject(b_objs.at(5),texmap->get_tex(std::string("doge")));
+    DrawObject* doge=new DrawObject(b_objs.at(5),texmap->get_tex(std::string("doge")),
+    		texmap->get_tex(std::string("NormalTexture")));
     doge->draw_shadow=false;
     d_objs.push_back(doge);
     doge->push_position(new Position(glm::vec3(0,0,0),glm::vec3()));
-    base=new DrawObject(b_objs.at(6),texmap->get_tex(std::string("test2")));
+    base=new DrawObject(b_objs.at(6),texmap->get_tex(std::string("test2")),
+    		texmap->get_tex(std::string("NormalTexture")));
     d_objs.push_back(base);
     base->push_position(new Position(glm::vec3(54.0,21.75,26.0),glm::vec3(0,0,0)));
-    ico=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")));
+    ico=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")),
+    		texmap->get_tex(std::string("NormalTexture6")));
     d_objs.push_back(ico);
 }
 void Test::creat_shader(){
@@ -516,7 +526,7 @@ void Test::timer_tic(double &time){
 		glm::mat4 biasMat=Tim::Math::BiasMat();
 		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping->programID,"biasMat"),1
 				,GL_FALSE,&(biasMat[0][0]));
-		texmap->get_tex(std::string("NormalTexture"))->sent_uniform(shaderNormalMapping->programID,1,"NormalTexture");
+
 		Texture::usetextureVec(shaderNormalMapping->programID,SFBO->depth_textures,3,"depthMap");
 		Texture::usetextureVec(shaderNormalMapping->programID,PSFBO->depth_textures,
 				3+lightControl->parallel_light_size(),"pointdepthMap");
