@@ -1,4 +1,4 @@
-#include <class/Camera/Camera.h>
+#include <class/camera/Camera.h>
 #include <glm/gtx/transform.hpp>
 #include <cmath>
 #include <iostream>

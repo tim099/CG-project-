@@ -1,9 +1,10 @@
 #include "class/shader/Shader.h"
 
-#include<iostream>
+#include <iostream>
 #include <glm/glm.hpp>
 #include <fstream>
 #include <vector>
+#include <cstring>
 
 Shader::Shader() {
 	programID=0;

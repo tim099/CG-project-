@@ -1,7 +1,7 @@
 #ifndef DRAWOBJECTCREATER_H_
 #define DRAWOBJECTCREATER_H_
 #include <class/draw/DrawObject.h>
-#include "class/texture/texture.h"
+#include "class/texture/Texture.h"
 #include <vector>
 class BufferObject;
 class Model;

@@ -1,7 +1,7 @@
 #include <class/draw/DrawObjectCreater.h>
 #include <class/model/Model.h>
 #include <class/buffer/BufferObject.h>
-#include <class/texture/texture.h>
+#include <class/texture/Texture.h>
 #include "class/texture/texture2D/Texture2D.h"
 DrawObjectCreater::DrawObjectCreater() {
 

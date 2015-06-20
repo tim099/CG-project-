@@ -429,11 +429,11 @@ void Test::creat_shader(){
 	shader2D->LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
 	shaderShadowMapping=new Shader();
 	shaderShadowMapping->LoadShader("files/shader/shadow/ShadowMapping.vert"
-			,"files/shader/Shadow/ShadowMapping.frag");
+			,"files/shader/shadow/ShadowMapping.frag");
 	shadercubeShadowMapping=new Shader();
 	shadercubeShadowMapping->LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
-			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.geo"
-			,"files/shader/Shadow/cubeShadow/CubeShadowMapping.frag");
+			,"files/shader/shadow/cubeShadow/CubeShadowMapping.geo"
+			,"files/shader/shadow/cubeShadow/CubeShadowMapping.frag");
 	shaderTest=new Shader();
 	shaderTest->LoadShader("files/shader/test/test.vert",
 			"files/shader/test/test.geo",

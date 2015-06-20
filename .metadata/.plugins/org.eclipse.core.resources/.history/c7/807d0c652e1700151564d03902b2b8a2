@@ -1,0 +1,21 @@
+#ifndef TEXTUREMAP_H_
+#define TEXTUREMAP_H_
+<<<<<<< HEAD
+#include "class/texture/texture.h"
+=======
+#include <class/texture/Texture.h>
+>>>>>>> db4b60baf5b302f960b72290fb6e1575f5a5b946
+#include <string>
+#include <map>
+class TextureMap {
+public:
+	TextureMap();
+	virtual ~TextureMap();
+
+	void push_tex(std::string tex_name,Texture* tex);
+	Texture* get_tex(std::string tex_name);
+protected:
+	std::map<std::string,Texture*>textures;
+};
+
+#endif /* TEXTUREMAP_H_ */

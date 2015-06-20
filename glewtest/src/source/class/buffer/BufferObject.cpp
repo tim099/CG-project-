@@ -1,7 +1,7 @@
 #include "class/buffer/BufferObject.h"
 #include "class/buffer/Buffer.h"
 #include "class/model/Model.h"
-#include "class/texture/texture.h"
+#include "class/texture/Texture.h"
 #include <iostream>
 BufferObject::BufferObject(GLuint _vtbuffer,GLuint _uvbuffer,GLuint _texturebuffer
 		,GLuint _nbuffer,int _vertex_num,glm::vec4 _mat){

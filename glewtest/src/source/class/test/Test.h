@@ -24,7 +24,7 @@
 #include "class/buffer/Buffer.h"
 #include "class/buffer/BufferObject.h"
 #include "class/buffer/frameBuffer/FrameBuffer.h"
-#include "class/input/keyboard/Keyboard.h"
+#include "class/input/keyboard/KeyBoard.h"
 #include "class/input/mouse/Mouse.h"
 #include "class/input/Input.h"
 #include "class/draw/DrawObject.h"

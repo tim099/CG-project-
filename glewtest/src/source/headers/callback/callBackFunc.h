@@ -2,7 +2,7 @@
 #define CALLBACKFUNC_H_
 #include <GL/glew.h>
 #include <GL/glfw3.h>
-#include "class/input/keyboard/Keyboard.h"
+#include "class/input/keyboard/KeyBoard.h"
 #include "class/input/mouse/Mouse.h"
 
 void keyboard_callback(GLFWwindow *window,int key,int scancode,int action,int mods);

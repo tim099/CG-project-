@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <class/draw/DrawObject.h>
 #include <class/buffer/Buffer.h>
-#include "class/texture/texture.h"
+#include "class/texture/Texture.h"
 #include <iostream>
 DrawObject::DrawObject(BufferObject* _obj,Texture* _texture,Texture* _NormalMap) {
 	obj=_obj;
