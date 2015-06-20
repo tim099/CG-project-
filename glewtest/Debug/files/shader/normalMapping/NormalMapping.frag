@@ -2,10 +2,14 @@
 #define MAX_POINTLIGHT 100 
 #define MAX_PARALLELLIGHT 10 
 
-in vec2 UV;
-in vec3 Normal;
-in vec4 position;
-in vec4 MVP_pos;
+in VertexData{
+	vec2 UV;
+	vec3 Normal;
+	vec4 position;
+	vec4 MVP_pos;
+	vec3 T;
+	vec3 B;
+}vert;
 
 layout(location = 0)out vec4 color;
 
@@ -13,8 +17,6 @@ uniform sampler2D myTextureSampler;
 uniform sampler2D NormalTexture;
 uniform sampler2D depthMap[MAX_PARALLELLIGHT];
 uniform sampler2D pointdepthMap[6];
-//uniform samplerCube cubemap;
-
 
 uniform vec3 camera_pos;
 
@@ -79,7 +81,7 @@ vec3 point_light(vec3 N,vec4 pos){
     	light_dis=length(light_v);
     	light_val=mat.x*dot(N,normalize(light_v));
     	//specular
-		reflect_v=light_v-(2*dot(Normal,light_v))*N;		
+		reflect_v=light_v-(2*dot(N,light_v))*N;	
 		specular_val=dot(pos_cam_v,normalize(reflect_v));
 		if(specular_val>0.0f){
 			light_val+=mat.y*pow(specular_val,mat.w);			
@@ -162,7 +164,7 @@ vec3 parallel_light(vec3 N,vec4 pos){
 		light_v=normalize(-parallellight_vec[i]);//reverse	
 		light_val=mat.x*dot(N,light_v);
 		//specular
-		reflect_v=light_v-(2*dot(Normal,light_v))*N;
+		reflect_v=light_v-(2*dot(N,light_v))*N;
 		specular_val=dot(pos_cam_v,normalize(reflect_v));
 		if(specular_val>0.0f){
 			light_val+=mat.y*pow(specular_val,mat.w);			
@@ -191,23 +193,19 @@ vec3 parallel_light(vec3 N,vec4 pos){
     return total_light;
 }
 void main(){ 
-	vec3 T,B;
-	if(Normal!=vec3(0.3,0.3,0.3))T=normalize(cross(Normal,vec3(0.3,0.3,0.3)));
-	else T=normalize(cross(Normal,vec3(0.31,0.29,0.31)));
-	B=normalize(cross(Normal,T));
+	vec3 T=normalize(vert.T-dot(vert.T,vert.Normal)*vert.Normal);//vert.T;
+	vec3 B=normalize(vert.B-dot(vert.B,vert.Normal)*vert.Normal);;//cross(T,vert.Normal)
+	mat3 TBN=mat3(T,B,vert.Normal);
 	
-	mat3 TBN=mat3(T,B,Normal);
+	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);	
+	vec3 tex_normal=normalize((2.0*(texture(NormalTexture,vert.UV).rgb)-1.0));
 	
-	vec3 tex_color=(texture(myTextureSampler,UV).rgb);	
-	vec3 tex_normal=(2*(texture(NormalTexture,UV).rgb))-1;
-	
-    vec3 total_light=parallel_light(normalize(TBN*tex_normal),position)
-    +point_light(normalize(TBN*tex_normal),position);
-    //vec3 total_light=parallel_light(Normal,position)
-    	//+point_light(Normal,position); 	
+    vec3 total_light=parallel_light(TBN*tex_normal,vert.position)
+    	+point_light(TBN*tex_normal,vert.position);
     
-    color = vec4((total_light+mat.z)*tex_color+light_scattering(position),1.0);
-    //color = vec4((total_light+mat.z)*tex_color,1.0);
-    //color = vec4(toon((total_light+mat.z),5.0),1.0);//*tex_color
-
+    color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
+ 	//color = vec4((total_light+mat.z)*tex_color,1.0);
+	//color = vec4((0.5*TBN*tex_normal)+vec3(0.5,0.5,0.5),1.0);//(TBN*vec3(0,1,0)tex_normalvert.Normal
+	//color = vec4((0.5*TBN*vec3(0.5,0.5,1))+vec3(0.5,0.5,0.5),1.0);
+	//color = vec4((0.5*vert.Normal)+vec3(0.5,0.5,0.5),1.0);
 }

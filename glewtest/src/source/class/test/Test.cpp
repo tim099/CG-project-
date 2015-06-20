@@ -49,7 +49,7 @@ Test::~Test() {
 void Test::creat_tex(TextureMap* texmap){
 	texmap->push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
 	texmap->push_tex(std::string("NormalTexture"),Texture2D::loadBMP("files/texture/normal.bmp"));
-	texmap->push_tex(std::string("test"),Texture2D::loadBMP_to_sobel("files/texture/test.bmp"));
+	texmap->push_tex(std::string("test"),Texture2D::loadBMP("files/texture/test.bmp"));
 	texmap->push_tex(std::string("test2"),Texture2D::loadBMP("files/texture/test2.bmp"));
 	texmap->push_tex(std::string("test3"),Texture2D::loadBMP("files/texture/test3.bmp"));
 	texmap->push_tex(std::string("galaxy"),Texture2D::loadBMP("files/texture/galaxy.bmp"));
@@ -359,6 +359,7 @@ void Test::prepare_draw_obj(){
 	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",20000.0);
 	Model* m6=Model::load_obj("files/obj/cube.obj",60000.0);
 	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
+
 	m->mat=glm::vec4(0.1,1.0,0.1,100);
 	m2->mat=glm::vec4(0.1,0.1,1.0,50);
 	m3->mat=glm::vec4(0.1,0.05,0.05,3);

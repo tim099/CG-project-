@@ -206,6 +206,4 @@ void main(){
     color = vec4((total_light+mat.z)*tex_color+light_scattering(vert.position),1.0);
  	//color = vec4((total_light+mat.z)*tex_color,1.0);
 	//color = vec4((0.5*TBN*tex_normal)+vec3(0.5,0.5,0.5),1.0);//(TBN*vec3(0,1,0)tex_normalvert.Normal
-	//color = vec4((0.5*TBN*vec3(0.5,0.5,1))+vec3(0.5,0.5,0.5),1.0);
-	//color = vec4((0.5*vert.Normal)+vec3(0.5,0.5,0.5),1.0);
 }

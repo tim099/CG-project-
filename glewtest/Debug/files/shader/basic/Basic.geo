@@ -2,13 +2,14 @@
 
 layout(triangles)in;
 layout(triangle_strip,max_vertices=6)out;
-in VertexData {
+
+in VertexData{
     vec2 UV;
     vec3 Normal;
     vec3 position;
 }vertout[3];
 
-out VertexData {
+out VertexData{
     vec2 UV;
     vec3 Normal;
     vec3 position;

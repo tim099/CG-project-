@@ -34,7 +34,7 @@ void Texture::usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int n
 }
 GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){
 	GLfloat vertex_buffer_data[18];
-	Vertex::gen_quad_vt(vertex_buffer_data,pos,glm::vec3(width,height,0));
+	Vertex::gen_quad_vt(vertex_buffer_data,pos,glm::vec3(width,height,0),true);
 	return Buffer::gen_buffer(vertex_buffer_data,sizeof(vertex_buffer_data));
 }
 void Texture::draw_texture(Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
