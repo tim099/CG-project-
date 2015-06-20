@@ -26,12 +26,12 @@ void main(){
 
  	vec2 dUV1=vertout[1].UV-vertout[0].UV;
     vec2 dUV2=vertout[2].UV-vertout[0].UV;
-	float r=1.0f/(dUV1.x*dUV2.y-dUV1.y*dUV2.x);
+    float val=(dUV1.x*dUV2.y-dUV1.y*dUV2.x);
+    if(abs(val)<0.00001f)val=0.00001f;
+	float r=1.0f/val;
 	
 	vec3 T=(M*vec4((dPos1*dUV2.y-dPos2*dUV1.y)*r,0)).xyz;//
 	vec3 B=(M*vec4((dPos2*dUV1.x-dPos1*dUV2.x)*r,0)).xyz;//
-	
-
 
 	for(int i=0;i<3;i++){
 		gl_Position=gl_in[i].gl_Position;

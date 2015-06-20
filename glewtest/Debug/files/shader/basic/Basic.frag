@@ -22,7 +22,9 @@ uniform vec3 pointlight_pos[MAX_LIGHT];
 uniform vec3 pointlight_color[MAX_LIGHT];
 uniform vec4 mat;
 
-
+float specular_value(float specular_val){
+	return mat.y*pow(specular_val,100*mat.y);//mat.w
+}
 vec3 light(vec3 N){
 	vec3 total_light=vec3(0,0,0);
     vec3 light_v;
@@ -40,7 +42,7 @@ vec3 light(vec3 N){
 		reflect_v=light_v-(2*dot(N,light_v))*N;		
 		specular_val=dot(pos_cam_v,normalize(reflect_v));
 		if(specular_val>0.0f){
-			light_val+=mat.y*pow(specular_val,mat.w);			
+			light_val+=specular_value(specular_val);			
 		}
 		light_val/=(light_dis*light_dis);
 		if(light_val<0.0)light_val=0.0;	
@@ -54,7 +56,7 @@ vec3 light(vec3 N){
     	reflect_v=light_v-(2*dot(N,light_v))*N;
     	specular_val=dot(pos_cam_v,normalize(reflect_v));
     	if(specular_val>0.0f){
-			light_val+=mat.y*pow(specular_val,mat.w);			
+			light_val+=specular_value(specular_val);			
 		}
 		if(light_val<0.0)light_val=0.0;	
     	total_light+=light_val*parallellight_color[i];  
@@ -63,7 +65,7 @@ vec3 light(vec3 N){
 }
 void main(){ 
 	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);
-    vec3 total_light=light(vert.Normal);
+    vec3 total_light=light(vert.Normal)+mat.w;
 
-    color = vec4((total_light+mat.z)*tex_color,1.0);
+    color = vec4((total_light)*tex_color,1.0);
 }

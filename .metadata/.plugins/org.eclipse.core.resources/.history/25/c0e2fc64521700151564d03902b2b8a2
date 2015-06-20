@@ -1,0 +1,10 @@
+#LOADTEXTURE_SCRIPT
+
+Texture Name:
+	mypic
+TexturePath:
+	files/texture/input.bmp
+
+
+
+#END

@@ -1,0 +1,21 @@
+/*
+ * File.cpp
+ *
+ *  Created on: 2015/6/20
+ *      Author: USER
+ */
+
+#include <class/tim/file/File.h>
+
+namespace Tim {
+
+File::File() {
+	// TODO Auto-generated constructor stub
+
+}
+
+File::~File() {
+	// TODO Auto-generated destructor stub
+}
+
+} /* namespace Tim */

@@ -1,0 +1,25 @@
+#include "class/tim/file/File.h"
+#include <cstring>
+namespace Tim {
+
+File::File() {
+
+}
+File::~File() {
+
+}
+void File::getline(std::fstream &file,char* line,int size,bool skip_blank_line=true){
+	if(skip_blank_line){
+		while(true){
+			file.getline(line,size);
+			if(strlen(line)!=0)return;
+		}
+	}else{
+		file.getline(line,size);
+	}
+}
+
+
+
+
+} /* namespace Tim */

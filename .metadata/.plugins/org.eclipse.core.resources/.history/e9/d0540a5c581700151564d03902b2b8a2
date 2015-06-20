@@ -1,0 +1,19 @@
+#LOADTEXTURE_SCRIPT
+
+
+
+Header:
+
+
+Texture Name:
+mypic
+TexturePath:
+files/texture/input.bmp
+	
+Texture Name:
+NormalTexture
+TexturePath:
+files/texture/normal.bmp
+
+
+#END

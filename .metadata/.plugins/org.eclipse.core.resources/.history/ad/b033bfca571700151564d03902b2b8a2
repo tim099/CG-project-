@@ -1,0 +1,16 @@
+#include "class/tim/file/File.h"
+
+namespace Tim {
+
+File::File() {
+
+}
+File::~File() {
+
+}
+
+
+
+
+
+} /* namespace Tim */

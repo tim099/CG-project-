@@ -47,14 +47,7 @@ Test::~Test() {
 	}
 }
 void Test::creat_tex(TextureMap* texmap){
-	texmap->push_tex(std::string("mypic"),Texture2D::loadBMP_to_sobel("files/texture/input.bmp"));
-	texmap->push_tex(std::string("NormalTexture"),Texture2D::loadBMP("files/texture/normal.bmp"));
-	texmap->push_tex(std::string("NormalTexture6"),Texture2D::loadBMP("files/texture/normal6.bmp"));
-	texmap->push_tex(std::string("test"),Texture2D::loadBMP("files/texture/test.bmp"));
-	texmap->push_tex(std::string("test2"),Texture2D::loadBMP("files/texture/test2.bmp"));
-	texmap->push_tex(std::string("test3"),Texture2D::loadBMP("files/texture/test3.bmp"));
-	texmap->push_tex(std::string("galaxy"),Texture2D::loadBMP("files/texture/galaxy.bmp"));
-	texmap->push_tex(std::string("doge"),Texture2D::loadBMP("files/texture/doge.bmp"));
+	texmap->Load_texture_script(std::string("files/script/loadTexture/loadTestTexture.txt"));
 }
 void Test::input(Camera *camera){
 	if(mouse->mid){

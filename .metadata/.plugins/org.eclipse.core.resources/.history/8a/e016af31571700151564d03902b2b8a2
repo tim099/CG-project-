@@ -1,0 +1,15 @@
+#ifndef FILE_H_
+#define FILE_H_
+#include <fstream>
+namespace Tim {
+
+class File {
+public:
+	File();
+	virtual ~File();
+	void getline(std::fstream &file,char* line,int max_len,bool skip_blank_line=true);
+};
+
+} /* namespace Tim */
+
+#endif /* FILE_H_ */

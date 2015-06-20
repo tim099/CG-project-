@@ -1,0 +1,35 @@
+#include "class/texture/TextureMap.h"
+#include "class/texture/texture2D/Texture2D.h"
+#include <cstdio>
+#include <iostream>
+TextureMap::TextureMap() {
+
+}
+TextureMap::~TextureMap() {
+	std::map<std::string,Texture*>::iterator it=textures.begin();
+	while(it!=textures.end()){
+		delete (it->second);
+		it++;
+	}
+}
+void TextureMap::Load_texture(std::string script_name){
+	FILE * fop = fopen(script_name.c_str(),"r");
+	char line[500];
+	fscanf(fop,"%s",line);
+	if(!strcmp(line,"#LOADTEXTURE_SCRIPT")){
+		std::cout<<"Start Loading Script File"<<std::endl;
+	}else{
+		std::cout<<"Load Fail"<<std::endl;
+		return;
+	}
+	//std::cout<<name<<std::endl;
+	//fscanf(fop,"#LOADTEXTURE_SCRIPT\n");
+
+
+}
+void TextureMap::push_tex(std::string tex_name,Texture* tex){
+	textures[tex_name]=tex;
+}
+Texture* TextureMap::get_tex(std::string tex_name){
+	return textures[tex_name];
+}

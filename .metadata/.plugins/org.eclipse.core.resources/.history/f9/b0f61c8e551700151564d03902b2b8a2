@@ -1,0 +1,61 @@
+#include "class/texture/TextureMap.h"
+#include "class/texture/texture2D/Texture2D.h"
+#include <cstdio>
+#include <string>
+#include <iostream>
+#include <fstream>
+TextureMap::TextureMap() {
+
+}
+TextureMap::~TextureMap() {
+	std::map<std::string,Texture*>::iterator it=textures.begin();
+	while(it!=textures.end()){
+		delete (it->second);
+		it++;
+	}
+}
+void TextureMap::Load_texture_script(std::string script_path){
+	char line[500];
+	std::fstream file;
+	file.open(script_path.c_str(),std::ios::in);
+	file.getline(line,sizeof(line));
+	if(!strcmp(line,"#LOADTEXTURE_SCRIPT")){
+		std::cout<<"Start Loading Script File:"<<script_path<<std::endl;
+	}else{
+		std::cerr<<"Load_texture Fail:"<<script_path<<std::endl;
+		return;
+	}
+
+	file.close();
+	/*
+
+	std::string folder_path;
+	std::string name,path;
+	while(true){
+		fscanf(fop,"%s",line);
+		if(!strcmp(line,"#END"))break;
+		fscanf(fop,"%s",line);
+		if(!strcmp(line,"Texture Name:")){
+			fscanf(fop,"%s",line);
+			name=std::string(line);
+			std::cout<<"name:"<<name<<std::endl;
+			fscanf(fop,"%s",line);
+			if(!strcmp(line,"TexturePath:")){
+				path=std::string(line);
+				std::cout<<"path:"<<path<<std::endl;
+				push_tex(name,Texture2D::loadBMP(path.c_str()));
+
+			}
+		}
+	}
+	//std::cout<<name<<std::endl;
+	//fscanf(fop,"#LOADTEXTURE_SCRIPT\n");
+	 */
+
+}
+void TextureMap::push_tex(std::string tex_name,Texture* tex){
+	textures[tex_name]=tex;
+}
+Texture* TextureMap::get_tex(std::string tex_name){
+	return textures[tex_name];
+}
