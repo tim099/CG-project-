@@ -14,21 +14,34 @@ String::~String() {
 void String::gen_array_num(char *str,int num){
 	sprintf(str,"[%d]",num);
 }
-void String::skip_blank_space(char *str){
-	int i,start=-1;
-	for(i=0;true;i++){
-		if(start==-1&&str[i]!=' '&&str[i]!='\t'){//not start yet
-			start=i;
-			if(i==0)break;
+bool String::within(char c,const std::string& str){
+	for(unsigned j=0;j<str.length();j++){
+		if(c==str[j])return true;
+	}
+	return false;
+}
+void String::skip(char *str,std::string cskip){
+	bool start=false;
+	int i,cur_at=0;
+	std::cout<<"skip start"<<str<<std::endl;
+	for(i=0;str[i]!='\0';i++){
+		if(!start){//not start yet
+			if(!within(str[i],cskip))start=true;//start
 		}
-		if(start!=-1){
-			str[i-start]=str[i];
-		}
-		if(str[i]=='\0'){
-			break;
+		if(start){
+				str[cur_at++]=str[i];
 		}
 	}
-	//if(start!=-1)str[i-start]='\0';
+	while(within(str[cur_at],cskip)){
+		cur_at--;
+	}
+	if(start!=-1){
+		str[cur_at]='\0';
+		std::cout<<"cur_at="<<cur_at<<","<<str<<std::endl;
+	}
+}
+void String::skip_blank_space(char *str){
+	skip(str,std::string(" 	"));
 }
 
 }

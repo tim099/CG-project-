@@ -1,0 +1,39 @@
+#include "class/tim/string/String.h"
+#include "class/tim/math/Math.h"
+#include <cmath>
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+namespace Tim {
+String::String() {
+
+}
+String::~String() {
+
+}
+void String::gen_array_num(char *str,int num){
+	sprintf(str,"[%d]",num);
+}
+void String::skip(char *str,std::string cskip){
+	int i,start=-1,cur_at=0;
+
+	for(i=0;str[i]!='\0';i++){
+		if(start==-1){//not start yet
+			for(unsigned j=0;j<cskip.length();j++){
+				if(str[i]==cskip[j])break;
+				if(j==cskip.length()-1)start=i;//start
+			}
+		}else{
+			str[cur_at++]=str[i];
+		}
+	}
+	if(start!=-1){
+		std::cout<<"cur_at="<<cur_at<<","<<str<<std::endl;
+		str[i-start]='\0';
+	}
+}
+void String::skip_blank_space(char *str){
+	skip(str,std::string(" 	"));
+}
+
+}
