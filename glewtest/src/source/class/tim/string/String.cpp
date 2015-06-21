@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
+#include <cstring>
 namespace Tim {
 String::String() {
 

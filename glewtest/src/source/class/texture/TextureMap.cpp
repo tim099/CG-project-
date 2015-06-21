@@ -4,6 +4,7 @@
 #include "class/tim/string/String.h"
 #include <cstdio>
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <fstream>
 TextureMap::TextureMap(std::string script_path) {
