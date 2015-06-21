@@ -41,15 +41,13 @@ void TextureMap::Load_texture(std::istream &is,const std::string &folder_path){
 }
 void TextureMap::Load_Header(std::istream &is,std::string &folder_path){
 	std::string line;
-	Tim::String::get_line(is,line,true,true);
-	if(line!="FolderPath:"){
+	if(Tim::String::get_line(is,line,true,true)&&line!="FolderPath:"){
 		std::cerr<<"Load_Header No FolderPath!!"<<line<<std::endl;
 		return;
 	}
 	Tim::String::get_line(is,line,true,true);
 	folder_path=std::string(line);
-	Tim::String::get_line(is,line,true,true);
-	if(line!="#HEADER_END"){
+	if(Tim::String::get_line(is,line,true,true)&&line!="#HEADER_END"){
 		std::cerr<<"Load_Header No #HEADER_END!!"<<line<<std::endl;
 		return;
 	}
@@ -60,14 +58,12 @@ void TextureMap::Load_texture_script(std::string script_path){
 
 	file.open(script_path.c_str(),std::ios::in);
 	std::istream is(&file);
-	Tim::String::get_line(is,line,true,true);
-	if(line!="#LOADTEXTURE_SCRIPT"){
+	if(Tim::String::get_line(is,line,true,true)&&line!="#LOADTEXTURE_SCRIPT"){
 		std::cerr<<"Load_texture Fail:"<<script_path<<std::endl;
 		return;
 	}
 	std::string folder_path;
-	Tim::String::get_line(is,line,true,true);
-	if(line!="#HEADER"){
+	if(Tim::String::get_line(is,line,true,true)&&line!="#HEADER"){
 		std::cerr<<"Load_texture No Header!!"<<line<<std::endl;
 		return;
 	}else{

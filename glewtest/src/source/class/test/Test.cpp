@@ -24,7 +24,7 @@ Test::Test() {
 	callback_rigister(window->get_window(),keyboard,mouse);
 	creat_shader();
     load_map();
-    creat_light();
+    creat_light();//
     prepare_draw_obj();
     creat_frame_buffer();
     glEnable(GL_DEPTH_TEST);
@@ -486,7 +486,6 @@ void Test::timer_tic(double &time){
 
 	if(cur_shader==shaderBasic){
 		shaderBasic->active_shader();
-		//Shader::active_shader(shaderBasic);
 		draw_all_objects(FBO,camera,time);
 		/*Camera cam2=*camera;
 		cam2.move(-1.0f*cam2.yaw_vec());
@@ -500,14 +499,12 @@ void Test::timer_tic(double &time){
 				glm::vec3(0.3,0,0),0.3);
 				*/
 	}else if(cur_shader==shaderNormalMapping){
-		//Shader::active_shader(shaderShadowMapping);
 		shaderShadowMapping->active_shader();
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
     	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);
 		glm::mat4 PLVP[6];
 		PointLight_shadow_maps(shaderShadowMapping->programID,PSFBO,lightControl->get_point_light(0),PLVP);
 		shaderNormalMapping->active_shader();
-		//Shader::active_shader(shaderNormalMapping.);
 		Uniform::sentMat4Arr(shaderNormalMapping->programID,LVP,
 				lightControl->parallel_light_size(),std::string("parallelLVP[0]"));
 		Uniform::sentMat4Arr(shaderNormalMapping->programID,PLVP,6,std::string("pointLVP[0]"));
@@ -522,7 +519,6 @@ void Test::timer_tic(double &time){
 		draw_all_objects(FBO,camera,time);
 
 	}else if(cur_shader==shaderShadowMapping){
-    	//Shader::active_shader(shaderShadowMapping);
     	shaderShadowMapping->active_shader();
     	glm::mat4 LVP[lightControl->parallel_lights.size()];
     	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);

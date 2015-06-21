@@ -1,54 +1,56 @@
 #LOADTEXTURE_SCRIPT
 
-Header:
+#HEADER
 
-	FolderPath:
-		files/texture/
+FolderPath:
+    files/texture/
+
+  #HEADER_END
 
 Texture:
-	Texture Name:
+	TextureName:
 		mypic
 	TexturePath:
 		input.bmp
 		
 Texture:
-	Texture Name:
+	TextureName:
 		NormalTexture
 	TexturePath:
 		normal.bmp
 		
 Texture:
-	Texture Name:
+	TextureName:
 		NormalTexture6
 	TexturePath:
 		normal6.bmp
 		
 Texture:
-	Texture Name:
+	TextureName:
 		test
 	TexturePath:
 		test.bmp
 
 Texture:
-	Texture Name:
+	TextureName:
 		test2
 	TexturePath:
 		test2.bmp
 
 Texture:
-	Texture Name:
+	TextureName:
 		test3
 	TexturePath:
 		test3.bmp
 
 Texture:
-	Texture Name:
+	TextureName:
 		galaxy
 	TexturePath:
 		galaxy.bmp
 
 Texture:
-	Texture Name:
+	TextureName:
 		doge
 	TexturePath:
 		doge.bmp

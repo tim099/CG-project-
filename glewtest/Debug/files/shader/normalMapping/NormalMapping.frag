@@ -209,8 +209,8 @@ void main(){
     vec3 total_light=parallel_light(Normal,vert.position)
     	+point_light(Normal,vert.position)+mat.w;//matw=emissive
     
-    color = vec4((total_light)*tex_color+light_scattering(vert.position),1.0);
- 	//color = vec4((total_light)*tex_color,1.0);
+    //color = vec4((total_light)*tex_color+light_scattering(vert.position),1.0);
+ 	color = vec4((total_light)*tex_color,1.0);
 	//color = vec4((0.5*Normal)+0.5,1.0);//(TBN*vec3(0,1,0)tex_normalvert.Normal
 	
 }
