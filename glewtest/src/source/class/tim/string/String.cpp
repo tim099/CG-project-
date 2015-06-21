@@ -11,6 +11,21 @@ String::String() {
 String::~String() {
 
 }
+bool String::getline(std::istream &is,char* line,int size,bool skip_blankline,bool skip_blankspace){
+	if(is.eof())return false;
+	if(skip_blankline){
+		while(!is.eof()){
+			is.getline(line,size);
+			if(strlen(line)!=0)break;
+		}
+	}else{
+		is.getline(line,size);
+	}
+	if(skip_blankspace){
+		Tim::String::skip(line,std::string(" 	"));
+	}
+	return true;
+}
 void String::gen_array_num(char *str,int num){
 	sprintf(str,"[%d]",num);
 }
@@ -20,10 +35,28 @@ bool String::within(char c,const std::string& str){
 	}
 	return false;
 }
-void String::skip(char *str,std::string cskip){
+std::string String::substring(std::string str,int start,int end){
+	std::string sub;
+	for(int i=start;i<end;i++){
+		sub+=str[i];
+	}
+	return sub;
+}
+std::vector<std::string> String::split(std::string str,std::string delimiter){
+	std::vector<std::string> out;
+	/*int i=0,prev=0;
+	char* cur_at=str.c_str();
+	while(true){
+		i=skip(cur_at,delimiter);
+		if(i>0)cur_at+=i;
+		else break;
+	}*/
+
+	return out;
+}
+int String::skip(char *str,std::string cskip){
 	bool start=false;
 	int i,cur_at=0;
-	std::cout<<"skip start"<<str<<std::endl;
 	for(i=0;str[i]!='\0';i++){
 		if(!start){//not start yet
 			if(!within(str[i],cskip))start=true;//start
@@ -37,11 +70,8 @@ void String::skip(char *str,std::string cskip){
 	}
 	if(start!=-1){
 		str[cur_at]='\0';
-		std::cout<<"cur_at="<<cur_at<<","<<str<<std::endl;
 	}
-}
-void String::skip_blank_space(char *str){
-	skip(str,std::string(" 	"));
+	return cur_at;
 }
 
 }

@@ -7,7 +7,6 @@ class File {
 public:
 	File();
 	virtual ~File();
-	static bool getline(std::fstream &file,char* line,int size,bool skip_blankline=true,bool skip_blankspace=true);
 };
 
 } /* namespace Tim */

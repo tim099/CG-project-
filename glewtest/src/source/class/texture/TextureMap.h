@@ -13,7 +13,7 @@ public:
 	void push_tex(std::string tex_name,Texture* tex);
 	Texture* get_tex(std::string tex_name);
 protected:
-	void Load_texture(std::fstream &file,const std::string &folder_path);
+	void Load_texture(std::istream &is,const std::string &folder_path);
 	std::map<std::string,Texture*>textures;
 };
 

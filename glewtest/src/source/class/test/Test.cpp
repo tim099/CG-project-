@@ -579,6 +579,11 @@ void Test::timer_tic(double &time){
     time=glfwGetTime();
 }
 void Test::Mainloop(){
+	std::string strtest("just for test");
+	std::cout<<Tim::String::substring(strtest,0,5)<<std::endl;
+	std::cout<<Tim::String::substring(strtest,1,8)<<std::endl;
+	std::cout<<Tim::String::substring(strtest,3,5)<<std::endl;
+	std::cout<<Tim::String::substring(strtest,5,8)<<std::endl;
     double time=0;
     while(!glfwWindowShouldClose(window->get_window())){
     	timer_tic(time);
