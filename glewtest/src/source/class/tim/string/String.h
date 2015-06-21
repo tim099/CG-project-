@@ -8,11 +8,10 @@ class String {
 public:
 	String();
 	virtual ~String();
-	static bool getline(std::istream &is,char* line,int size,bool skip_blankline=true,bool skip_blankspace=true);
+	static bool get_line(std::istream &is,std::string& strline,bool skip_blankline=true,bool skip_blankspace=true);
 	static bool within(char c,const std::string& str);
 	static void gen_array_num(char *str,int num);
-	static std::string substring(std::string str,int start,int end);
-	static int skip(char *str,std::string skip);
+	static std::string cut(std::string str,std::string skip,bool front=true,bool back=true);
 	static std::vector<std::string> split(std::string str,std::string delimiter);
 
 };

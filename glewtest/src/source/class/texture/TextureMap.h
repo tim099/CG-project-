@@ -7,13 +7,14 @@
 #include <map>
 class TextureMap {
 public:
-	TextureMap();
+	TextureMap(std::string script_path=std::string("NULL"));
 	virtual ~TextureMap();
 	void Load_texture_script(std::string script_path);
 	void push_tex(std::string tex_name,Texture* tex);
 	Texture* get_tex(std::string tex_name);
 protected:
 	void Load_texture(std::istream &is,const std::string &folder_path);
+	void Load_Header(std::istream &is,std::string &folder_path);
 	std::map<std::string,Texture*>textures;
 };
 

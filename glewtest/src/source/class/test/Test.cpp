@@ -12,19 +12,18 @@ Test::Test() {
 	to_sobel=false;
 	shader_at=0;
 
+	window=new Window(glm::ivec2(1366,730),"hello tim",false);
 	lightControl=new LightControl(5000);
-	texmap=new TextureMap();
+	texmap=new TextureMap(std::string("files/script/loadTexture/loadTestTexture.txt"));
 	keyboard=new KeyBoard();
 	mouse=new Mouse();
 	DOC=new DrawObjectCreater();
-	window=new Window(glm::ivec2(1366,730),"hello tim",false);
 	camera=new Camera(glm::vec3(36.0,24.0,24.0),glm::vec3(34.0,22.0,27.0),
-			glm::vec3(0,1,0),60.0,0.1f,100000.0f);
+			glm::vec3(0,1,0),60.0,0.1f,50000.0f);
 	VertexArrayID=Buffer::GenVertexArray();
 	callback_rigister(window->get_window(),keyboard,mouse);
 	creat_shader();
     load_map();
-    creat_tex(texmap);
     creat_light();
     prepare_draw_obj();
     creat_frame_buffer();
@@ -35,19 +34,16 @@ Test::Test() {
     //glDepthRange(0.0f,1.0f);
 }
 Test::~Test() {
+	delete window;
 	delete lightControl;
 	delete texmap;
 	delete keyboard;
 	delete mouse;
 	delete DOC;
-	delete window;
 	delete camera;
 	for(unsigned i=0;i<shaders.size();i++){
 		delete shaders.at(i);
 	}
-}
-void Test::creat_tex(TextureMap* texmap){
-	texmap->Load_texture_script(std::string("files/script/loadTexture/loadTestTexture.txt"));
 }
 void Test::input(Camera *camera){
 	if(mouse->mid){
@@ -351,8 +347,8 @@ void Test::prepare_draw_obj(){
 	Model* m2=Model::load_obj("files/obj/cube.obj",40.0);
 	Model* m3=Model::load_obj("files/obj/ico.obj",0.1);
 	Model* m4=Model::load_obj("files/obj/stars.obj",10000.0);
-	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",20000.0);
-	Model* m6=Model::load_obj("files/obj/cube.obj",60000.0);
+	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",16000.0);
+	Model* m6=Model::load_obj("files/obj/cube.obj",40000.0);
 	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
 
 	m->mat=glm::vec4(0.1,1.0,0.02,0.05);
@@ -579,11 +575,6 @@ void Test::timer_tic(double &time){
     time=glfwGetTime();
 }
 void Test::Mainloop(){
-	std::string strtest("just for test");
-	std::cout<<Tim::String::substring(strtest,0,5)<<std::endl;
-	std::cout<<Tim::String::substring(strtest,1,8)<<std::endl;
-	std::cout<<Tim::String::substring(strtest,3,5)<<std::endl;
-	std::cout<<Tim::String::substring(strtest,5,8)<<std::endl;
     double time=0;
     while(!glfwWindowShouldClose(window->get_window())){
     	timer_tic(time);

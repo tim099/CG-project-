@@ -42,7 +42,6 @@ class Test {
 public:
 	Test();
 	virtual ~Test();
-	static void creat_tex(TextureMap* texmap);
 	void input(Camera *camera);
 	void load_map();
 	void creat_map_object(int px,int pz,int size);
