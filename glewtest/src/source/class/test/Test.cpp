@@ -45,7 +45,7 @@ Test::~Test() {
 		delete shaders.at(i);
 	}
 }
-void Test::input(Camera *camera){
+void Test::input(){
 	if(mouse->mid){
 		//std::cout<<"move"<<(int)(mouse->pos.x)<<","<<(int)mouse->prev_pos.x<<std::endl;
 		camera->rotate(glm::vec3(0,1,0),-0.15*mouse->pos_delta().x);
@@ -110,7 +110,7 @@ void Test::input(Camera *camera){
 		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	if(keyboard->get('L')){
-		cur_shader=shaderShadowMapping;
+		cur_shader=shaderLightScatter;
 	}
 	if(keyboard->get(GLFW_KEY_LEFT)){
 		if(shader_at>0)shader_at--;
@@ -410,30 +410,38 @@ void Test::creat_shader(){
 	shaderBasic->LoadShader("files/shader/basic/Basic.vert",
 			"files/shader/basic/Basic.geo",
 			"files/shader/basic/Basic.frag");
+	shaders.push_back(shaderBasic);
+
 	shaderNormalMapping=new Shader();
 	shaderNormalMapping->LoadShader("files/shader/normalMapping/NormalMapping.vert",
 			"files/shader/normalMapping/NormalMapping.geo",
 			"files/shader/normalMapping/NormalMapping.frag");
+	shaders.push_back(shaderNormalMapping);
+	shaderLightScatter=new Shader();
+	shaderLightScatter->LoadShader("files/shader/lightScatter/LightScatter.vert",
+			"files/shader/lightScatter/LightScatter.geo",
+			"files/shader/lightScatter/LightScatter.frag");
+
+	shaders.push_back(shaderLightScatter);
+
 	shader2D=new Shader2D();
 	shader2D->LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
+	shaders.push_back(shader2D);
 	shaderShadowMapping=new Shader();
 	shaderShadowMapping->LoadShader("files/shader/shadow/ShadowMapping.vert"
 			,"files/shader/shadow/ShadowMapping.frag");
+	shaders.push_back(shaderShadowMapping);
 	shadercubeShadowMapping=new Shader();
 	shadercubeShadowMapping->LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
 			,"files/shader/shadow/cubeShadow/CubeShadowMapping.geo"
 			,"files/shader/shadow/cubeShadow/CubeShadowMapping.frag");
+	shaders.push_back(shadercubeShadowMapping);
 	shaderTest=new Shader();
 	shaderTest->LoadShader("files/shader/test/test.vert",
 			"files/shader/test/test.geo",
 			"files/shader/test/test.frag");
+	shaders.push_back(shaderTest);
 
-	shaders.push_back(shaderBasic);
-	shaders.push_back(shaderNormalMapping);
-	shaders.push_back(shaderShadowMapping);
-	//shaders.push_back(shader2D);
-	//shaders.push_back(shadercubeShadowMapping);
-	//shaders.push_back(shaderTest);
 	cur_shader=shaderNormalMapping;
 }
 void Test::creat_light(){
@@ -477,7 +485,7 @@ void Test::timer_tic(double &time){
     keyboard->tic();
     glfwPollEvents();//get all input
     mouse->get_world_space_pos(FBO,window->get_size(),glm::inverse(camera->view_matrix(window->aspect())));
-    input(camera);
+    input();
 
     camera->tic();
     update_map(camera);
@@ -487,17 +495,6 @@ void Test::timer_tic(double &time){
 	if(cur_shader==shaderBasic){
 		shaderBasic->active_shader();
 		draw_all_objects(FBO,camera,time);
-		/*Camera cam2=*camera;
-		cam2.move(-1.0f*cam2.yaw_vec());
-		draw_all_objects(FBO1,camera,time);
-		draw_all_objects(FBO2,&cam2,time);
-		FBO->bind_buffer();
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
-		Texture::draw_texture(FBO1->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0,
-				glm::vec3(-0.3,0,0),0.3);
-		Texture::draw_texture(FBO2->color_textures.at(0),shader2D,window->aspect(),window->aspect(),1.0,
-				glm::vec3(0.3,0,0),0.3);
-				*/
 	}else if(cur_shader==shaderNormalMapping){
 		shaderShadowMapping->active_shader();
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
@@ -517,7 +514,25 @@ void Test::timer_tic(double &time){
 		Texture::usetextureVec(shaderNormalMapping->programID,PSFBO->depth_textures,
 				3+lightControl->parallel_light_size(),"pointdepthMap");
 		draw_all_objects(FBO,camera,time);
+	}else if(cur_shader==shaderLightScatter){
+		shaderShadowMapping->active_shader();
+		glm::mat4 LVP[lightControl->parallel_lights.size()];
+    	ParallelLights_shadow_map(shaderShadowMapping->programID,SFBO,lightControl->parallel_lights,camera,LVP,time);
+		glm::mat4 PLVP[6];
+		PointLight_shadow_maps(shaderShadowMapping->programID,PSFBO,lightControl->get_point_light(0),PLVP);
+		shaderLightScatter->active_shader();
+		Uniform::sentMat4Arr(shaderLightScatter->programID,LVP,
+				lightControl->parallel_light_size(),std::string("parallelLVP[0]"));
+		Uniform::sentMat4Arr(shaderLightScatter->programID,PLVP,6,std::string("pointLVP[0]"));
 
+		glm::mat4 biasMat=Tim::Math::BiasMat();
+		glUniformMatrix4fv(glGetUniformLocation(shaderLightScatter->programID,"biasMat"),1
+				,GL_FALSE,&(biasMat[0][0]));
+
+		Texture::usetextureVec(shaderLightScatter->programID,SFBO->depth_textures,3,"depthMap");
+		Texture::usetextureVec(shaderLightScatter->programID,PSFBO->depth_textures,
+				3+lightControl->parallel_light_size(),"pointdepthMap");
+		draw_all_objects(FBO,camera,time);
 	}else if(cur_shader==shaderShadowMapping){
     	shaderShadowMapping->active_shader();
     	glm::mat4 LVP[lightControl->parallel_lights.size()];

@@ -1,1 +1,64 @@
-Info: Nothing to build for glewtest
+18:09:14 **** Incremental Build of configuration Debug for project glewtest ****
+Info: Internal Builder is used for build
+g++ "-IC:\\Users\\USER\\Desktop\\c++\\glewtest\\glewtest\\src\\source" -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\source\\class\\test\\Test.o" "..\\src\\source\\class\\test\\Test.cpp" 
+In file included from c:\mingw\include\glm\gtc\matrix_transform.hpp:292:0,
+                 from c:\mingw\include\glm\gtx\transform.hpp:46,
+                 from C:\Users\USER\Desktop\c++\glewtest\glewtest\src\source/class/test/Test.h:8,
+                 from ..\src\source\class\test\Test.cpp:1:
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, P> glm::rotate(const glm::detail::tmat4x4<T, P>&, const T&, const glm::detail::tvec3<T, P>&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:79:165: note: #pragma message: GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                     ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, P> glm::rotate_slow(const glm::detail::tmat4x4<T, P>&, const T&, const glm::detail::tvec3<T, P>&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:120:170: note: #pragma message: GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                          ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::perspective(const valType&, const valType&, const valType&, const valType&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:253:170: note: #pragma message: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                          ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::perspectiveFov(const valType&, const valType&, const valType&, const valType&, const valType&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:285:173: note: #pragma message: GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                             ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::infinitePerspective(T, T, T)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:311:178: note: #pragma message: GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                                  ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::tweakedInfinitePerspective(T, T, T)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:339:185: note: #pragma message: GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                                         ^
+g++ "-IC:\\Users\\USER\\Desktop\\c++\\glewtest\\glewtest\\src\\source" -O0 -g3 -Wall -c -fmessage-length=0 -o "src\\glewtest.o" "..\\src\\glewtest.cpp" 
+In file included from c:\mingw\include\glm\gtc\matrix_transform.hpp:292:0,
+                 from c:\mingw\include\glm\gtx\transform.hpp:46,
+                 from C:\Users\USER\Desktop\c++\glewtest\glewtest\src\source/class/test/Test.h:8,
+                 from ..\src\glewtest.cpp:1:
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, P> glm::rotate(const glm::detail::tmat4x4<T, P>&, const T&, const glm::detail::tvec3<T, P>&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:79:165: note: #pragma message: GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                     ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, P> glm::rotate_slow(const glm::detail::tmat4x4<T, P>&, const T&, const glm::detail::tvec3<T, P>&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:120:170: note: #pragma message: GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                          ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::perspective(const valType&, const valType&, const valType&, const valType&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:253:170: note: #pragma message: GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                          ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::perspectiveFov(const valType&, const valType&, const valType&, const valType&, const valType&)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:285:173: note: #pragma message: GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                             ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::infinitePerspective(T, T, T)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:311:178: note: #pragma message: GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                                  ^
+c:\mingw\include\glm\gtc\matrix_transform.inl: In function 'glm::detail::tmat4x4<T, (glm::precision)0u> glm::tweakedInfinitePerspective(T, T, T)':
+c:\mingw\include\glm\gtc\matrix_transform.inl:339:185: note: #pragma message: GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+ #  pragma message("GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.")
+                                                                                                                                                                                         ^
+g++ -o glewtest.exe "src\\source\\headers\\callback\\callBackFunc.o" "src\\source\\class\\window\\Window.o" "src\\source\\class\\uniform\\Uniform.o" "src\\source\\class\\tim\\string\\String.o" "src\\source\\class\\tim\\math\\Position.o" "src\\source\\class\\tim\\math\\Math.o" "src\\source\\class\\tim\\file\\File.o" "src\\source\\class\\texture\\texture2D\\Texture2D.o" "src\\source\\class\\texture\\TextureMap.o" "src\\source\\class\\texture\\Texture.o" "src\\source\\class\\texture\\Image.o" "src\\source\\class\\test\\Test.o" "src\\source\\class\\shader\\shader2D\\Shader2D.o" "src\\source\\class\\shader\\Shader.o" "src\\source\\class\\model\\obj\\Obj.o" "src\\source\\class\\model\\obj\\Face.o" "src\\source\\class\\model\\cube\\CubeModel.o" "src\\source\\class\\model\\Vertex.o" "src\\source\\class\\model\\Model.o" "src\\source\\class\\light\\PointLight.o" "src\\source\\class\\light\\ParallelLight.o" "src\\source\\class\\light\\LightControl.o" "src\\source\\class\\light\\Light.o" "src\\source\\class\\input\\mouse\\Mouse.o" "src\\source\\class\\input\\keyboard\\KeyBoard.o" "src\\source\\class\\input\\Input.o" "src\\source\\class\\draw\\DrawObjectCreater.o" "src\\source\\class\\draw\\DrawObject.o" "src\\source\\class\\camera\\Camera.o" "src\\source\\class\\buffer\\frameBuffer\\FrameBuffer.o" "src\\source\\class\\buffer\\BufferObject.o" "src\\source\\class\\buffer\\Buffer.o" "src\\glewtest.o" -lglfw3 -lopengl32 -lglew32 -lgdi32 -lglu32 
+
+18:09:18 Build Finished (took 3s.639ms)
+

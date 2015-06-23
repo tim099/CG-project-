@@ -71,39 +71,6 @@ int check_vec(vec3 v){
 float specular_value(float specular_val){
 	return mat.y*pow(specular_val,100*mat.y);//mat.w
 }
-vec3 light_scattering(vec4 pos){
-	vec3 total_scatter=vec3(0,0,0);
-	vec4 LVP_pos;
-    vec2 t;	
-    float z_val;
-	float del;
-	float scatter_value;
-	for(int i=0;i<parallellight_num;i++){ 
-		scatter_value=0.0;
-		vec3 interpolated_sample;	
-		vec3 delvec=pos.xyz-camera_pos;
-		float len=length(delvec);
-		if(len>200)len=200;
-		delvec=normalize(delvec);
-		for(int j=0;j<50;j++){
-			interpolated_sample=camera_pos+(len*delvec)/100*(50+j);
-			LVP_pos=biasMat *parallelLVP[i]*vec4(interpolated_sample,1.0);
-			LVP_pos/=LVP_pos.w;
-			
-			t=LVP_pos.xy;	
-   	 		z_val=(texture2D(depthMap[i],t).x);//shadowMapDepth/LVP_pos.w
-			del=z_val-LVP_pos.z;	
-		
-			if((t.x<=1.0&&t.y<=1.0&&t.x>=0.0&&t.y>=0.0)){//in depth map
-				if((del>0.0002)){				
-				 	  scatter_value+=0.001; 	   	
-    			}
-			}		
-		}
-		total_scatter+=scatter_value*parallellight_color[i];
-	}
-	return total_scatter;
-}
 vec3 point_light(vec3 N,vec4 pos){
 	vec3 total_light=vec3(0,0,0);
     vec3 light_v,reflect_v;

@@ -42,7 +42,7 @@ class Test {
 public:
 	Test();
 	virtual ~Test();
-	void input(Camera *camera);
+	void input();
 	void load_map();
 	void creat_map_object(int px,int pz,int size);
 	void creat_cube_obj();
@@ -86,6 +86,7 @@ private:
 	TextureMap* texmap;
 	Shader* cur_shader;
 	Shader2D *shader2D;
+	Shader	*shaderLightScatter;
 	Shader* shaderBasic,*shaderNormalMapping,*shaderShadowMapping;
 	Shader* shadercubeShadowMapping,*shaderTest;
 
