@@ -49,7 +49,7 @@ public:
 	void draw_map(Camera *camera);
 	void set_obj_pos(Camera *camera);
 	void update_map(Camera *camera);
-	void draw_all_objects(FrameBuffer *FBO,Camera *camera,double &time);
+	void draw_all_objects(Shader *shader,FrameBuffer *FBO,Camera *camera,double &time);
 	void ParallelLights_shadow_map(GLuint programID,FrameBuffer* SFBO,std::vector<ParallelLight*>&lights
 			,Camera *camera,glm::mat4 *LVP,double &time);
 	void PointLight_shadow_maps(GLuint programID,FrameBuffer* SFBO,PointLight *light,glm::mat4 PLVP[6]);

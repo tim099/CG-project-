@@ -6,13 +6,14 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 class Texture;
+class Shader;
 class DrawObject {
 public:
 	DrawObject(BufferObject* obj,Texture* texture,Texture* NormalMap=0);
 	virtual ~DrawObject();
 	//static glm::mat4 model_matrix(Position* p);
 	static void view(GLuint programID,glm::mat4 model_matrix);
-	void draw_object(GLuint programID);
+	void draw_object(Shader *shader);
 	void draw_shadow_map(GLuint programID);
 	Position* push_position(Position* p);
 	Position* push_temp_position(Position* p);

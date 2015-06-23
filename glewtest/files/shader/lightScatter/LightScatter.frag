@@ -13,6 +13,8 @@ in VertexData{
 
 layout(location = 0)out vec4 color;
 
+uniform int NormalMappingActive;
+
 uniform sampler2D myTextureSampler;
 uniform sampler2D NormalTexture;
 uniform sampler2D depthMap[MAX_PARALLELLIGHT];
@@ -132,8 +134,8 @@ vec3 point_light(vec3 N,vec4 pos){
 
    	 		z_val=(texture2D(pointdepthMap[n],LVP_pos.xy).x);//shadowMapDepth
 			del=z_val-LVP_pos.z;	
-			bias=0.0005*tan(acos(dot(N,light_v)));
-			bias=-clamp(bias,0.0,0.0005)/w;
+			bias=0.0003*tan(acos(dot(N,light_v)));
+			bias=-clamp(bias,0.0,0.0003)/w;
 			if((del>=bias)){
 				visibility=1.0; 	
 			}
@@ -200,7 +202,9 @@ void main(){
 	
 	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);	
 	vec3 tex_normal=normalize((2.0*(texture(NormalTexture,vert.UV).rgb)-1.0));
-	vec3 Normal=TBN*tex_normal;
+	vec3 Normal;
+	if(NormalMappingActive==1)Normal=TBN*tex_normal;
+	else Normal=vert.Normal;
 
     vec3 total_light=parallel_light(Normal,vert.position)
     	+point_light(Normal,vert.position)+mat.w;//matw=emissive

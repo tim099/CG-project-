@@ -21,7 +21,7 @@ Texture::~Texture() {
 Texture2D* Texture::Tex2D(){
 	return 0;
 }
-void Texture::usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int num,const char *name){
+void Texture::usetextureVec(Shader* shader,std::vector<Texture*>& texvec,int num,const char *name){
 	int slen=strlen(name);
 	char temp[100];
 	for(int i=0;i<slen;i++){
@@ -29,7 +29,7 @@ void Texture::usetextureVec(GLuint programID,std::vector<Texture*>& texvec,int n
 	}
 	for(unsigned i=0;i<texvec.size();i++){
 		Tim::String::gen_array_num(temp+slen,i);
-		texvec.at(i)->sent_uniform(programID,i+num,temp);
+		texvec.at(i)->sent_uniform(shader,i+num,temp);
 	}
 }
 GLuint Texture::gen_texture_vertex(GLfloat width,GLfloat height,glm::vec3 pos){

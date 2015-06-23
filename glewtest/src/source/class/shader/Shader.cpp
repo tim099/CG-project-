@@ -12,6 +12,15 @@ Shader::Shader() {
 Shader::~Shader() {
 	if(programID)glDeleteProgram(programID);
 }
+void Shader::EnableNormapping(){
+	sent_Uniform1i("NormalMappingActive",1);
+}
+void Shader::DisableNormapping(){
+	sent_Uniform1i("NormalMappingActive",0);
+}
+void Shader::sent_Uniform1i(const char* name,int i){
+	glUniform1i(glGetUniformLocation(programID,name),i);
+}
 void Shader::active_shader(){
 	glUseProgram(programID);
 }

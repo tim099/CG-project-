@@ -63,7 +63,7 @@ void Texture2D::draw_texture(Shader2D* shader2D,double winaspect,double texaspec
 		tex_vertex=gen_texture_vertex(height,height*aspect);
 	}
 	Buffer::bind_vtbuffer(tex_vertex);
-	sent_uniform(shader2D->programID,0,"myTextureSampler");
+	sent_uniform(shader2D,0,"myTextureSampler");
 
 	glUniform3f(glGetUniformLocation(shader2D->programID,"position"),pos.x,pos.y,pos.z);
 	glUniform1f(glGetUniformLocation(shader2D->programID,"size"),size);
@@ -88,8 +88,8 @@ Texture2D* Texture2D::loadBMP(const char * imagepath,int Parameteri){
 	delete bmp_img;
 	return texture;
 }
-void Texture2D::sent_uniform(GLuint programID,int num,const char *name)const{
-	glUniform1i(glGetUniformLocation(programID,name),num);//texturebuffer
+void Texture2D::sent_uniform(Shader* shader,int num,const char *name)const{
+	shader->sent_Uniform1i(name,num);//texturebuffer
 	glActiveTexture(GL_TEXTURE0+num);
 	glBindTexture(target,TexID);//GL_TEXTURE_CUBE_MAP
 }

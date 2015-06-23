@@ -1,7 +1,8 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <class/draw/DrawObject.h>
-#include <class/buffer/Buffer.h>
+#include "class/buffer/Buffer.h"
+#include "class/shader/Shader.h"
 #include "class/texture/Texture.h"
 #include <iostream>
 DrawObject::DrawObject(BufferObject* _obj,Texture* _texture,Texture* _NormalMap) {
@@ -51,13 +52,16 @@ void DrawObject::draw_shadow_map(GLuint programID){
 	draw_vec(programID,temp_pos);
 	glDisableVertexAttribArray(0);//vertexbuffer
 }
-void DrawObject::draw_object(GLuint programID){
-	obj->bind_buffer(programID);
-	texture->sent_uniform(programID,0,"myTextureSampler");
-	if(NormalMap)NormalMap->sent_uniform(programID,1,"NormalTexture");
-	draw_vec(programID,m_pos);
-	draw_vec(programID,temp_pos);
-
+void DrawObject::draw_object(Shader *shader){
+	obj->bind_buffer(shader->programID);
+	texture->sent_uniform(shader,0,"myTextureSampler");
+	if(NormalMap){
+		shader->EnableNormapping();
+		NormalMap->sent_uniform(shader,1,"NormalTexture");
+	}
+	draw_vec(shader->programID,m_pos);
+	draw_vec(shader->programID,temp_pos);
+	shader->DisableNormapping();
 	//clear_temp_position();
 	Buffer::disable_all_buffer();
 }

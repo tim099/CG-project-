@@ -303,15 +303,15 @@ void Test::update_map(Camera *camera){
     camlight->pos=camera->look_at;
     set_obj_pos(camera);
 }
-void Test::draw_all_objects(FrameBuffer *FBO,Camera *camera,double &time){
+void Test::draw_all_objects(Shader *shader,FrameBuffer *FBO,Camera *camera,double &time){
 	FBO->bind_buffer();
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
     //sent uniform
-    camera->sent_uniform(cur_shader->programID,FBO->aspect());
-    lightControl->sent_uniform(cur_shader->programID,camera->pos);
+    camera->sent_uniform(shader->programID,FBO->aspect());
+    lightControl->sent_uniform(shader->programID,camera->pos);
     //start draw
     for(unsigned i=0;i<d_objs.size();i++){
-    	d_objs.at(i)->draw_object(cur_shader->programID);//draw all obj
+    	d_objs.at(i)->draw_object(shader);//draw all obj
     }
     std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
     time=glfwGetTime();
@@ -373,8 +373,8 @@ void Test::prepare_draw_obj(){
     b_objs.push_back(new BufferObject(m7));
 
     creat_cube_obj();
-    tiger=new DrawObject(b_objs.at(0),texmap->get_tex(std::string("test")),
-    		texmap->get_tex(std::string("NormalTexture")));
+    tiger=new DrawObject(b_objs.at(0),texmap->get_tex(std::string("test")));
+    //,texmap->get_tex(std::string("NormalTexture"))
 
     d_objs.push_back(tiger);
     sun=new DrawObject(b_objs.at(1),texmap->get_tex(std::string("test2")),
@@ -494,7 +494,7 @@ void Test::timer_tic(double &time){
 
 	if(cur_shader==shaderBasic){
 		shaderBasic->active_shader();
-		draw_all_objects(FBO,camera,time);
+		draw_all_objects(shaderBasic,FBO,camera,time);
 	}else if(cur_shader==shaderNormalMapping){
 		shaderShadowMapping->active_shader();
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
@@ -510,10 +510,10 @@ void Test::timer_tic(double &time){
 		glUniformMatrix4fv(glGetUniformLocation(shaderNormalMapping->programID,"biasMat"),1
 				,GL_FALSE,&(biasMat[0][0]));
 
-		Texture::usetextureVec(shaderNormalMapping->programID,SFBO->depth_textures,3,"depthMap");
-		Texture::usetextureVec(shaderNormalMapping->programID,PSFBO->depth_textures,
+		Texture::usetextureVec(shaderNormalMapping,SFBO->depth_textures,3,"depthMap");
+		Texture::usetextureVec(shaderNormalMapping,PSFBO->depth_textures,
 				3+lightControl->parallel_light_size(),"pointdepthMap");
-		draw_all_objects(FBO,camera,time);
+		draw_all_objects(shaderNormalMapping,FBO,camera,time);
 	}else if(cur_shader==shaderLightScatter){
 		shaderShadowMapping->active_shader();
 		glm::mat4 LVP[lightControl->parallel_lights.size()];
@@ -529,10 +529,10 @@ void Test::timer_tic(double &time){
 		glUniformMatrix4fv(glGetUniformLocation(shaderLightScatter->programID,"biasMat"),1
 				,GL_FALSE,&(biasMat[0][0]));
 
-		Texture::usetextureVec(shaderLightScatter->programID,SFBO->depth_textures,3,"depthMap");
-		Texture::usetextureVec(shaderLightScatter->programID,PSFBO->depth_textures,
+		Texture::usetextureVec(shaderLightScatter,SFBO->depth_textures,3,"depthMap");
+		Texture::usetextureVec(shaderLightScatter,PSFBO->depth_textures,
 				3+lightControl->parallel_light_size(),"pointdepthMap");
-		draw_all_objects(FBO,camera,time);
+		draw_all_objects(shaderNormalMapping,FBO,camera,time);
 	}else if(cur_shader==shaderShadowMapping){
     	shaderShadowMapping->active_shader();
     	glm::mat4 LVP[lightControl->parallel_lights.size()];
