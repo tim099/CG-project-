@@ -1,0 +1,29 @@
+#include "class/texture/texture3D/Texture2DArr.h"
+#include "class/texture/image/Image.h"
+Texture2DArr::Texture2DArr(GLuint _TexID,glm::ivec3 _size,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D_ARRAY,_type,_format){
+	size=_size;
+}
+Texture2DArr::~Texture2DArr() {
+
+}
+void Texture2DArr::sent_uniform(Shader* shader,int num,const char *name)const{
+
+}
+Texture2DArr* Texture2DArr::gen_texture2DArr(Image *img){
+	return gen_texture2DArr(image->data,image->size,internalformat,image->format,type,Parameteri);
+}
+Texture2DArr* Texture2DArr::gen_texture2DArr(const void *pixels,glm::ivec3 size,GLint internalformat,GLenum format,
+		GLenum type,GLsizei mipLevelCount,int Parameteri){
+	GLuint textureID;
+	glGenTextures(1,&textureID);
+	glBindTexture(GL_TEXTURE_2D_ARRAY,textureID);
+
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY,mipLevelCount,GL_RGBA8,size.x,size.y,size.z);
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY,0,0,0,0,size.x,size.y,size.z,format,type,pixels);
+	TexFilterParameteri(GL_TEXTURE_2D_ARRAY,Parameteri);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	Texture2DArr *tex=new Texture2DArr(textureID,size,type,internalformat);
+	return tex;
+}

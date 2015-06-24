@@ -1,0 +1,11 @@
+#include "class/texture/texture3D/Texture3D.h"
+
+Texture3D::Texture3D(GLuint _TexID,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D_ARRAY,_type,_format){
+
+}
+
+Texture3D::~Texture3D() {
+
+}
+

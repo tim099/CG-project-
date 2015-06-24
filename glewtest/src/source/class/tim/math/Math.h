@@ -12,6 +12,7 @@ public:
 	static int get_len(int val);
 	static glm::mat4 BiasMat();
 	static float aspect(glm::ivec2 size);
+	static int pow(int base,int power);
 };
 
 } /* namespace Tim */

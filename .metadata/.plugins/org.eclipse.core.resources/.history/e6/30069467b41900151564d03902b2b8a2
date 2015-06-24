@@ -1,0 +1,11 @@
+#ifndef TEXTURE2DARR_H_
+#define TEXTURE2DARR_H_
+#include "class/texture/Texture.h"
+class Image;
+class Texture2DArr : public Texture {
+public:
+	Texture2DArr(GLuint TexID,GLenum type,GLenum format);
+	virtual ~Texture2DArr();
+};
+
+#endif /* TEXTURE2DARR_H_ */

@@ -21,6 +21,28 @@ Texture::~Texture() {
 Texture2D* Texture::Tex2D(){
 	return 0;
 }
+void Texture::TexFilterParameteri(GLenum target,int Parameteri){
+	switch(Parameteri){
+		case P_NONE:
+			break;
+		case P_MipMap:
+			glTexParameteri(target,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameteri(target,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+			glGenerateMipmap(target);
+			break;
+		case P_Linear:
+			glTexParameteri(target,GL_TEXTURE_MAG_FILTER,GL_LINEAR);//GL_NEAREST
+			glTexParameteri(target,GL_TEXTURE_MIN_FILTER,GL_LINEAR);//GL_NEAREST
+			break;
+		case P_Nearest:
+			glTexParameteri(target,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+			glTexParameteri(target,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+			break;
+		default:
+			std::cout<<"err unknow texture Parameteri type:"<<Parameteri<<std::endl;
+
+	}
+}
 void Texture::usetextureVec(Shader* shader,std::vector<Texture*>& texvec,int num,const char *name){
 	int slen=strlen(name);
 	char temp[100];

@@ -1,0 +1,10 @@
+#ifndef TEXTURE3D_H_
+#define TEXTURE3D_H_
+
+class Texture3D {
+public:
+	Texture3D();
+	virtual ~Texture3D();
+};
+
+#endif /* TEXTURE3D_H_ */

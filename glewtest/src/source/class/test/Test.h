@@ -86,6 +86,7 @@ private:
 	TextureMap* texmap;
 	Shader* cur_shader;
 	Shader2D *shader2D;
+	Shader2D *shader2DArr;
 	Shader	*shaderLightScatter;
 	Shader* shaderBasic,*shaderNormalMapping,*shaderShadowMapping;
 	Shader* shadercubeShadowMapping,*shaderTest;

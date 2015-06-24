@@ -2,9 +2,8 @@
 #define TEXTURE_H_
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include "class/texture/Image.h"
 #include <vector>
-const int TEXTURE_BMP=1;
+#include "class/texture/image/Image.h"
 
 const int P_NONE=0;
 const int P_MipMap=1;
@@ -30,7 +29,7 @@ public:
 	GLenum format;
 	GLenum type;
 protected:
-
+	static void TexFilterParameteri(GLenum target,int Parameteri);
 };
 
 #endif /* TEXTURE_H_ */

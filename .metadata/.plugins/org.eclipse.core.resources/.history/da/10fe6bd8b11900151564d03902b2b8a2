@@ -1,0 +1,13 @@
+#ifndef TEXTURE3D_H_
+#define TEXTURE3D_H_
+#include "class/texture/Texture.h"
+class Image;
+class Texture3D : public Texture {
+public:
+	Texture3D();
+	virtual ~Texture3D();
+	//static Texture3D* gen_texture3D(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format
+			//,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
+};
+
+#endif /* TEXTURE3D_H_ */

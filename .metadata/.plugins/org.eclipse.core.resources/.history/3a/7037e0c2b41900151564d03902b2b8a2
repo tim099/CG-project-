@@ -1,0 +1,13 @@
+#ifndef TEXTURE2DARR_H_
+#define TEXTURE2DARR_H_
+#include "class/texture/Texture.h"
+class Image;
+class Texture2DArr : public Texture {
+public:
+	Texture2DArr(GLuint TexID,GLenum type,GLenum format);
+	virtual ~Texture2DArr();
+	static Texture2DArr* gen_texture2DArr(const void *pixels,glm::ivec2 size,GLint internalformat,GLenum format
+			,GLenum type=GL_UNSIGNED_BYTE,int Parameteri=P_MipMap);
+};
+
+#endif /* TEXTURE2DARR_H_ */

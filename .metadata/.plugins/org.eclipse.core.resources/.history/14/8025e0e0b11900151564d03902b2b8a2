@@ -1,0 +1,10 @@
+#include "class/texture/texture3D/Texture3D.h"
+
+Texture3D::Texture3D() {
+
+}
+
+Texture3D::~Texture3D() {
+
+}
+

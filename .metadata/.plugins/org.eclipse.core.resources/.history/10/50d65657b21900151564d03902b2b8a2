@@ -1,0 +1,17 @@
+/*
+ * Texture2DArr.h
+ *
+ *  Created on: 2015/6/23
+ *      Author: USER
+ */
+
+#ifndef TEXTURE2DARR_H_
+#define TEXTURE2DARR_H_
+
+class Texture2DArr {
+public:
+	Texture2DArr();
+	virtual ~Texture2DArr();
+};
+
+#endif /* TEXTURE2DARR_H_ */

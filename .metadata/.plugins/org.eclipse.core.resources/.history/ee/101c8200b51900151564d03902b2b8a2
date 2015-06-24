@@ -1,0 +1,10 @@
+#include "class/texture/texture3D/Texture2DArr.h"
+
+Texture2DArr::Texture2DArr(GLuint _TexID,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D_ARRAY,_type,_format){
+
+}
+Texture2DArr::~Texture2DArr() {
+
+}
+

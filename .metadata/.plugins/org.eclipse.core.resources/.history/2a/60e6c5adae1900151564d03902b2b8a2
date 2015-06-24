@@ -1,0 +1,18 @@
+/*
+ * Texture3D.cpp
+ *
+ *  Created on: 2015/6/23
+ *      Author: USER
+ */
+
+#include <class/texture/texture3D/Texture3D.h>
+
+Texture3D::Texture3D() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Texture3D::~Texture3D() {
+	// TODO Auto-generated destructor stub
+}
+

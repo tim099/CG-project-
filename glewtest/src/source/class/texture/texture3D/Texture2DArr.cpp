@@ -1,0 +1,62 @@
+#include "class/texture/texture3D/Texture2DArr.h"
+#include "class/texture/image/Image.h"
+#include "class/shader/shader2D/Shader2D.h"
+#include "class/buffer/Buffer.h"
+Texture2DArr::Texture2DArr(GLuint _TexID,glm::ivec3 _size,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D_ARRAY,_type,_format){
+	size=_size;
+}
+Texture2DArr::~Texture2DArr() {
+
+}
+void Texture2DArr::sent_uniform(Shader* shader,int num,const char *name)const{
+	shader->sent_Uniform1i(name,num);//texturebuffer
+	glActiveTexture(GL_TEXTURE0+num);
+	glBindTexture(target,TexID);//GL_TEXTURE_CUBE_MAP
+}
+void Texture2DArr::draw_texture(Shader2D* shader2D,double winaspect,double texaspect,GLfloat alpha,glm::vec3 pos
+		,double size){
+	shader2D->active_shader();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+    GLuint tex_vertex=0;
+	if(winaspect==texaspect){
+		tex_vertex=gen_texture_vertex(1.0,1.0);
+	}else{
+		float height=1.0;
+		double aspect=winaspect/texaspect;
+		if(aspect>1.0)height=1.0/aspect;
+		tex_vertex=gen_texture_vertex(height,height*aspect);
+	}
+	Buffer::bind_vtbuffer(tex_vertex);
+	sent_uniform(shader2D,0,"myTextureArrSampler");
+
+	glUniform3f(glGetUniformLocation(shader2D->programID,"position"),pos.x,pos.y,pos.z);
+	glUniform1f(glGetUniformLocation(shader2D->programID,"size"),size);
+	glUniform1f(glGetUniformLocation(shader2D->programID,"alpha"),alpha);
+	glDrawArrays(GL_TRIANGLES,0,2*3);
+    glDeleteBuffers(1,&tex_vertex);
+    glDisableVertexAttribArray(0);//vertexbuffer
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+}
+Texture2DArr* Texture2DArr::gen_texture2DArr(Image* image,GLint internalformat,GLenum type,int Parameteri){
+	return gen_texture2DArr(image->data,glm::ivec3(image->size.x,image->size.y,1),internalformat,
+			image->format,type,1,Parameteri);
+}
+Texture2DArr* Texture2DArr::gen_texture2DArr(const void *pixels,glm::ivec3 size,GLint internalformat,GLenum format,
+		GLenum type,GLsizei mipLevelCount,int Parameteri){
+	GLuint texture3D;
+	glGenTextures(1,&texture3D);
+	glBindTexture(GL_TEXTURE_2D_ARRAY,texture3D);
+
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY,mipLevelCount,format,size.x,size.y,size.z);
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY,0,0,0,0,size.x,size.y,size.z,format,type,pixels);
+	TexFilterParameteri(GL_TEXTURE_2D_ARRAY,Parameteri);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	Texture2DArr *tex=new Texture2DArr(texture3D,size,type,internalformat);
+	return tex;
+}

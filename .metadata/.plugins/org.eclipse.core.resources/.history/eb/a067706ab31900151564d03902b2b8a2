@@ -1,0 +1,9 @@
+#include "class/texture/texture3D/Texture2DArr.h"
+
+Texture2DArr::Texture2DArr() {
+
+}
+Texture2DArr::~Texture2DArr() {
+
+}
+

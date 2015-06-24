@@ -1,0 +1,31 @@
+#include "class/texture/texture3D/Texture2DArr.h"
+
+Texture2DArr::Texture2DArr(GLuint _TexID,glm::ivec3 _size,GLenum _type,GLenum _format)
+: Texture(_TexID,GL_TEXTURE_2D_ARRAY,_type,_format){
+	size=_size;
+}
+Texture2DArr::~Texture2DArr() {
+
+}
+void Texture2DArr::sent_uniform(Shader* shader,int num,const char *name)const{
+
+}
+Texture2DArr* Texture2DArr::gen_texture2DArr(const void *pixels,glm::ivec3 size,GLint internalformat,GLenum format,
+		GLsizei mipLevelCount,GLenum type,int Parameteri){
+	GLuint textureID;
+	glGenTextures(1,&textureID);
+	glBindTexture(GL_TEXTURE_2D_ARRAY,textureID);
+	//Allocate the storage.
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY,mipLevelCount,GL_RGBA8,size.x,size.y,size.z);
+	//Upload pixel data.
+	//The first 0 refers to the mipmap level (level 0, since there's only 1)
+	//The following 2 zeroes refers to the x and y offsets in case you only want to specify a subrectangle.
+	//The final 0 refers to the layer index offset (we start from index 0 and have 2 levels).
+	//Altogether you can specify a 3D box subset of the overall texture, but only one mip level at a time.
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,size.x,size.y,size.z, GL_RGBA, GL_UNSIGNED_BYTE,pixels);
+	TexFilterParameteri(GL_TEXTURE_2D_ARRAY,Parameteri);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	Texture2DArr *tex=new Texture2DArr(textureID,size,type,internalformat);
+	return tex;
+}

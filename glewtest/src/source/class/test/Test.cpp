@@ -1,4 +1,5 @@
 #include "class/test/Test.h"
+#include "class/texture/texture3D/Texture2DArr.h"
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -427,6 +428,9 @@ void Test::creat_shader(){
 	shader2D=new Shader2D();
 	shader2D->LoadShader("files/shader/2D/2D.vert","files/shader/2D/2D.frag");
 	shaders.push_back(shader2D);
+	shader2DArr=new Shader2D();
+	shader2DArr->LoadShader("files/shader/3D/2DArr.vert","files/shader/3D/2DArr.geo","files/shader/3D/2DArr.frag");
+	shaders.push_back(shader2DArr);
 	shaderShadowMapping=new Shader();
 	shaderShadowMapping->LoadShader("files/shader/shadow/ShadowMapping.vert"
 			,"files/shader/shadow/ShadowMapping.frag");
@@ -540,8 +544,17 @@ void Test::timer_tic(double &time){
     	FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
     	SFBO->depth_buffer->draw_texture(shader2D,window->aspect(),window->aspect(),1.0);
-	}else if(cur_shader==shadercubeShadowMapping){
-
+	}else if(cur_shader==shader2DArr){
+		//Image *img=FBO->color_textures.at(0)->Tex2D()->convert_to_image();
+		Image* img=new Image();
+		img->loadBMP("files/texture/normal.bmp");
+		Texture2DArr *texArr=Texture2DArr::gen_texture2DArr(img,GL_RGB);
+		shader2DArr->active_shader();
+		FBO->bind_buffer();
+    	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+    	texArr->draw_texture(shader2DArr,window->aspect(),window->aspect(),0.6);
+    	delete img;
+    	delete texArr;
 	}else if(cur_shader==shader2D){
 		FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer

@@ -9,6 +9,13 @@ Math::Math() {
 Math::~Math() {
 
 }
+int Math::pow(int base,int power){
+	int sum=1;
+	for(int i=0;i<power;i++){
+		sum*=base;
+	}
+	return sum;
+}
 glm::mat4 Math::BiasMat(){
 	glm::mat4 biasMat(
 	0.5, 0.0, 0.0, 0.0,
