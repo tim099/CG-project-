@@ -42,7 +42,9 @@ SRCDIR += \
 	 ./src/source/class/buffer/frameBuffer \
 	 ./src/source/class/uniform/ \
 	 ./src/source/class/texture \
+	 ./src/source/class/texture/image \
 	 ./src/source/class/texture/texture2D \
+	 ./src/source/class/texture/texture3D \
 	 ./src/source/class/shader \
 	 ./src/source/class/shader/shader2D \
 	 ./src/source/class/light \
