@@ -41,7 +41,7 @@ Texture:
 	TextureName:
 		test3
 	TexturePath:
-		test3.bmp
+		test3.BMP
 
 Texture:
 	TextureName:

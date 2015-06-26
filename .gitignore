@@ -3,7 +3,6 @@
 *.lo
 *.o
 
-
 # Precompiled Headers
 *.gch
 *.pch
@@ -26,3 +25,7 @@
 *.exe
 *.out
 *.app
+
+glewtest/bin
+glewtest/obj
+glewtest/.settings
