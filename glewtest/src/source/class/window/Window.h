@@ -12,6 +12,8 @@ public:
 
 	void creat_window(glm::i16vec2 size,const char* name,bool full_screen);
 	float aspect()const;
+	int WindowShouldClose()const;
+	void close_window();
 	glm::ivec2 get_size()const;
 	GLFWwindow* get_window()const;
 

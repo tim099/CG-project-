@@ -36,6 +36,7 @@ bool KeyBoard::pressed(int key){
 }
 void KeyBoard::key_press(int key,int scancode,int mods){
 	//std::cout<<"key press:"<<(char)key<<",scancode:"<<scancode<<",mods:"<<mods<<std::endl;
+	//std::cout<<"key press:"<<key<<",scancode:"<<scancode<<",mods:"<<mods<<std::endl;
 	keys.insert(key);
 }
 void KeyBoard::key_release(int key,int scancode,int mods){

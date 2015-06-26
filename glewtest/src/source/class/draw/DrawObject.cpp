@@ -16,7 +16,7 @@ DrawObject::~DrawObject() {
 	clear_temp_position();
 	delete obj;
 }
-void DrawObject::view(GLuint programID,glm::mat4 M){
+void DrawObject::Model_veiw(GLuint programID,glm::mat4 M){
     glUniformMatrix4fv(glGetUniformLocation(programID,"M"),1,GL_FALSE,&(M[0][0]));
 }
 void DrawObject::clear_position(){
@@ -41,7 +41,7 @@ Position* DrawObject::push_temp_position(Position* p){
 }
 void DrawObject::draw_vec(GLuint programID,std::vector<Position*> &pos_v){
 	for(unsigned i=0;i<pos_v.size();i++){
-		view(programID,pos_v.at(i)->PosMat());
+		Model_veiw(programID,pos_v.at(i)->PosMat());
 		obj->draw(programID);
 	}
 }

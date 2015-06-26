@@ -44,7 +44,7 @@ void Texture2DArr::draw_texture(Shader2D* shader2D,double winaspect,double texas
 }
 Texture2DArr* Texture2DArr::gen_texture2DArr(Image* image,GLint internalformat,GLenum type,int Parameteri){
 	return gen_texture2DArr(image->data,glm::ivec3(image->size.x,image->size.y,1),internalformat,
-			image->format,type,1,Parameteri);
+			image->format,type,5,Parameteri);
 }
 Texture2DArr* Texture2DArr::gen_texture2DArr(const void *pixels,glm::ivec3 size,GLint internalformat,GLenum format,
 		GLenum type,GLsizei mipLevelCount,int Parameteri){

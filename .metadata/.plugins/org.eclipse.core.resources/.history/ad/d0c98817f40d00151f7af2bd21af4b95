@@ -1,9 +1,0 @@
-#include <class/tim/string/String.h>
-
-String::String() {
-
-}
-String::~String() {
-
-}
-

@@ -12,7 +12,7 @@ public:
 	DrawObject(BufferObject* obj,Texture* texture,Texture* NormalMap=0);
 	virtual ~DrawObject();
 	//static glm::mat4 model_matrix(Position* p);
-	static void view(GLuint programID,glm::mat4 model_matrix);
+	static void Model_veiw(GLuint programID,glm::mat4 model_matrix);
 	void draw_object(Shader *shader);
 	void draw_shadow_map(GLuint programID);
 	Position* push_position(Position* p);

@@ -1,0 +1,217 @@
+#version 400 core
+#define MAX_POINTLIGHT 100 
+#define MAX_PARALLELLIGHT 10 
+
+in VertexData{
+	vec2 UV;
+	vec3 Normal;
+	vec4 position;
+	vec4 MVP_pos;
+	vec3 T;
+	vec3 B;
+}vert;
+
+layout(location = 0)out vec4 color;
+
+uniform int NormalMappingActive;
+
+uniform sampler2D myTextureSampler;
+uniform sampler2D NormalTexture;
+uniform sampler2D depthMap[MAX_PARALLELLIGHT];
+uniform sampler2D pointdepthMap[6];
+
+uniform vec3 camera_pos;
+
+uniform int parallellight_num;
+uniform vec3 parallellight_vec[MAX_PARALLELLIGHT];
+uniform vec3 parallellight_color[MAX_PARALLELLIGHT];
+
+uniform int pointlight_num;
+uniform vec3 pointlight_pos[MAX_POINTLIGHT];
+uniform vec3 pointlight_color[MAX_POINTLIGHT];
+
+uniform mat4 pointLVP[6];
+uniform mat4 parallelLVP[MAX_PARALLELLIGHT];
+
+uniform vec4 mat;
+uniform mat4 VP;
+uniform mat4 biasMat;
+
+vec3 PD[9] = vec3[](
+  	vec3(0,0,0.4),
+  	vec3(0,0.0006,0.1),
+  	vec3(0,-0.0006,0.1),
+  	vec3(0.0006,0,0.1),
+  	vec3(-0.0006,0,0.1),
+  	vec3(0.0006,0.0006,0.05),
+  	vec3(0.0006,-0.0006,0.05),
+  	vec3(-0.0006,0.0006,0.05),
+  	vec3(-0.0006,-0.0006,0.05)
+);
+int check_vec(vec3 v){
+	if(abs(v.x)>=abs(v.z)){
+		if(abs(v.x)>=abs(v.y)){//x=max
+			if(v.x>=0.0f)return 0;
+			else return 1;
+		}else{//y=max
+			if(v.y>=0.0f)return 2;
+			else return 3;
+		}
+	}else if(abs(v.y)>=abs(v.z)){//y==max
+		if(v.y>=0.0f)return 2;
+		else return 3;
+	}else{//z==max
+		if(v.z>=0.0f)return 4;
+		else return 5;
+	}
+	return 0;
+}
+float specular_value(float specular_val){
+	return mat.y*pow(specular_val,100*mat.y);//mat.w
+}
+vec3 light_scattering(vec4 pos){
+	vec3 total_scatter=vec3(0,0,0);
+	vec4 LVP_pos;
+    vec2 t;	
+    float z_val;
+	float del;
+	float scatter_value;
+	float per_scatter;
+	int sample_num;
+	for(int i=0;i<parallellight_num;i++){ 
+		scatter_value=0.0;
+		vec3 interpolated_sample;	
+		vec3 delvec=pos.xyz-camera_pos;
+		float len=length(delvec);
+		if(len>200)len=200;
+		delvec=normalize(delvec);
+		sample_num=int(len);
+		per_scatter=0.2/sample_num;
+		for(int j=0;j<sample_num;j++){
+			interpolated_sample=camera_pos+(len*delvec)/100*(50+j);
+			LVP_pos=biasMat *parallelLVP[i]*vec4(interpolated_sample,1.0);
+			LVP_pos/=LVP_pos.w;
+			
+			t=LVP_pos.xy;	
+   	 		z_val=(texture2D(depthMap[i],t).x);//shadowMapDepth/LVP_pos.w
+			del=z_val-LVP_pos.z;	
+		
+			if((t.x<=1.0&&t.y<=1.0&&t.x>=0.0&&t.y>=0.0)){//in depth map
+				if((del>0.0002)){				
+				 	  scatter_value+=per_scatter; 	   	
+    			}
+			}		
+		}
+		total_scatter+=scatter_value*parallellight_color[i];
+	}
+	return total_scatter;
+}
+vec3 point_light(vec3 N,vec4 pos){
+	vec3 total_light=vec3(0,0,0);
+    vec3 light_v,reflect_v;
+    vec3 pos_cam_v=normalize(pos.xyz-camera_pos);
+    float light_dis,light_val,specular_val,w,z_val,bias,del;
+    vec4 LVP_pos;
+	float visibility;
+    for(int i=0;i<pointlight_num;i++){
+    	//diffuse
+        light_v=pointlight_pos[i]-pos.xyz;
+    	light_dis=length(light_v);
+    	light_val=mat.x*dot(N,normalize(light_v));
+    	//specular
+		reflect_v=light_v-(2*dot(N,light_v))*N;	
+		specular_val=dot(pos_cam_v,normalize(reflect_v));
+		if(specular_val>0.0f){
+			light_val+=specular_value(specular_val);			
+		}
+		light_val+=mat.z;//ambient
+		
+		light_val/=(light_dis*light_dis);
+		if(light_val<0.0)light_val=0.0;	
+		
+		if(i==0){//only do for light 0
+			int n=check_vec(light_v);
+			LVP_pos=biasMat*pointLVP[n]*pos;	
+			w=LVP_pos.w;
+			LVP_pos/=w;		
+			visibility=0.0;
+
+   	 		z_val=(texture2D(pointdepthMap[n],LVP_pos.xy).x);//shadowMapDepth
+			del=z_val-LVP_pos.z;	
+			bias=0.0003*tan(acos(dot(N,light_v)));
+			bias=-clamp(bias,0.0,0.0003)/w;
+			if((del>=bias)){
+				visibility=1.0; 	
+			}
+			total_light+=visibility*light_val*pointlight_color[i];	     		
+		}else{
+			total_light+=light_val*pointlight_color[i];	
+		}	
+			
+    }
+	return total_light;
+}
+vec3 parallel_light(vec3 N,vec4 pos){
+	vec3 total_light=vec3(0,0,0);
+    vec3 light_v;
+    vec3 reflect_v;
+    vec3 pos_cam_v=normalize(pos.xyz-camera_pos);
+
+    float light_val;
+    float specular_val;
+    
+    vec4 LVP_pos;
+    vec2 t;	
+    float z_val;
+	float bias,del;
+	float visibility;
+    for(int i=0;i<parallellight_num;i++){   	 	
+		//diffuse
+		light_v=normalize(-parallellight_vec[i]);//reverse	
+		light_val=mat.x*dot(N,light_v);
+		//specular
+		reflect_v=light_v-(2*dot(N,light_v))*N;
+		specular_val=dot(pos_cam_v,normalize(reflect_v));
+		if(specular_val>0.0f){
+			light_val+=specular_value(specular_val);			
+		}
+		light_val+=mat.z;//ambient
+		
+		if(light_val<0.0)light_val=0.0;		
+		LVP_pos=biasMat*parallelLVP[i]*pos;
+   		LVP_pos/=LVP_pos.w;
+   		visibility=0.0;
+   		for(int j=0;j<9;j++){
+   	 		t=LVP_pos.xy+PD[j].xy;//LVP_pos.w 	
+   	 		z_val=(texture2D(depthMap[i],t).x);//shadowMapDepth/LVP_pos.w
+			del=z_val-LVP_pos.z;	
+			bias=0.0002*tan(acos(dot(N,light_v)));
+			bias=-clamp(bias,0.0,0.0002);
+		
+			if((t.x<=1.0&&t.y<=1.0&&t.x>=0.0&&t.y>=0.0)){//in depth map
+				if((del>bias)){				
+				 	  visibility+=PD[j].z; 	   	
+    			}
+			}		
+		}
+
+		total_light+=visibility*light_val*parallellight_color[i];
+    }
+    return total_light;
+}
+void main(){ 
+	vec3 T=normalize(vert.T-dot(vert.T,vert.Normal)*vert.Normal);
+	vec3 B=normalize(vert.B-dot(vert.B,vert.Normal)*vert.Normal);
+	mat3 TBN=mat3(T,B,vert.Normal);
+	
+	vec3 tex_color=(texture(myTextureSampler,vert.UV).rgb);	
+	vec3 tex_normal=normalize((2.0*(texture(NormalTexture,vert.UV).rgb)-1.0));
+	vec3 Normal;
+	if(NormalMappingActive==1)Normal=TBN*tex_normal;
+	else Normal=vert.Normal;
+
+    vec3 total_light=parallel_light(Normal,vert.position)
+    	+point_light(Normal,vert.position)+mat.w;//matw=emissive
+    
+    color = vec4((total_light)*tex_color+light_scattering(vert.position),1.0);	
+}

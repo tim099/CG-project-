@@ -27,7 +27,7 @@ glm::ivec2 Mouse::pos_delta()const{
 void Mouse::cursor_pos_callback(GLFWwindow* window,double x,double y){
 	prev_pos=pos;
 	pos.x=x;
-	pos.y=y;//+27
+	pos.y=y;
 	//std::cout<<"mouse pos"<<pos.x<<","<<pos.y<<std::endl;
 }
 void Mouse::scroll_callback(GLFWwindow* window,double xoffset,double yoffset){

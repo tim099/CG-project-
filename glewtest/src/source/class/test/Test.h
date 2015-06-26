@@ -43,7 +43,7 @@ public:
 	Test();
 	virtual ~Test();
 	void input();
-	void load_map();
+	void load_map(const char *path);
 	void creat_map_object(int px,int pz,int size);
 	void creat_cube_obj();
 	void draw_map(Camera *camera);
@@ -78,8 +78,11 @@ private:
 	DrawObject* stars;
 	DrawObject* galaxy;
 	DrawObject* ico;
+	DrawObject* mars;
+	DrawObject* moon;
 	DrawObject* dmaps[50][50];
 
+	Position *maropos,*marspos,*moonpos,*moonpos2,*moonpos3;
 	CubeModel *cube;
 
 	std::vector<Shader*>shaders;
@@ -106,6 +109,7 @@ private:
 	bool map[MX][MY][MZ];
 	bool stop_the_sun;
 	bool to_sobel;
+	bool display_time;
 	int shader_at;
 
 };

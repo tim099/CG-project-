@@ -1,9 +1,0 @@
-#include <class/texture/Image.h>
-
-Image::Image() {
-
-}
-Image::~Image() {
-
-}
-

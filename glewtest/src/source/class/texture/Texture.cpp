@@ -28,6 +28,8 @@ void Texture::TexFilterParameteri(GLenum target,int Parameteri){
 		case P_MipMap:
 			glTexParameteri(target,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 			glTexParameteri(target,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(target,GL_TEXTURE_BASE_LEVEL,0);
+			glTexParameteri(target,GL_TEXTURE_MAX_LEVEL,20);
 			glGenerateMipmap(target);
 			break;
 		case P_Linear:

@@ -15,6 +15,12 @@ Window::Window(glm::ivec2 _size,const char* name,bool full_screen) {
 Window::~Window() {
 
 }
+void Window::close_window(){
+	glfwSetWindowShouldClose(get_window(),1);
+}
+int Window::WindowShouldClose()const{
+	return glfwWindowShouldClose(get_window());
+}
 void Window::glewinit(){
 	if(glewinitial)return;
 	glewinitial=true;
@@ -33,7 +39,6 @@ glm::ivec2 Window::get_size()const{
 	return size;
 }
 void Window::creat_window(glm::i16vec2 size,const char* name,bool full_screen){
-
 	glfwinit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
@@ -43,7 +48,6 @@ void Window::creat_window(glm::i16vec2 size,const char* name,bool full_screen){
     else window=glfwCreateWindow(size.x,size.y,name,NULL,NULL);
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
     glewinit();
 }
 GLFWwindow* Window::get_window()const{

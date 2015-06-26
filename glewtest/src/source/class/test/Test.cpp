@@ -11,9 +11,11 @@ Test::Test() {
 	range=70;
 	stop_the_sun=false;
 	to_sobel=false;
+	display_time=false;
 	shader_at=0;
 
-	window=new Window(glm::ivec2(1366,730),"hello tim",false);
+	//window=new Window(glm::ivec2(1366,768),"hello tim",true);
+	window=new Window(glm::ivec2(1366,733),"hello tim",false);
 	lightControl=new LightControl(5000);
 	texmap=new TextureMap(std::string("files/script/loadTexture/loadTestTexture.txt"));
 	keyboard=new KeyBoard();
@@ -24,7 +26,7 @@ Test::Test() {
 	VertexArrayID=Buffer::GenVertexArray();
 	callback_rigister(window->get_window(),keyboard,mouse);
 	creat_shader();
-    load_map();
+    load_map("files/maps/map011");
     creat_light();//
     prepare_draw_obj();
     creat_frame_buffer();
@@ -54,6 +56,10 @@ void Test::input(){
 	}
 	if(keyboard->pressed('Q')){
 		ico->push_position(new Position(mouse->world_pos,glm::vec3()));
+	}
+	if(keyboard->get(256)){//ESC
+		std::cout<<"END"<<std::endl;
+		window->close_window();
 	}
 	if(mouse->right){
 		camera->vel+=(float)(0.001f*sqrt(camera->look_dis()+0.001)*mouse->pos_delta().y)*camera->look_vec_xz();
@@ -203,8 +209,8 @@ void Test::input(){
 		camera->dis_alter(0.05);
 	}
 }
-void Test::load_map(){
-	FILE * fop = fopen("files/maps/map011","r");
+void Test::load_map(const char *path){
+	FILE * fop = fopen(path,"r");
 	glm::ivec3 ms;
 	unsigned seed;
 	fscanf(fop,"%d %d %d\n",&ms.x,&ms.y,&ms.z);
@@ -289,6 +295,10 @@ void Test::set_obj_pos(Camera *camera){
     tiger_ry+=0.02;
     starpos.r.y+=0.02;
     if(!stop_the_sun)sunlight->pos=glm::vec3(glm::rotate(0.02f,glm::vec3(-1,0,1))*glm::vec4(sunlight->pos,1));
+    marspos->r.y+=0.4f;
+    maropos->r.y+=0.2f;
+    moonpos->r.y+=1.0f;
+    moonpos2->r.y+=1.0f;
     s_light->vec=-sunlight->pos;
     sunpos.pos=sunlight->pos;
     sun->push_temp_position(new Position(sunpos));
@@ -298,6 +308,7 @@ void Test::set_obj_pos(Camera *camera){
     //look_at->push_temp_position(new Position(glm::vec3(0,0,-1),glm::vec3(0,0,0),look_at_pos));
     stars->push_temp_position(new Position(starpos));
     galaxy->push_temp_position(new Position(starpos));
+    //ico->push_temp_position(new Position(mouse->world_pos,glm::vec3()));
 }
 void Test::update_map(Camera *camera){
     draw_map(camera);//push position
@@ -314,8 +325,10 @@ void Test::draw_all_objects(Shader *shader,FrameBuffer *FBO,Camera *camera,doubl
     for(unsigned i=0;i<d_objs.size();i++){
     	d_objs.at(i)->draw_object(shader);//draw all obj
     }
-    std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
-    time=glfwGetTime();
+    if(display_time){
+        std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
+        time=glfwGetTime();
+    }
 }
 void Test::ParallelLights_shadow_map(GLuint programID,FrameBuffer* SFBO,std::vector<ParallelLight*>&lights
 		,Camera *camera,glm::mat4 *LVP,double &time){
@@ -330,8 +343,6 @@ void Test::ParallelLights_shadow_map(GLuint programID,FrameBuffer* SFBO,std::vec
 	    	d_objs.at(i)->draw_shadow_map(programID);//draw all obj
 	    }
 	}
-	std::cout<<"range="<<range<<"drawtime="<<(glfwGetTime()-time)<<std::endl;
-    time=glfwGetTime();
 }
 void Test::PointLight_shadow_maps(GLuint programID,FrameBuffer* SFBO,PointLight *light,glm::mat4 PLVP[6]){
 	for(int n=0;n<6;n++){
@@ -351,13 +362,16 @@ void Test::prepare_draw_obj(){
 	Model* m5=Model::load_obj("files/obj/celestialSphere.obj",16000.0);
 	Model* m6=Model::load_obj("files/obj/cube.obj",40000.0);
 	Model* m7=Model::load_obj("files/obj/base.obj",3.0);
-
+	Model* m8=Model::load_obj("files/obj/celestialSphere.obj",15.0);
+	Model* m9=Model::load_obj("files/obj/celestialSphere.obj",6.0);
 	m->mat=glm::vec4(0.1,1.0,0.02,0.05);
 	m2->mat=glm::vec4(0.1,0.1,0.02,1.0);
 	m3->mat=glm::vec4(0.1,0.05,0.02,0.05);
 	m4->mat=glm::vec4(0.4,0.05,0.02,1.7);
 	m5->mat=glm::vec4(0.0,0.0,0.02,0.1);
 	m6->mat=glm::vec4(0.0,0.0,0.02,0.8);
+	m8->mat=glm::vec4(0.1,0.1,0.02,0.5);
+	m9->mat=glm::vec4(0.1,0.1,0.02,0.5);
 	models.push_back(m);
 	models.push_back(m2);
 	models.push_back(m3);
@@ -365,6 +379,8 @@ void Test::prepare_draw_obj(){
 	models.push_back(m5);
 	models.push_back(m6);
 	models.push_back(m7);
+	models.push_back(m8);
+	models.push_back(m9);
     b_objs.push_back(new BufferObject(m));
     b_objs.push_back(new BufferObject(m2));
     b_objs.push_back(new BufferObject(m3));
@@ -372,7 +388,8 @@ void Test::prepare_draw_obj(){
     b_objs.push_back(new BufferObject(m5));
     b_objs.push_back(new BufferObject(m6));
     b_objs.push_back(new BufferObject(m7));
-
+    b_objs.push_back(new BufferObject(m8));
+    b_objs.push_back(new BufferObject(m9));
     creat_cube_obj();
     tiger=new DrawObject(b_objs.at(0),texmap->get_tex(std::string("test")));
     //,texmap->get_tex(std::string("NormalTexture"))
@@ -405,6 +422,21 @@ void Test::prepare_draw_obj(){
     ico=new DrawObject(b_objs.at(2),texmap->get_tex(std::string("test3")),
     		texmap->get_tex(std::string("NormalTexture6")));
     d_objs.push_back(ico);
+    mars=new DrawObject(b_objs.at(7),texmap->get_tex(std::string("doge")));
+    d_objs.push_back(mars);
+    maropos=new Position(glm::vec3(100,70,100),glm::vec3());
+    marspos=new Position(glm::vec3(50,0,0),glm::vec3(),maropos);
+    mars->push_position(marspos);
+
+    moonpos=new Position(glm::vec3(30,0,0),glm::vec3(),marspos);
+    moonpos2=new Position(glm::vec3(15,0,0),glm::vec3(),moonpos);
+    moonpos3=new Position(glm::vec3(10,0,10),glm::vec3(),moonpos2);
+    moon=new DrawObject(b_objs.at(8),texmap->get_tex(std::string("doge")));
+    d_objs.push_back(moon);
+
+    moon->push_position(moonpos);
+    moon->push_position(moonpos2);
+    moon->push_position(moonpos3);
 }
 void Test::creat_shader(){
 	shaderBasic=new Shader();
@@ -435,11 +467,11 @@ void Test::creat_shader(){
 	shaderShadowMapping->LoadShader("files/shader/shadow/ShadowMapping.vert"
 			,"files/shader/shadow/ShadowMapping.frag");
 	shaders.push_back(shaderShadowMapping);
-	shadercubeShadowMapping=new Shader();
+	/*shadercubeShadowMapping=new Shader();
 	shadercubeShadowMapping->LoadShader("files/shader/shadow/cubeShadow/CubeShadowMapping.vert"
 			,"files/shader/shadow/cubeShadow/CubeShadowMapping.geo"
 			,"files/shader/shadow/cubeShadow/CubeShadowMapping.frag");
-	shaders.push_back(shadercubeShadowMapping);
+	shaders.push_back(shadercubeShadowMapping);*/
 	shaderTest=new Shader();
 	shaderTest->LoadShader("files/shader/test/test.vert",
 			"files/shader/test/test.geo",
@@ -483,8 +515,10 @@ void Test::creat_frame_buffer(){
 	}
 }
 void Test::timer_tic(double &time){
-    printf("ftime=%lf\n",(glfwGetTime()-time));
-    time=glfwGetTime();
+    if(display_time){
+    	printf("ftime=%lf\n",(glfwGetTime()-time));
+    	time=glfwGetTime();
+    }
     mouse->tic(); //clear mouse delta pos before update
     keyboard->tic();
     glfwPollEvents();//get all input
@@ -493,8 +527,10 @@ void Test::timer_tic(double &time){
 
     camera->tic();
     update_map(camera);
-    printf("prepare time=%lf\n",(glfwGetTime()-time));
-    time=glfwGetTime();
+    if(display_time){
+        printf("prepare time=%lf\n",(glfwGetTime()-time));
+        time=glfwGetTime();
+    }
 
 	if(cur_shader==shaderBasic){
 		shaderBasic->active_shader();
@@ -552,7 +588,9 @@ void Test::timer_tic(double &time){
 		shader2DArr->active_shader();
 		FBO->bind_buffer();
     	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//clear buffer
+    	texmap->get_tex(std::string("NormalTexture"))->draw_texture(shader2D,window->aspect(),window->aspect(),0.6);
     	texArr->draw_texture(shader2DArr,window->aspect(),window->aspect(),0.6);
+
     	delete img;
     	delete texArr;
 	}else if(cur_shader==shader2D){
@@ -593,14 +631,19 @@ void Test::timer_tic(double &time){
     for(unsigned i=0;i<d_objs.size();i++){
     	d_objs.at(i)->clear_temp_position();
     }
-    std::cout<<"d_objs size="<<d_objs.size()<<std::endl;
+    //std::cout<<"d_objs size="<<d_objs.size()<<std::endl;
     glfwSwapBuffers(window->get_window());
-    std::cout<<"swaptime="<<(glfwGetTime()-time)<<std::endl;
-    time=glfwGetTime();
+    if(display_time){
+        std::cout<<"swaptime="<<(glfwGetTime()-time)<<std::endl;
+        time=glfwGetTime();
+    }
+
+
 }
 void Test::Mainloop(){
     double time=0;
-    while(!glfwWindowShouldClose(window->get_window())){
+    while(!window->WindowShouldClose()){
+    	//std::cout<<"WindowShouldClose:"<<window->WindowShouldClose()<<std::endl;
     	timer_tic(time);
     }
     glfwTerminate();
